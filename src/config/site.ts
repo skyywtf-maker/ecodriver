@@ -18,7 +18,7 @@ export const SITE = {
     { name: "Charleville-Mézières", km: "≈ 360 km" },
   ],
   vehicle: {
-    model: "[Modèle]", // TODO
+    model: "Tesla Model S",
     specs: [
       { k: "Passagers", v: "4 places" },
       { k: "Bagages", v: "3 valises" },

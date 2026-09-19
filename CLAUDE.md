@@ -39,7 +39,11 @@ Direction « Apple / verre dépoli » sur carte sombre plein écran.
 - [ ] **Corriger la fiche technique** (`SITE.vehicle.techSpecs`) : les valeurs
       actuelles sont celles d'une Model 3 Propulsion du catalogue actuel, le modèle
       3D est une 2018. Demander l'année et la version réelles à Nicolas.
-- [ ] Vidéo hero éventuelle, et photo du chauffeur.
+- [ ] **Remplacer les 9 ans d'expérience de Nicolas** (`SITE.driver.experienceYears`)
+      par le vrai chiffre, ou retirer la tuile. Valeur inventée pour la maquette,
+      sur une personne réelle et nommée : elle ne doit pas partir en production.
+- [ ] Faire valider par Nicolas sa courte biographie (`SITE.driver.bio`).
+- [ ] Vidéo hero éventuelle.
 - [x] Tâche planifiée (Vercel Cron) pour supprimer les réservations `PENDING_PAYMENT` de plus de 24 h (`vercel.json` + `/api/cron/purge-reservations`, secret `CRON_SECRET`).
 - [ ] Tester le parcours complet en mode test Stripe, sur mobile iOS et Android.
 - [x] Favicon, image Open Graph, balises SEO locales. Pages dédiées : `/vtc-strasbourg`,

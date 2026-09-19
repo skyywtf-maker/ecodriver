@@ -4,6 +4,7 @@ import { HeroBooking } from "@/components/booking/HeroBooking";
 import { SITE } from "@/config/site";
 import { SiteStructuredData } from "@/components/StructuredData";
 import { VehicleShowcase } from "@/components/vehicle/VehicleShowcase";
+import { DriverProfile } from "@/components/DriverProfile";
 
 const STEPS = [
   { t: "Votre trajet", d: "Départ, arrivée, horaire. Le prix exact s’affiche tout de suite." },
@@ -50,6 +51,8 @@ export default function Home() {
         </section>
 
         <VehicleShowcase />
+
+        <DriverProfile />
 
         <section id="avis" className="scroll-mt-28 pt-24 md:pt-[120px]">
           <ul className="grid gap-4 md:grid-cols-3">

@@ -17,6 +17,27 @@ export const SITE = {
     { name: "Reims", km: "≈ 345 km" },
     { name: "Charleville-Mézières", km: "≈ 360 km" },
   ],
+  driver: {
+    firstName: "Nicolas",
+    role: "Chauffeur VTC indépendant",
+    /** Portrait à déposer dans public/. Un monogramme prend le relais s'il manque. */
+    photo: "/nicolas.jpg",
+    /**
+     * ⚠️ VALEUR INVENTÉE, POUR LA MAQUETTE UNIQUEMENT.
+     *
+     * Elle sert à voir la section remplie, rien d'autre. Elle porte sur une
+     * personne réelle et nommée, et c'est un argument sur lequel un client
+     * s'appuie pour choisir son chauffeur : à remplacer par le vrai chiffre
+     * avant toute mise en ligne, ou à retirer de la page.
+     */
+    experienceYears: "9",
+    /** TODO: à faire valider par Nicolas, c'est lui qui parle ici. */
+    bio: [
+      "Chauffeur indépendant basé à Strasbourg, au volant de sa propre voiture.",
+      "Un seul véhicule et un seul interlocuteur : celui qui confirme votre course est celui qui vient vous chercher.",
+    ],
+  },
+
   vehicle: {
     model: "Tesla Model 3",
     /** Mot d'accent en Playfair dans le titre de la section. */
@@ -25,29 +46,30 @@ export const SITE = {
     model3d: "/vehicule/tesla-model-3.glb",
 
     /**
-     * Fiche technique.
+     * Ce que le passager ressent, et rien d'autre.
      *
-     * ⚠️ Ces valeurs sont celles de la Model 3 Propulsion du catalogue Tesla
-     * actuel. Le modèle 3D fourni est une Model 3 de 2018, dont l'autonomie et
-     * le coffre diffèrent. À CORRIGER avec l'année et la version réelles du
-     * véhicule de Nicolas avant la mise en ligne : publier une autonomie
-     * fausse est un argument commercial trompeur.
+     * Les chiffres de catalogue (autonomie, 0 à 100, kWh/100 km, classe
+     * énergétique) ont été retirés : ils ne disent rien à quelqu'un qui monte
+     * à l'arrière pour aller à l'aéroport, et une partie n'est pas vérifiable
+     * sur le véhicule de Nicolas.
+     *
+     * Tout ce qui figure ici est soit propre à un véhicule électrique, soit
+     * commun à toutes les Model 3, soit une règle de service déjà validée.
      */
-    techSpecs: [
-      { k: "Autonomie", v: "572 km", note: "WLTP" },
-      { k: "Émissions", v: "0 g/km", note: "CO₂ à l'usage" },
-      { k: "Consommation", v: "12,2 kWh", note: "aux 100 km" },
-      { k: "Coffre", v: "682 L", note: "avant + arrière" },
-      { k: "0 à 100 km/h", v: "6,2 s", note: "en silence" },
-      { k: "Classe énergétique", v: "A", note: "" },
+    comfort: [
+      { k: "Silence à bord", v: "Moteur électrique, aucune vibration" },
+      { k: "Climatisation", v: "Habitacle mis à température avant la montée" },
+      { k: "Bagages", v: "Coffre arrière et coffre avant" },
+      { k: "Places", v: "Jusqu'à 4 passagers" },
+      { k: "Wifi", v: "Inclus, sans rien demander" },
+      { k: "Siège enfant", v: "Sur demande à la réservation" },
     ],
 
-    /** Ce qui relève du service, pas de la fiche constructeur. */
-    specs: [
-      { k: "Passagers", v: "4 places" },
-      { k: "Bagages", v: "3 valises" },
-      { k: "Wifi", v: "Inclus" },
-      { k: "Siège enfant", v: "Sur demande" },
+    /** Étiquettes ancrées sur la voiture en 3D, au-dessus de `lg`. */
+    hotspots: [
+      { label: "Coffre arrière", at: [0, 1.05, -1.75] },
+      { label: "Silence à bord", at: [0, 1.5, 0.15] },
+      { label: "Coffre avant", at: [0, 0.95, 2.05] },
     ],
   },
   // Avis statiques (MVP). TODO: remplacer par de vrais avis clients.

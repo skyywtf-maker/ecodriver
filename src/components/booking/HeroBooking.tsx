@@ -34,6 +34,21 @@ export function HeroBooking({ onContinue, showHeadline = true }: Props) {
         />
       </div>
 
+      {/* En dessous de lg, le titre de droite disparaît : l'écran n'affichait
+          plus que la carte et le formulaire, sans dire ce qu'on vend. */}
+      {showHeadline && (
+        <div className="pointer-events-none absolute inset-x-6 top-[88px] z-10 flex flex-col gap-3 lg:hidden">
+          <p className="font-display text-[34px] font-extrabold leading-[0.98] tracking-[-0.04em] sm:text-[42px]">
+            Chauffeur privé.
+            <br />
+            <span className="serif-accent">Grand Est.</span>
+          </p>
+          <p className="max-w-[260px] text-[14px] leading-snug text-label-strong">
+            Prix ferme affiché avant de réserver, payé en ligne.
+          </p>
+        </div>
+      )}
+
       {showHeadline && (
         <div className="pointer-events-none absolute bottom-14 right-16 z-10 hidden flex-col items-end gap-5 text-right lg:flex">
           <p className="font-display text-[72px] font-extrabold leading-[0.98] tracking-[-0.045em]">

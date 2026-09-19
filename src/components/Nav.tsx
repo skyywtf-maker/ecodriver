@@ -1,11 +1,18 @@
 import Link from "next/link";
+import { allLandings } from "@/config/landing";
 import { SITE } from "@/config/site";
 import { Logo } from "./Logo";
+import { MobileMenu } from "./MobileMenu";
 
 export function Nav({ children }: { children?: React.ReactNode }) {
   return (
-    <nav className="glass fixed inset-x-4 top-4 z-30 flex h-14 items-center justify-between rounded-full pl-5 pr-1.5 md:inset-x-16 md:top-6 md:h-16 md:pl-7 md:pr-3">
-      <Logo />
+    <nav className="glass fixed inset-x-4 top-4 z-30 flex h-14 items-center justify-between rounded-full pl-1.5 pr-1.5 md:inset-x-16 md:top-6 md:h-16 md:pr-3 lg:pl-7">
+      <div className="flex items-center gap-1">
+        {/* Les trois traits n'apparaissent qu'en dessous de lg, là où les
+            liens en ligne disparaissent. */}
+        <MobileMenu zones={allLandings().map((l) => ({ href: l.path, label: l.shortLabel }))} />
+        <Logo className="text-xl max-lg:pl-1" />
+      </div>
       {children ?? (
         <div className="hidden gap-9 text-sm font-medium text-label-strong lg:flex">
           <Link href="/#villes" className="hover:text-white">Destinations</Link>

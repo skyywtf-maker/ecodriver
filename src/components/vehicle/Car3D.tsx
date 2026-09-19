@@ -1,21 +1,29 @@
 "use client";
 
 import { Suspense, lazy, useCallback, useEffect, useRef, useState } from "react";
+import { useIsDesktop } from "@/lib/useIsDesktop";
 
 /** three.js et le modèle ne sont téléchargés qu'à l'approche de la section. */
 const CarScene = lazy(() => import("./CarScene"));
 
 export function Car3D() {
   const holder = useRef<HTMLDivElement>(null);
+  const progress = useRef(0);
   const [visible, setVisible] = useState(false);
   const [ready, setReady] = useState(false);
-  const [autoRotate, setAutoRotate] = useState(true);
+  const [scrollDriven, setScrollDriven] = useState(true);
 
-  // Le visiteur qui a demandé moins d'animations ne subit pas la rotation ;
-  // il peut toujours faire tourner la voiture au doigt.
+  // Les étiquettes ancrées demandent une passe de rendu de plus et deviennent
+  // illisibles sur un petit écran : elles restent aux grandes largeurs, et la
+  // liste de confort à côté dit la même chose pour tout le monde.
+  const showHotspots = useIsDesktop("(min-width: 1024px)");
+
+  // Le visiteur qui a demandé moins d'animations ne subit ni la rotation au
+  // défilement ni la rotation automatique ; il peut toujours faire tourner la
+  // voiture au doigt.
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const sync = () => setAutoRotate(!mq.matches);
+    const sync = () => setScrollDriven(!mq.matches);
     sync();
     mq.addEventListener("change", sync);
     return () => mq.removeEventListener("change", sync);
@@ -42,16 +50,50 @@ export function Car3D() {
     return () => io.disconnect();
   }, []);
 
+  // Avancée du bloc dans la fenêtre, de 0 (il entre par le bas) à 1 (il sort
+  // par le haut). Écrite dans un ref : React ne redessine pas, seule la boucle
+  // de rendu three lit la valeur.
+  useEffect(() => {
+    const el = holder.current;
+    if (!el) return;
+    let frame = 0;
+    const measure = () => {
+      frame = 0;
+      const r = el.getBoundingClientRect();
+      const span = window.innerHeight + r.height;
+      if (span <= 0) return;
+      const raw = (window.innerHeight - r.top) / span;
+      progress.current = Math.min(1, Math.max(0, raw));
+    };
+    const onScroll = () => {
+      if (frame) return;
+      frame = requestAnimationFrame(measure);
+    };
+    measure();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+    return () => {
+      if (frame) cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
+
   const onReady = useCallback(() => setReady(true), []);
 
   return (
     <div
       ref={holder}
-      className="relative h-[320px] w-full overflow-hidden rounded-4xl border border-white/[0.08] bg-graphite md:h-[520px]"
+      className="relative h-[320px] w-full overflow-hidden rounded-4xl border border-white/[0.08] bg-graphite sm:h-[380px] md:h-[520px]"
     >
       {visible && (
         <Suspense fallback={null}>
-          <CarScene autoRotate={autoRotate} onReady={onReady} />
+          <CarScene
+            progress={progress}
+            scrollDriven={scrollDriven}
+            showHotspots={showHotspots && ready}
+            onReady={onReady}
+          />
         </Suspense>
       )}
 
@@ -63,7 +105,7 @@ export function Car3D() {
 
       {ready && (
         <span className="pointer-events-none absolute bottom-5 left-1/2 -translate-x-1/2 whitespace-nowrap text-[12px] font-medium text-label">
-          Faites glisser pour tourner
+          Elle tourne au défilement — glissez pour explorer
         </span>
       )}
     </div>

@@ -31,7 +31,7 @@ Direction « Apple / verre dépoli » sur carte sombre plein écran.
 - [ ] Remplacer les placeholders entre crochets (téléphone, email, modèle du véhicule, avis, mentions légales, CGV).
 - [ ] Valider les tarifs réels avec le chauffeur dans `src/config/pricing.ts`.
 - [ ] Intégrer la vidéo/photo du véhicule (section `#vehicule` de `src/app/page.tsx`) et une vidéo hero éventuelle.
-- [ ] Tâche planifiée (Vercel Cron) pour supprimer les réservations `PENDING_PAYMENT` de plus de 24 h.
+- [x] Tâche planifiée (Vercel Cron) pour supprimer les réservations `PENDING_PAYMENT` de plus de 24 h (`vercel.json` + `/api/cron/purge-reservations`, secret `CRON_SECRET`).
 - [ ] Tester le parcours complet en mode test Stripe, sur mobile iOS et Android.
 - [ ] Favicon, image Open Graph, balises SEO locales (VTC Strasbourg, aéroport Entzheim, etc.).
 - [ ] v2 : rappels J-1 / H-2, conditions d'annulation client.

@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ink: #0a0b0d;
+  --accent: #0a84ff;
+  --label: rgba(235, 235, 245, 0.6);
+}
+
+html { background: var(--ink); color: #fff; color-scheme: dark; }
+body { -webkit-font-smoothing: antialiased; font-variant-numeric: tabular-nums; }
+
+@layer components {
+  /* Verre dépoli façon Apple */
+  .glass {
+    background: rgba(28, 30, 34, 0.55);
+    -webkit-backdrop-filter: blur(36px) saturate(180%);
+    backdrop-filter: blur(36px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+  }
+  .glass-soft {
+    background: rgba(40, 42, 48, 0.5);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+  .tile {
+    background: rgba(255, 255, 255, 0.045);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .field {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+  }
+  .field:focus-within { border-color: var(--accent); }
+  .field-label { @apply text-[11px] font-medium text-label; }
+  .field-input { @apply w-full bg-transparent p-0 text-[16px] font-semibold text-white outline-none placeholder:text-white/35; }
+  .btn-primary {
+    @apply flex h-14 items-center justify-center gap-3 rounded-2xl bg-white px-8 font-display text-base font-semibold text-ink transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40;
+  }
+  .btn-ghost {
+    @apply flex h-14 items-center justify-center rounded-2xl bg-white/[0.08] px-6 text-[15px] font-semibold text-white transition-colors hover:bg-white/[0.12];
+  }
+  .serif-accent { @apply font-serif font-normal italic tracking-[-0.02em]; }
+}
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+.mapboxgl-ctrl-logo, .mapboxgl-ctrl-attrib { opacity: 0.4; }

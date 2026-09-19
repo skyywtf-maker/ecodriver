@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum BookingStatus {
+  PENDING_PAYMENT // créée, paiement pas encore confirmé
+  PENDING_DRIVER  // payée, en attente de confirmation chauffeur
+  CONFIRMED
+  REFUSED
+  COMPLETED
+  CANCELLED
+}
+
+model Booking {
+  id              String        @id @default(cuid())
+  reference       String        @unique
+  status          BookingStatus @default(PENDING_PAYMENT)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  fromLabel       String
+  fromLat         Float
+  fromLng         Float
+  toLabel         String
+  toLat           Float
+  toLng           Float
+  pickupAt        DateTime
+
+  distanceKm      Float
+  durationMin     Int
+  priceCents      Int
+  surchargeApplied Boolean      @default(false)
+  minimumApplied  Boolean       @default(false)
+
+  firstName       String
+  lastName        String
+  phone           String
+  email           String
+  note            String?
+  passengers      Int
+  luggage         Int
+
+  stripePaymentIntentId String? @unique
+  stripeRefundId        String?
+
+  @@index([status, pickupAt])
+}
+
+model Setting {
+  key   String @id
+  value String
+}

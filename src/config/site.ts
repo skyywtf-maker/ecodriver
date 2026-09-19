@@ -18,7 +18,31 @@ export const SITE = {
     { name: "Charleville-Mézières", km: "≈ 360 km" },
   ],
   vehicle: {
-    model: "Tesla Model S",
+    model: "Tesla Model 3",
+    /** Mot d'accent en Playfair dans le titre de la section. */
+    accent: "100 % électrique.",
+    /** Modèle 3D compressé (2,25 Mo), chargé seulement à l'approche de la section. */
+    model3d: "/vehicule/tesla-model-3.glb",
+
+    /**
+     * Fiche technique.
+     *
+     * ⚠️ Ces valeurs sont celles de la Model 3 Propulsion du catalogue Tesla
+     * actuel. Le modèle 3D fourni est une Model 3 de 2018, dont l'autonomie et
+     * le coffre diffèrent. À CORRIGER avec l'année et la version réelles du
+     * véhicule de Nicolas avant la mise en ligne : publier une autonomie
+     * fausse est un argument commercial trompeur.
+     */
+    techSpecs: [
+      { k: "Autonomie", v: "572 km", note: "WLTP" },
+      { k: "Émissions", v: "0 g/km", note: "CO₂ à l'usage" },
+      { k: "Consommation", v: "12,2 kWh", note: "aux 100 km" },
+      { k: "Coffre", v: "682 L", note: "avant + arrière" },
+      { k: "0 à 100 km/h", v: "6,2 s", note: "en silence" },
+      { k: "Classe énergétique", v: "A", note: "" },
+    ],
+
+    /** Ce qui relève du service, pas de la fiche constructeur. */
     specs: [
       { k: "Passagers", v: "4 places" },
       { k: "Bagages", v: "3 valises" },

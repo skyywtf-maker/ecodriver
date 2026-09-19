@@ -3,6 +3,7 @@ import { Footer } from "@/components/Footer";
 import { HeroBooking } from "@/components/booking/HeroBooking";
 import { SITE } from "@/config/site";
 import { SiteStructuredData } from "@/components/StructuredData";
+import { VehicleShowcase } from "@/components/vehicle/VehicleShowcase";
 
 const STEPS = [
   { t: "Votre trajet", d: "Départ, arrivée, horaire. Le prix exact s’affiche tout de suite." },
@@ -48,25 +49,7 @@ export default function Home() {
           </ol>
         </section>
 
-        <section id="vehicule" className="scroll-mt-28 pt-24 md:pt-[120px]">
-          <div className="relative flex min-h-[580px] items-end overflow-hidden rounded-5xl border border-white/[0.08] bg-graphite p-4 md:justify-end md:p-8">
-            {/* TODO: remplacer par la vidéo/photo du véhicule tournée par AchMedia (public/vehicule.mp4) */}
-            <span className="absolute left-8 top-8 text-[13px] font-medium text-white/45">[ Photo ou vidéo du véhicule, plein cadre ]</span>
-            <div className="glass relative flex w-full flex-col gap-5 rounded-3xl p-7 md:w-[420px]">
-              <h2 className="font-display text-[32px] font-bold tracking-[-0.03em]">
-                {SITE.vehicle.model} <span className="serif-accent">berline</span>
-              </h2>
-              <dl className="grid grid-cols-2 gap-2">
-                {SITE.vehicle.specs.map((s) => (
-                  <div key={s.k} className="flex flex-col gap-0.5 rounded-[14px] bg-white/[0.06] px-4 py-3.5">
-                    <dt className="text-[11px] font-medium text-label">{s.k}</dt>
-                    <dd className="text-[15px] font-semibold">{s.v}</dd>
-                  </div>
-                ))}
-              </dl>
-            </div>
-          </div>
-        </section>
+        <VehicleShowcase />
 
         <section id="avis" className="scroll-mt-28 pt-24 md:pt-[120px]">
           <ul className="grid gap-4 md:grid-cols-3">

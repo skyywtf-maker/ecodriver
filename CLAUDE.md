@@ -30,7 +30,16 @@ Direction « Apple / verre dépoli » sur carte sombre plein écran.
 
 - [ ] Remplacer les placeholders entre crochets (téléphone, email, modèle du véhicule, avis, mentions légales, CGV).
 - [ ] Valider les tarifs réels avec le chauffeur dans `src/config/pricing.ts`.
-- [ ] Intégrer la vidéo/photo du véhicule (section `#vehicule` de `src/app/page.tsx`) et une vidéo hero éventuelle.
+- [x] Section véhicule : modèle 3D interactif (`src/components/vehicle/`), fiche
+      technique à côté. Le GLB est compressé par `npm run model` (22,7 Mo → 2,25 Mo)
+      et n'est téléchargé qu'à l'approche de la section.
+- [ ] **Vérifier la licence du modèle 3D** (`public/vehicule/tesla-model-3.glb`,
+      origine Sketchfab) : usage commercial autorisé ? attribution exigée ?
+      Aucun champ `copyright` dans le fichier. À trancher avant la mise en ligne.
+- [ ] **Corriger la fiche technique** (`SITE.vehicle.techSpecs`) : les valeurs
+      actuelles sont celles d'une Model 3 Propulsion du catalogue actuel, le modèle
+      3D est une 2018. Demander l'année et la version réelles à Nicolas.
+- [ ] Vidéo hero éventuelle, et photo du chauffeur.
 - [x] Tâche planifiée (Vercel Cron) pour supprimer les réservations `PENDING_PAYMENT` de plus de 24 h (`vercel.json` + `/api/cron/purge-reservations`, secret `CRON_SECRET`).
 - [ ] Tester le parcours complet en mode test Stripe, sur mobile iOS et Android.
 - [x] Favicon, image Open Graph, balises SEO locales. Pages dédiées : `/vtc-strasbourg`,

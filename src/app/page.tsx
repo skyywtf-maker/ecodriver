@@ -2,6 +2,7 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { HeroBooking } from "@/components/booking/HeroBooking";
 import { SITE } from "@/config/site";
+import { SiteStructuredData } from "@/components/StructuredData";
 
 const STEPS = [
   { t: "Votre trajet", d: "Départ, arrivée, horaire. Le prix exact s’affiche tout de suite." },
@@ -12,6 +13,7 @@ const STEPS = [
 export default function Home() {
   return (
     <>
+      <SiteStructuredData />
       <Nav />
       <HeroBooking />
 

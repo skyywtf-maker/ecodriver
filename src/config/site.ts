@@ -33,3 +33,33 @@ export const SITE = {
     { text: "[Texte de l'avis client]", author: "[Prénom N.]", route: "Metz → Lorraine TGV" },
   ],
 } as const;
+
+/**
+ * Identité de l'entreprise, utilisée par les données structurées
+ * (LocalBusiness / TaxiService) et les mentions légales.
+ *
+ * Google recoupe ces informations avec la fiche Google Business Profile :
+ * le nom, l'adresse et le téléphone doivent être IDENTIQUES des deux côtés,
+ * au caractère près. Tout ce qui reste entre crochets est à remplir avant
+ * la mise en ligne, sinon il vaut mieux retirer le champ que le publier faux.
+ */
+export const BUSINESS = {
+  legalName: "[Raison sociale du chauffeur]", // TODO
+  /** Numéro d'inscription au registre VTC (EVTC), obligatoire en mentions légales. */
+  evtc: "[Numéro EVTC]", // TODO
+  siret: "[SIRET]", // TODO
+  address: {
+    street: "[Adresse]", // TODO
+    postalCode: "[Code postal]", // TODO
+    city: "Strasbourg", // TODO: commune réelle de domiciliation
+    country: "FR",
+  },
+  /** Coordonnées du point de rattachement, pour le SEO local. */
+  geo: { lat: 48.5734, lng: 7.7521 },
+  /** Fourchette indicative affichée par Google. */
+  priceRange: "€€",
+  /** Le chauffeur prend les réservations en ligne 24 h/24. TODO: confirmer les plages réelles. */
+  opensAllHours: true,
+  /** Profils à lier quand ils existeront (Google Business Profile, Instagram...). */
+  sameAs: [] as string[],
+} as const;

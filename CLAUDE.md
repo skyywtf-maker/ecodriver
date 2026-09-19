@@ -33,5 +33,8 @@ Direction « Apple / verre dépoli » sur carte sombre plein écran.
 - [ ] Intégrer la vidéo/photo du véhicule (section `#vehicule` de `src/app/page.tsx`) et une vidéo hero éventuelle.
 - [x] Tâche planifiée (Vercel Cron) pour supprimer les réservations `PENDING_PAYMENT` de plus de 24 h (`vercel.json` + `/api/cron/purge-reservations`, secret `CRON_SECRET`).
 - [ ] Tester le parcours complet en mode test Stripe, sur mobile iOS et Android.
-- [ ] Favicon, image Open Graph, balises SEO locales (VTC Strasbourg, aéroport Entzheim, etc.).
+- [x] Favicon, image Open Graph, balises SEO locales. Pages dédiées : `/vtc-strasbourg`,
+      `/vtc-aeroport-entzheim`, `/vtc-gare-strasbourg` et le gabarit `/vtc/[ville]`
+      (contenu dans `src/config/landing.ts`, gabarit dans `src/components/seo/`).
+      Textes à faire valider par le chauffeur, et sans aucun prix chiffré.
 - [ ] v2 : rappels J-1 / H-2, conditions d'annulation client.

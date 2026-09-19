@@ -1,8 +1,11 @@
 import type { MetadataRoute } from "next";
+import { allLandings } from "@/config/landing";
 import { SITE } from "@/config/site";
 
-/** Pages publiques indexables, de la plus importante à la moins importante. */
-const ROUTES: Array<{ path: string; priority: number; changeFrequency: "monthly" | "yearly" }> = [
+type Entry = { path: string; priority: number; changeFrequency: "monthly" | "yearly" };
+
+/** Pages du parcours, de la plus importante à la moins importante. */
+const CORE: Entry[] = [
   { path: "/", priority: 1, changeFrequency: "monthly" },
   { path: "/reserver", priority: 0.8, changeFrequency: "monthly" },
   { path: "/mentions-legales", priority: 0.2, changeFrequency: "yearly" },
@@ -12,7 +15,15 @@ const ROUTES: Array<{ path: string; priority: number; changeFrequency: "monthly"
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date();
-  return ROUTES.map((r) => ({
+
+  // Les trois pages prioritaires passent devant les pages de ville.
+  const landings: Entry[] = allLandings().map((l) => ({
+    path: l.path,
+    priority: l.path.startsWith("/vtc/") ? 0.6 : 0.9,
+    changeFrequency: "monthly",
+  }));
+
+  return [...CORE, ...landings].map((r) => ({
     url: `${SITE.url}${r.path}`,
     lastModified,
     changeFrequency: r.changeFrequency,

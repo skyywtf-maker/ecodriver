@@ -45,6 +45,10 @@ Direction « Apple / verre dépoli » sur carte sombre plein écran.
 - [ ] Faire valider par Nicolas sa courte biographie (`SITE.driver.bio`).
 - [ ] Vidéo hero éventuelle.
 - [x] Tâche planifiée (Vercel Cron) pour supprimer les réservations `PENDING_PAYMENT` de plus de 24 h (`vercel.json` + `/api/cron/purge-reservations`, secret `CRON_SECRET`).
+- [ ] **Créer les tables** : `DATABASE_URL="<connexion directe Neon>" npx prisma db push`,
+      puis la fiche chauffeur : `npm run seed-driver -- "email" "motdepasse" "Nicolas"`.
+      Rien ne fonctionne en base tant que ce n'est pas fait.
+- [ ] Renseigner `BREVO_API_KEY` sur Vercel (emails ET SMS, une seule clé).
 - [ ] Tester le parcours complet en mode test Stripe, sur mobile iOS et Android.
 - [x] Favicon, image Open Graph, balises SEO locales. Pages dédiées : `/vtc-strasbourg`,
       `/vtc-aeroport-entzheim`, `/vtc-gare-strasbourg` et le gabarit `/vtc/[ville]`

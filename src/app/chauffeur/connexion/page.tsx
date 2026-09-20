@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState } from "react";
 import { login } from "../actions";
 import { Logo } from "@/components/Logo";
@@ -23,6 +24,12 @@ export default function ConnexionPage() {
         <button type="submit" disabled={pending} className="btn-primary mt-2 w-full">
           {pending ? "Connexion…" : "Se connecter"}
         </button>
+        <Link
+          href="/chauffeur/mot-de-passe-oublie"
+          className="text-center text-sm font-medium text-label transition-colors hover:text-white"
+        >
+          Mot de passe oublié ?
+        </Link>
       </form>
     </main>
   );

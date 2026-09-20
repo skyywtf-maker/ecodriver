@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { RouteMap } from "@/components/RouteMap";
 import { TripForm, type QuoteState } from "./TripForm";
@@ -18,17 +18,48 @@ export function HeroBooking({ onContinue, showHeadline = true }: Props) {
   const desktop = useIsDesktop();
   const [route, setRoute] = useState<{ q: QuoteState; from: DraftPoint | null; to: DraftPoint | null }>({ q: null, from: null, to: null });
 
+  // Feuille repliée façon Uber : dès que le prix est connu, le panneau se
+  // baisse et rend l'écran à la carte. Sans objet sur grand écran, où la
+  // carte de réservation occupe sa propre colonne.
+  const [collapsed, setCollapsed] = useState(false);
+  const hasQuote = Boolean(route.q);
+
+  useEffect(() => {
+    if (desktop) setCollapsed(false);
+    else if (hasQuote) setCollapsed(true);
+  }, [desktop, hasQuote]);
+
+  const sheetCollapsed = collapsed && !desktop;
+
   const padding = useMemo(
-    () => (desktop ? { top: 140, bottom: 220, left: 600, right: 120 } : { top: 110, bottom: 560, left: 40, right: 40 }),
-    [desktop]
+    () =>
+      desktop
+        ? { top: 140, bottom: 220, left: 600, right: 120 }
+        : // Repliée, la feuille libère le bas de l'écran : l'itinéraire se
+          // recentre sur la place réellement visible.
+          { top: 110, bottom: sheetCollapsed ? 280 : 560, left: 40, right: 40 },
+    [desktop, sheetCollapsed]
   );
 
   return (
     <section className="relative h-[100svh] min-h-[760px] overflow-hidden">
       <RouteMap from={route.from} to={route.to} geometry={route.q?.geometry} padding={padding} />
 
-      <div className="glass absolute inset-x-2 bottom-2 z-20 rounded-5xl p-5 shadow-[0_30px_80px_rgba(0,0,0,0.45)] md:inset-x-auto md:bottom-auto md:left-16 md:top-[120px] md:w-[440px] md:p-7">
+      <div className="glass absolute inset-x-2 bottom-2 z-20 rounded-5xl p-5 shadow-[0_30px_80px_rgba(0,0,0,0.45)] transition-[padding] duration-300 md:inset-x-auto md:bottom-auto md:left-16 md:top-[120px] md:w-[440px] md:p-7">
+        {/* Poignée : indique que la feuille se manipule, comme sur mobile. */}
+        <button
+          type="button"
+          onClick={() => setCollapsed((v) => !v)}
+          aria-label={sheetCollapsed ? "Déplier le formulaire" : "Replier le formulaire"}
+          aria-expanded={!sheetCollapsed}
+          className="mx-auto mb-3 flex h-4 w-full items-center justify-center md:hidden"
+        >
+          <span className="h-1 w-10 rounded-full bg-white/25" />
+        </button>
+
         <TripForm
+          collapsed={sheetCollapsed}
+          onExpand={() => setCollapsed(false)}
           onQuote={(q, from, to) => setRoute({ q, from, to })}
           onContinue={(d) => (onContinue ? onContinue(d) : router.push("/reserver"))}
         />

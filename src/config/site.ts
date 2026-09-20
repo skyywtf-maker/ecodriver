@@ -20,8 +20,11 @@ export const SITE = {
   driver: {
     firstName: "Nicolas",
     role: "Chauffeur VTC indépendant",
-    /** Portrait à déposer dans public/. Un monogramme prend le relais s'il manque. */
-    photo: "/nicolas.jpg",
+    /**
+     * Portrait détouré (fond transparent), converti en WebP : 3,2 Mo de PNG
+     * ramenés à 132 Ko. Un monogramme prend le relais si le fichier manque.
+     */
+    photo: "/nicolas.webp",
     /**
      * ⚠️ VALEUR INVENTÉE, POUR LA MAQUETTE UNIQUEMENT.
      *

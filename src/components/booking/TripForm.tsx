@@ -12,6 +12,9 @@ export type QuoteState = TripDraft["quote"] | null;
 type Props = {
   onQuote?: (q: QuoteState, from: DraftPoint | null, to: DraftPoint | null) => void;
   onContinue: (draft: TripDraft) => void;
+  /** Feuille repliée : le trajet est résumé en une ligne, la carte prend la place. */
+  collapsed?: boolean;
+  onExpand?: () => void;
 };
 
 function defaultWhen() {
@@ -21,7 +24,7 @@ function defaultWhen() {
   return { date: `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`, time: `${pad(d.getHours())}:${pad(d.getMinutes())}` };
 }
 
-export function TripForm({ onQuote, onContinue }: Props) {
+export function TripForm({ onQuote, onContinue, collapsed = false, onExpand }: Props) {
   const [from, setFrom] = useState<(DraftPoint & { inGrandEst?: boolean }) | null>(null);
   const [to, setTo] = useState<(DraftPoint & { inGrandEst?: boolean }) | null>(null);
   const [date, setDate] = useState("");
@@ -102,6 +105,29 @@ export function TripForm({ onQuote, onContinue }: Props) {
 
   return (
     <form onSubmit={submit} className="flex flex-col gap-5">
+      {collapsed ? (
+        // Repliée, la feuille ne garde que l'essentiel : le trajet, le prix,
+        // et le bouton. Un appui la rouvre pour modifier quoi que ce soit.
+        <button
+          type="button"
+          onClick={onExpand}
+          className="field flex items-center gap-3 px-[18px] py-3.5 text-left"
+        >
+          <span className="flex flex-col items-center gap-1 pt-0.5" aria-hidden>
+            <span className="h-2 w-2 rounded-full border-[2px] border-white" />
+            <span className="h-4 w-px bg-white/25" />
+            <span className="h-2 w-2 rounded-full bg-accent" />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block truncate text-[14px] font-semibold">{from?.label}</span>
+            <span className="block truncate text-[14px] font-semibold">{to?.label}</span>
+            <span className="mt-1 block text-[11px] font-medium text-label">
+              {formatWhen(date, time)} · Modifier
+            </span>
+          </span>
+        </button>
+      ) : (
+        <>
       <div className="flex items-baseline justify-between">
         <h1 className="font-display text-[30px] font-bold leading-tight tracking-[-0.03em]">
           Où <span className="serif-accent">allez-vous ?</span>
@@ -126,6 +152,8 @@ export function TripForm({ onQuote, onContinue }: Props) {
         <Counter label="Passagers" unit="passager" value={passengers} min={1} max={BOOKING_RULES.maxPassengers} onChange={setPassengers} />
         <Counter label="Bagages" unit="bagage" value={luggage} min={0} max={BOOKING_RULES.maxLuggage} onChange={setLuggage} />
       </div>
+        </>
+      )}
 
       {error ? (
         <p role="alert" className="rounded-2xl bg-[#FF453A]/12 px-4 py-3 text-sm font-medium text-[#FF6961]">
@@ -152,9 +180,21 @@ export function TripForm({ onQuote, onContinue }: Props) {
       <button type="submit" disabled={!canContinue} className="btn-primary w-full">
         Continuer
       </button>
-      <p className="text-center text-xs text-white/50">Réservation au moins {BOOKING_RULES.minLeadMinutes} min à l&apos;avance</p>
+      {!collapsed && (
+        <p className="text-center text-xs text-white/50">
+          Réservation au moins {BOOKING_RULES.minLeadMinutes} min à l&apos;avance
+        </p>
+      )}
     </form>
   );
+}
+
+/** « lun. 22 sept. à 14:30 » */
+function formatWhen(date: string, time: string) {
+  if (!date || !time) return "";
+  const d = new Date(`${date}T${time}`);
+  if (Number.isNaN(d.getTime())) return "";
+  return `${d.toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" })} à ${time}`;
 }
 
 function strip(p: DraftPoint): DraftPoint {

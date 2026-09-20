@@ -6,6 +6,7 @@ import { SiteStructuredData } from "@/components/StructuredData";
 import { VehicleShowcase } from "@/components/vehicle/VehicleShowcase";
 import { DriverProfile } from "@/components/DriverProfile";
 import { Reveal } from "@/components/Reveal";
+import { StepsTimeline } from "@/components/StepsTimeline";
 
 const STEPS = [
   { t: "Votre trajet", d: "Départ, arrivée, horaire. Le prix exact s’affiche tout de suite." },
@@ -40,24 +41,8 @@ export default function Home() {
         </section>
 
         <section id="deroule" className="scroll-mt-28 pt-24 md:pt-[120px]">
-          <ol className="grid gap-4 md:grid-cols-3">
-            {STEPS.map((s, i) => (
-              <Reveal as="li" key={s.t} delay={i * 90} className="tile flex h-[240px] flex-col justify-between rounded-4xl p-8">
-                <span className="flex h-11 w-11 items-center justify-center rounded-full bg-white font-display text-base font-bold text-ink">
-                  {i + 1}
-                </span>
-                <div className="flex flex-col gap-2.5">
-                  <h3 className="font-display text-2xl font-bold tracking-[-0.02em]">{s.t}</h3>
-                  <p className="text-[15px] leading-relaxed text-label">{s.d}</p>
-                </div>
-              </Reveal>
-            ))}
-          </ol>
+          <StepsTimeline steps={STEPS} />
         </section>
-
-        <Reveal>
-          <DriverProfile />
-        </Reveal>
 
         <section id="avis" className="scroll-mt-28 pt-24 md:pt-[120px]">
           <ul className="grid gap-4 md:grid-cols-3">

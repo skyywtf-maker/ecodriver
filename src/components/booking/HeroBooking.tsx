@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { RouteMap } from "@/components/RouteMap";
 import { ArrivalToast } from "./ArrivalToast";
@@ -37,6 +37,16 @@ export function HeroBooking({ onContinue, showHeadline = true }: Props) {
   const sheetCollapsed = collapsed && !desktop;
   const sheetPeek = !desktop && !sheetCollapsed && !expanded;
 
+  const dragStart = useRef<number | null>(null);
+  function openSheet() {
+    setCollapsed(false);
+    setExpanded(true);
+  }
+  function closeSheet() {
+    if (hasQuote) setCollapsed(true);
+    else setExpanded(false);
+  }
+
   const padding = useMemo(
     () =>
       desktop
@@ -53,16 +63,26 @@ export function HeroBooking({ onContinue, showHeadline = true }: Props) {
 
       <div className="glass absolute inset-x-2 bottom-2 z-20 rounded-5xl p-5 shadow-[0_30px_80px_rgba(0,0,0,0.45)] transition-[padding] duration-300 md:inset-x-auto md:bottom-auto md:left-16 md:top-[120px] md:w-[440px] md:p-7">
         {/* Poignée : indique que la feuille se manipule, comme sur mobile. */}
+        {/* Poignée réellement manipulable : glisser vers le haut déplie la
+            feuille, vers le bas la replie. Le clic fait la même chose, pour
+            le clavier et la souris. */}
         <button
           type="button"
-          onClick={() => {
-            if (sheetPeek) setExpanded(true);
-            else if (sheetCollapsed) setCollapsed(false);
-            else setCollapsed(true);
+          onClick={() => (sheetPeek || sheetCollapsed ? openSheet() : closeSheet())}
+          onTouchStart={(e) => {
+            dragStart.current = e.touches[0]!.clientY;
           }}
-          aria-label={sheetCollapsed ? "Déplier le formulaire" : "Replier le formulaire"}
-          aria-expanded={!sheetCollapsed}
-          className="mx-auto mb-3 flex h-4 w-full items-center justify-center md:hidden"
+          onTouchEnd={(e) => {
+            const start = dragStart.current;
+            dragStart.current = null;
+            if (start === null) return;
+            const delta = e.changedTouches[0]!.clientY - start;
+            if (delta < -30) openSheet();
+            else if (delta > 30) closeSheet();
+          }}
+          aria-label={sheetCollapsed || sheetPeek ? "Déplier le formulaire" : "Replier le formulaire"}
+          aria-expanded={!sheetCollapsed && !sheetPeek}
+          className="mx-auto mb-3 flex h-6 w-full touch-none items-center justify-center md:hidden"
         >
           <span className="h-1 w-10 rounded-full bg-white/25" />
         </button>
@@ -78,6 +98,14 @@ export function HeroBooking({ onContinue, showHeadline = true }: Props) {
           onContinue={(d) => (onContinue ? onContinue(d) : router.push("/reserver"))}
         />
       </div>
+
+      {/* Voile sombre derrière la barre, le titre et son sous-titre : sur la
+          carte, le texte blanc devenait illisible dès qu'il tombait sur une
+          zone claire. Uniquement sur petit écran, où le texte est en haut. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 z-[5] h-[46%] bg-[linear-gradient(180deg,rgba(10,10,10,0.85)_0%,rgba(10,10,10,0.55)_60%,rgba(10,10,10,0)_100%)] md:hidden"
+      />
 
       {/* En dessous de lg, le titre de droite disparaît : l'écran n'affichait
           plus que la carte et le formulaire, sans dire ce qu'on vend. */}

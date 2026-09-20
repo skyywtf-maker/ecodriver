@@ -24,8 +24,8 @@ function siteUrl() {
 export const SITE = {
   name: "Eco Driver",
   tagline: "Chauffeur privé, Grand Est.",
-  phoneDisplay: "+33 [0 00 00 00 00]", // TODO: vrai numéro
-  phoneHref: "tel:+33000000000",
+  phoneDisplay: "+33 6 35 21 09 92",
+  phoneHref: "tel:+33635210992",
   email: "contact@eco-driver.fr", // TODO
   url: siteUrl(),
   /** Centre de la carte par défaut (Strasbourg) */

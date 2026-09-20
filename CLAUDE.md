@@ -28,7 +28,7 @@ Direction « Apple / verre dépoli » sur carte sombre plein écran.
 
 ## Reste à faire (v1)
 
-- [ ] Remplacer les placeholders entre crochets (téléphone, email, modèle du véhicule, avis, mentions légales, CGV).
+- [ ] Remplacer les placeholders entre crochets restants : email, mentions légales (SIRET, EVTC, adresse), CGV. Téléphone et modèle du véhicule : faits.
 - [ ] Valider les tarifs réels avec le chauffeur dans `src/config/pricing.ts`.
 - [x] Section véhicule : modèle 3D interactif (`src/components/vehicle/`), fiche
       technique à côté. Le GLB est compressé par `npm run model` (22,7 Mo → 2,25 Mo)

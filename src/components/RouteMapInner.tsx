@@ -77,6 +77,15 @@ export default function RouteMapInner({ from, to, geometry, padding, className =
           layout: { "line-cap": "round", "line-join": "round" },
           paint: { "line-color": ACCENT, "line-width": 4.5 },
         });
+        // Sur petit écran, la carte est un décor derrière du texte blanc :
+        // les noms de rues et de communes la rendaient illisible. On masque
+        // les étiquettes en dessous de 768 px, la voirie suffit à situer.
+        if (window.matchMedia("(max-width: 767px)").matches) {
+          for (const layer of m.getStyle().layers ?? []) {
+            if (layer.type === "symbol") m.setLayoutProperty(layer.id, "visibility", "none");
+          }
+        }
+
         setReady(true);
       });
 

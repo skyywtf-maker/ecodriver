@@ -35,6 +35,23 @@ export const SITE = {
      * avant toute mise en ligne, ou à retirer de la page.
      */
     experienceYears: "9",
+    /**
+     * Pastilles disposées autour du portrait.
+     *
+     * Tout ce qui est entre crochets reste à remplir. Rien ici n'invente de
+     * note, d'avis ni de nombre de courses : ce sont des affirmations
+     * vérifiables sur une personne réelle, et une fausse note publiée est
+     * une tromperie commerciale, pas un texte de remplissage.
+     */
+    stats: [
+      { k: "Expérience", v: "9 ans", d: "Au volant depuis 2017, dont [X] ans en VTC." },
+      { k: "Véhicule", v: "Tesla Model 3", d: "Berline électrique, 4 passagers, deux coffres." },
+      { k: "Secteur", v: "Grand Est", d: "Départ et arrivée dans la région, de Strasbourg à Reims." },
+      { k: "Langues", v: "[À compléter]", d: "Langues parlées à bord, à confirmer avec Nicolas." },
+      { k: "Carte VTC", v: "[N° EVTC]", d: "Inscription au registre des VTC, obligatoire et vérifiable." },
+      { k: "Paiement", v: "Prix ferme", d: "Réglé en ligne à la réservation, aucun supplément à l'arrivée." },
+    ],
+
     /** TODO: à faire valider par Nicolas, c'est lui qui parle ici. */
     bio: [
       "Chauffeur indépendant basé à Strasbourg, au volant de sa propre voiture.",

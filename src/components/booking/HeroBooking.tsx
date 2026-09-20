@@ -81,8 +81,8 @@ export function HeroBooking({ onContinue, showHeadline = true }: Props) {
       )}
 
       {showHeadline && (
-        <div className="pointer-events-none absolute bottom-14 right-6 z-10 hidden max-w-[240px] flex-col items-end gap-5 text-right md:flex lg:right-16 lg:max-w-none">
-          <p className="font-display text-[34px] font-extrabold leading-[1.02] tracking-[-0.04em] lg:text-[72px] lg:leading-[0.98] lg:tracking-[-0.045em]">
+        <div className="pointer-events-none absolute bottom-14 right-6 z-10 hidden max-w-[240px] flex-col items-end gap-5 text-right md:flex lg:right-16 lg:max-w-[420px] xl:max-w-none">
+          <p className="font-display text-[34px] font-extrabold leading-[1.02] tracking-[-0.04em] lg:text-[52px] xl:text-[72px] xl:leading-[0.98] xl:tracking-[-0.045em]">
             Chauffeur privé.
             <br />
             <span className="serif-accent">Grand Est.</span>

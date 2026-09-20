@@ -69,23 +69,21 @@ export function HeroBooking({ onContinue, showHeadline = true }: Props) {
           plus que la carte et le formulaire, sans dire ce qu'on vend. */}
       {showHeadline && (
         <div className="pointer-events-none absolute inset-x-6 top-[88px] z-10 flex flex-col gap-3 md:hidden">
-          <p className="font-display text-[34px] font-extrabold leading-[0.98] tracking-[-0.04em] sm:text-[42px]">
-            Chauffeur privé.
+          <p className="font-display text-[26px] font-extrabold leading-[1.05] tracking-[-0.035em] sm:text-[32px]">
+            <span className="serif-accent">Nicolas,</span> votre chauffeur privé.
             <br />
-            <span className="serif-accent">Grand Est.</span>
+            Partout en Grand Est.
           </p>
-          <p className="max-w-[260px] text-[14px] leading-snug text-label-strong">
-            Prix ferme affiché avant de réserver, payé en ligne.
-          </p>
+          <p className="text-[13px] leading-snug text-label-strong">Prix ferme, payé en ligne.</p>
         </div>
       )}
 
       {showHeadline && (
-        <div className="pointer-events-none absolute bottom-14 right-6 z-10 hidden max-w-[240px] flex-col items-end gap-5 text-right md:flex lg:right-16 lg:max-w-[420px] xl:max-w-none">
-          <p className="font-display text-[34px] font-extrabold leading-[1.02] tracking-[-0.04em] lg:text-[52px] xl:text-[72px] xl:leading-[0.98] xl:tracking-[-0.045em]">
-            Chauffeur privé.
+        <div className="pointer-events-none absolute bottom-14 right-6 z-10 hidden max-w-[240px] flex-col items-end gap-5 text-right md:flex lg:right-16 lg:max-w-[400px] xl:max-w-[800px]">
+          <p className="font-display text-[30px] font-extrabold leading-[1.05] tracking-[-0.035em] lg:text-[34px] xl:text-[48px] xl:leading-[1.02] xl:tracking-[-0.04em]">
+            <span className="serif-accent">Nicolas,</span> votre chauffeur privé.
             <br />
-            <span className="serif-accent">Grand Est.</span>
+            Partout en Grand Est.
           </p>
           <ul className="hidden gap-2 lg:flex">
             {["Paiement sécurisé", "Confirmé par le chauffeur", "Remboursement intégral si refus"].map((c) => (

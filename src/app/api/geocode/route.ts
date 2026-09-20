@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { searchPlaces } from "@/lib/mapbox";
+import { searchPlaces } from "@/lib/geo";
 
 export async function GET(req: Request) {
   const q = new URL(req.url).searchParams.get("q") ?? "";

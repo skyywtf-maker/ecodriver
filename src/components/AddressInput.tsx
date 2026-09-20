@@ -3,7 +3,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import type { DraftPoint } from "@/lib/draft";
 
-type Place = DraftPoint & { inGrandEst: boolean };
+type Place = DraftPoint & { inGrandEst: boolean; hint?: string };
 
 type Props = {
   label: string;
@@ -32,7 +32,7 @@ export function AddressInput({ label, placeholder, marker, value, onChange, clas
       return;
     }
     const q = text.trim();
-    if (q.length < 3 || q === value?.label) {
+    if (q.length < 2 || q === value?.label) {
       setResults([]);
       return;
     }
@@ -106,7 +106,15 @@ export function AddressInput({ label, placeholder, marker, value, onChange, clas
         />
       </label>
       {open && results.length > 0 && (
-        <ul id={listId} role="listbox" className="glass absolute left-2 right-2 top-[calc(100%+6px)] z-40 overflow-hidden rounded-2xl py-1.5 shadow-2xl">
+        // Fond opaque et non « glass » : la liste est posée dans la carte de
+        // réservation, elle-même en verre dépoli. Un flou d'arrière-plan
+        // imbriqué ne voit que son parent, et le texte de la page reste net
+        // dessous — liste illisible.
+        <ul
+          id={listId}
+          role="listbox"
+          className="absolute left-2 right-2 top-[calc(100%+6px)] z-40 max-h-[300px] overflow-y-auto overflow-x-hidden rounded-2xl border border-white/[0.12] bg-[#17191E] py-1.5 shadow-[0_24px_60px_rgba(0,0,0,0.65)]"
+        >
           {results.map((p, i) => (
             <li
               key={`${p.lng},${p.lat},${i}`}
@@ -117,14 +125,38 @@ export function AddressInput({ label, placeholder, marker, value, onChange, clas
                 pick(p);
               }}
               onMouseEnter={() => setActive(i)}
-              className={`cursor-pointer px-4 py-2.5 text-sm ${i === active ? "bg-white/10" : ""}`}
+              className={`flex cursor-pointer items-start gap-3 px-4 py-2.5 text-sm ${i === active ? "bg-white/10" : ""}`}
             >
-              <span className="block truncate font-medium">{p.label}</span>
-              {!p.inGrandEst && <span className="text-xs text-[#FF9F0A]">Hors Grand Est</span>}
+              <PinIcon />
+              <span className="min-w-0 flex-1">
+                <span className="block truncate font-medium">{p.label}</span>
+                {p.hint && <span className="block truncate text-xs text-label">{p.hint}</span>}
+                {!p.inGrandEst && <span className="block text-xs text-[#FF9F0A]">Hors Grand Est</span>}
+              </span>
             </li>
           ))}
         </ul>
       )}
     </div>
+  );
+}
+
+function PinIcon() {
+  return (
+    <svg
+      width="15"
+      height="15"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="mt-0.5 shrink-0 text-label"
+      aria-hidden
+    >
+      <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+      <circle cx="12" cy="10" r="3" />
+    </svg>
   );
 }

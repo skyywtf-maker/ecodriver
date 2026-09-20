@@ -20,6 +20,8 @@ export default function Home() {
       <HeroBooking />
 
       <main className="mx-auto max-w-[1440px] px-4 md:px-16">
+        <VehicleShowcase />
+
         <section id="villes" className="scroll-mt-28 pt-24 md:pt-[120px]">
           <h2 className="font-display text-4xl font-bold tracking-[-0.035em] md:text-5xl">
             Huit villes, <span className="serif-accent">un seul chauffeur.</span>
@@ -49,8 +51,6 @@ export default function Home() {
             ))}
           </ol>
         </section>
-
-        <VehicleShowcase />
 
         <DriverProfile />
 

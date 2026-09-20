@@ -1,11 +1,11 @@
 import "server-only";
 import { BOOKING_RULES } from "@/config/pricing";
+import type { Place, Route } from "./types";
 
 const TOKEN = process.env.MAPBOX_TOKEN ?? "";
 /** Emprise approximative du Grand Est, pour orienter l'autocomplétion. */
 const GRAND_EST_BBOX = "3.38,47.42,8.24,50.17";
 
-export type Place = { label: string; lat: number; lng: number; inGrandEst: boolean };
 
 type MbFeature = {
   place_name: string;
@@ -54,12 +54,6 @@ export async function isInGrandEst(lat: number, lng: number): Promise<boolean> {
   const data = (await res.json()) as { features: MbFeature[] };
   return data.features[0]?.text === BOOKING_RULES.allowedRegion;
 }
-
-export type Route = {
-  distanceKm: number;
-  durationMin: number;
-  geometry: [number, number][];
-};
 
 export async function getRoute(from: { lat: number; lng: number }, to: { lat: number; lng: number }): Promise<Route | null> {
   if (!TOKEN) return null;

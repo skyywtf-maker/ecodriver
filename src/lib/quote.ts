@@ -1,6 +1,6 @@
 import "server-only";
 import { BOOKING_RULES } from "@/config/pricing";
-import { getRoute, isInGrandEst, type Route } from "./mapbox";
+import { getRoute, isInGrandEst, type Route } from "./geo";
 import { computePrice, type PriceBreakdown } from "./pricing";
 import { minutesFromNow, parisLocalToUtc } from "./time";
 import type { TripInput } from "./validation";

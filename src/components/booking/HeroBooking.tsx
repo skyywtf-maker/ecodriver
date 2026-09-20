@@ -37,7 +37,7 @@ export function HeroBooking({ onContinue, showHeadline = true }: Props) {
       {/* En dessous de lg, le titre de droite disparaît : l'écran n'affichait
           plus que la carte et le formulaire, sans dire ce qu'on vend. */}
       {showHeadline && (
-        <div className="pointer-events-none absolute inset-x-6 top-[88px] z-10 flex flex-col gap-3 lg:hidden">
+        <div className="pointer-events-none absolute inset-x-6 top-[88px] z-10 flex flex-col gap-3 md:hidden">
           <p className="font-display text-[34px] font-extrabold leading-[0.98] tracking-[-0.04em] sm:text-[42px]">
             Chauffeur privé.
             <br />
@@ -50,13 +50,13 @@ export function HeroBooking({ onContinue, showHeadline = true }: Props) {
       )}
 
       {showHeadline && (
-        <div className="pointer-events-none absolute bottom-14 right-16 z-10 hidden flex-col items-end gap-5 text-right lg:flex">
-          <p className="font-display text-[72px] font-extrabold leading-[0.98] tracking-[-0.045em]">
+        <div className="pointer-events-none absolute bottom-14 right-6 z-10 hidden max-w-[240px] flex-col items-end gap-5 text-right md:flex lg:right-16 lg:max-w-none">
+          <p className="font-display text-[34px] font-extrabold leading-[1.02] tracking-[-0.04em] lg:text-[72px] lg:leading-[0.98] lg:tracking-[-0.045em]">
             Chauffeur privé.
             <br />
             <span className="serif-accent">Grand Est.</span>
           </p>
-          <ul className="flex gap-2">
+          <ul className="hidden gap-2 lg:flex">
             {["Paiement sécurisé", "Confirmé par le chauffeur", "Remboursement intégral si refus"].map((c) => (
               <li key={c} className="glass-soft flex h-9 items-center rounded-full px-4 text-[13px] font-medium text-white/85">
                 {c}

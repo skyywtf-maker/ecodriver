@@ -1,6 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import { Montserrat, Playfair_Display, Poppins } from "next/font/google";
-import "mapbox-gl/dist/mapbox-gl.css";
+// Avant globals.css : MapLibre déclare « .maplibregl-map { position: relative } »,
+// qui écrase sinon le « absolute inset-0 » de Tailwind sur le conteneur de la
+// carte. Celui-ci sort alors du flux positionné, sa hauteur tombe à zéro, et
+// la carte ne peint plus rien.
+import "maplibre-gl/dist/maplibre-gl.css";
 import "./globals.css";
 import { SITE } from "@/config/site";
 

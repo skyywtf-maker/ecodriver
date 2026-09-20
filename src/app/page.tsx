@@ -7,6 +7,7 @@ import { VehicleShowcase } from "@/components/vehicle/VehicleShowcase";
 import { DriverProfile } from "@/components/DriverProfile";
 import { Reveal } from "@/components/Reveal";
 import { StepsTimeline } from "@/components/StepsTimeline";
+import { CitiesMap } from "@/components/CitiesMap";
 
 const STEPS = [
   { t: "Votre trajet", d: "Départ, arrivée, horaire. Le prix exact s’affiche tout de suite." },
@@ -30,14 +31,9 @@ export default function Home() {
           <h2 className="font-display text-4xl font-bold tracking-[-0.035em] md:text-5xl">
             Huit villes, <span className="serif-accent">un seul chauffeur.</span>
           </h2>
-          <ul className="mt-10 grid grid-cols-2 gap-3 md:mt-12 md:grid-cols-4 md:gap-4">
-            {SITE.cities.map((c, i) => (
-              <Reveal as="li" key={c.name} delay={i * 60} className="tile flex h-[116px] flex-col justify-between rounded-[22px] px-6 py-[22px]">
-                  <span className="font-display text-lg font-semibold tracking-[-0.02em] md:text-xl">{c.name}</span>
-                  <span className="text-sm font-medium text-label">{c.km}</span>
-              </Reveal>
-            ))}
-          </ul>
+          <div className="mt-10 md:mt-12">
+            <CitiesMap />
+          </div>
         </section>
 
         <section id="deroule" className="scroll-mt-28 pt-24 md:pt-[120px]">

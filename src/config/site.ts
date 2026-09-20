@@ -7,15 +7,16 @@ export const SITE = {
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   /** Centre de la carte par défaut (Strasbourg) */
   base: { lng: 7.7521, lat: 48.5734 },
+  /** Coordonnées issues de la Base Adresse Nationale, jamais saisies à la main. */
   cities: [
-    { name: "Strasbourg", km: "Base" },
-    { name: "Colmar", km: "≈ 75 km" },
-    { name: "Mulhouse", km: "≈ 115 km" },
-    { name: "Nancy", km: "≈ 155 km" },
-    { name: "Metz", km: "≈ 165 km" },
-    { name: "Troyes", km: "≈ 325 km" },
-    { name: "Reims", km: "≈ 345 km" },
-    { name: "Charleville-Mézières", km: "≈ 360 km" },
+    { name: "Strasbourg", km: "Base", lng: 7.7615, lat: 48.5798 },
+    { name: "Colmar", km: "≈ 75 km", lng: 7.3526, lat: 48.0818 },
+    { name: "Mulhouse", km: "≈ 115 km", lng: 7.3265, lat: 47.7517 },
+    { name: "Nancy", km: "≈ 155 km", lng: 6.1713, lat: 48.6881 },
+    { name: "Metz", km: "≈ 165 km", lng: 6.1949, lat: 49.1084 },
+    { name: "Troyes", km: "≈ 325 km", lng: 4.0751, lat: 48.2928 },
+    { name: "Reims", km: "≈ 345 km", lng: 4.0556, lat: 49.2509 },
+    { name: "Charleville-Mézières", km: "≈ 360 km", lng: 4.7173, lat: 49.7676 },
   ],
   driver: {
     firstName: "Nicolas",
@@ -68,11 +69,15 @@ export const SITE = {
       { k: "Siège enfant", v: "Sur demande à la réservation" },
     ],
 
-    /** Étiquettes ancrées sur la voiture en 3D, au-dessus de `lg`. */
+    /**
+     * Étiquettes ancrées sur la voiture en 3D, au-dessus de `lg`.
+     * Le +Z du modèle est l'AVANT du véhicule : le coffre arrière est donc
+     * en Z négatif. L'inverse plaçait le coffre arrière sur le capot.
+     */
     hotspots: [
-      { label: "Coffre arrière", at: [0, 1.05, -1.75] },
+      { label: "Coffre arrière", at: [0, 1.05, 2.0] },
       { label: "Silence à bord", at: [0, 1.5, 0.15] },
-      { label: "Coffre avant", at: [0, 0.95, 2.05] },
+      { label: "Coffre avant", at: [0, 0.95, -1.9] },
     ],
   },
   // Avis statiques (MVP). TODO: remplacer par de vrais avis clients.

@@ -22,7 +22,7 @@ export function DriverProfile() {
   return (
     <section id="chauffeur" className="scroll-mt-28 pt-24 md:pt-[120px]">
       <div className="grid gap-4 md:grid-cols-12">
-        <div className="relative aspect-[3/4] max-h-[560px] overflow-hidden rounded-4xl border border-white/[0.08] bg-graphite md:col-span-5">
+        <div className="relative aspect-[2/3] max-h-[620px] overflow-hidden rounded-4xl border border-white/[0.08] bg-graphite md:col-span-5">
           {hasPhoto ? (
             <Image
               src={photo}
@@ -33,7 +33,9 @@ export function DriverProfile() {
               // Tant que le fichier n'est pas déposé, l'optimiseur renvoie 404
               // et le monogramme prend le relais sans casser la mise en page.
               onError={() => setHasPhoto(false)}
-              className="object-cover"
+              // object-top : si le cadre devait rogner, ce serait par le bas,
+              // jamais sur le visage.
+              className="object-cover object-top"
             />
           ) : (
             <div className="flex h-full w-full flex-col items-center justify-center gap-3">

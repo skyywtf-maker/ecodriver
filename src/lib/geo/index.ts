@@ -1,4 +1,5 @@
 import "server-only";
+import { withCurated } from "./curated";
 import * as free from "./free";
 import * as mapbox from "./mapbox";
 import * as osrm from "./osrm";
@@ -16,6 +17,8 @@ export type { Place, Route } from "./types";
  */
 export const usingMapbox = Boolean(process.env.MAPBOX_TOKEN);
 
-export const searchPlaces = usingMapbox ? mapbox.searchPlaces : free.searchPlaces;
+// Les lieux courants passent devant quel que soit le fournisseur : aucun
+// géocodeur ne classe « gare de strasbourg » comme un client l'entend.
+export const searchPlaces = withCurated(usingMapbox ? mapbox.searchPlaces : free.searchPlaces);
 export const isInGrandEst = usingMapbox ? mapbox.isInGrandEst : free.isInGrandEst;
 export const getRoute = usingMapbox ? mapbox.getRoute : osrm.getRoute;

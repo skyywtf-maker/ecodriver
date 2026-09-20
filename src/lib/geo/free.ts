@@ -14,9 +14,14 @@ function normalizeLabel(s: string) {
     .trim();
 }
 
-/** Une requête qui commence par un numéro vise une adresse postale. */
+/**
+ * Numéro en tête ou code postal quelque part : la requête vise une adresse
+ * postale, pas un lieu nommé. Sans le code postal, « Place de la Gare 67000
+ * Strasbourg » partait du côté des points d'intérêt et revenait avec un
+ * simple « Strasbourg ».
+ */
 function looksLikeStreetAddress(q: string) {
-  return /^\s*\d/.test(q);
+  return /^\s*\d/.test(q) || /\d{5}/.test(q);
 }
 
 /**

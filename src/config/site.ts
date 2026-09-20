@@ -12,8 +12,11 @@ function siteUrl() {
   const explicit = process.env.NEXT_PUBLIC_SITE_URL?.trim();
   if (explicit) return explicit.replace(/\/+$/, "");
 
-  const vercel = process.env.NEXT_PUBLIC_VERCEL_URL?.trim();
-  if (vercel) return `https://${vercel.replace(/^https?:\/\//, "")}`;
+  // URL stable du projet, et non celle du déploiement : NEXT_PUBLIC_VERCEL_URL
+  // change à chaque build, ce qui ferait pointer les canoniques et le sitemap
+  // vers des adresses mortes au déploiement suivant.
+  const production = process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL?.trim();
+  if (production) return `https://${production.replace(/^https?:\/\//, "")}`;
 
   return "http://localhost:3000";
 }

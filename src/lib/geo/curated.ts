@@ -25,9 +25,10 @@ export function withCurated(search: (q: string) => Promise<Place[]>) {
       Promise.all(
         curated.map(async (c): Promise<Place | null> => {
           const [first] = await search(c.address).catch(() => [] as Place[]);
-          // L'adresse résolue reste visible sous le nom d'usage : le client
-          // doit savoir où le chauffeur se présentera.
-          return first ? { ...first, label: c.label, hint: first.label } : null;
+          // On affiche l'adresse de la liste, pas le libellé du géocodeur :
+          // Mapbox renvoie « Strasbourg » là où l'on veut « Place de la Gare
+          // 67000 Strasbourg ». Le client doit savoir où le chauffeur vient.
+          return first ? { ...first, label: c.label, hint: c.address } : null;
         })
       ),
       search(trimmed),

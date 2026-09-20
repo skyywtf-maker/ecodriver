@@ -45,10 +45,55 @@ model Booking {
   passengers      Int
   luggage         Int
 
+  // Jalons du déroulé, pour le fil chronologique de l'espace chauffeur.
+  // Nullable : une étape non atteinte ne doit pas s'inventer une date.
+  confirmedAt     DateTime?
+  enRoute         Boolean       @default(false)
+  enRouteAt       DateTime?
+  arrived         Boolean       @default(false)
+  arrivedAt       DateTime?
+  completedAt     DateTime?
+
   stripePaymentIntentId String? @unique
   stripeRefundId        String?
 
   @@index([status, pickupAt])
+}
+
+/**
+ * Le chauffeur. Un seul enregistrement : pas de création de compte en
+ * libre-service, il est créé par `npm run seed-driver`.
+ */
+model Driver {
+  id              String   @id @default(cuid())
+  email           String   @unique
+  passwordHash    String
+  firstName       String   @default("")
+  /** Adresses de notification, distinctes de l'identifiant de connexion. */
+  contactEmail    String   @default("")
+  contactPhone    String   @default("")
+  availableToday  Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  resets          PasswordReset[]
+}
+
+/**
+ * Jeton de réinitialisation, à usage unique et valable une heure.
+ * Seule son empreinte est stockée : une fuite de la base ne permettrait pas
+ * de rejouer un lien encore valide.
+ */
+model PasswordReset {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  driverId  String
+  driver    Driver   @relation(fields: [driverId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([driverId])
 }
 
 model Setting {

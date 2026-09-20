@@ -7,7 +7,10 @@ const MAX_AGE = 60 * 60 * 2;
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
-  if (pathname.startsWith("/chauffeur/connexion")) return NextResponse.next();
+  // Seules la connexion et la réinitialisation sont accessibles sans session.
+  if (pathname.startsWith("/chauffeur/connexion") || pathname.startsWith("/chauffeur/mot-de-passe-oublie")) {
+    return NextResponse.next();
+  }
 
   const token = req.cookies.get(SESSION_COOKIE)?.value;
   const secret = process.env.AUTH_SECRET;

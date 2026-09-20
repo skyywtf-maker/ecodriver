@@ -1,7 +1,13 @@
 import "server-only";
 import { db } from "./db";
 import { stripe } from "./stripe";
-import { notifyBookingConfirmed, notifyBookingPaid, notifyBookingRefunded } from "./notify";
+import {
+  notifyBookingConfirmed,
+  notifyBookingPaid,
+  notifyBookingRefunded,
+  notifyDriverArrived,
+  notifyDriverOnTheWay,
+} from "./notify";
 
 const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 export function newReference() {
@@ -28,7 +34,7 @@ export async function markPaid(paymentIntentId: string) {
 export async function acceptBooking(id: string) {
   const { count } = await db.booking.updateMany({
     where: { id, status: "PENDING_DRIVER" },
-    data: { status: "CONFIRMED" },
+    data: { status: "CONFIRMED", confirmedAt: new Date() },
   });
   if (count > 0) {
     const b = await db.booking.findUniqueOrThrow({ where: { id } });
@@ -37,7 +43,36 @@ export async function acceptBooking(id: string) {
 }
 
 export async function completeBooking(id: string) {
-  await db.booking.updateMany({ where: { id, status: "CONFIRMED" }, data: { status: "COMPLETED" } });
+  await db.booking.updateMany({
+    where: { id, status: "CONFIRMED" },
+    data: { status: "COMPLETED", completedAt: new Date() },
+  });
+}
+
+/**
+ * Jalons du déroulé. Idempotents comme les transitions de statut : le drapeau
+ * attendu figure dans le `where`, donc un double appui n'envoie qu'un SMS.
+ */
+export async function markOnTheWay(id: string) {
+  const { count } = await db.booking.updateMany({
+    where: { id, status: "CONFIRMED", enRoute: false },
+    data: { enRoute: true, enRouteAt: new Date() },
+  });
+  if (count > 0) {
+    const b = await db.booking.findUniqueOrThrow({ where: { id } });
+    await notifyDriverOnTheWay(b);
+  }
+}
+
+export async function markArrived(id: string) {
+  const { count } = await db.booking.updateMany({
+    where: { id, status: "CONFIRMED", arrived: false },
+    data: { arrived: true, arrivedAt: new Date(), enRoute: true },
+  });
+  if (count > 0) {
+    const b = await db.booking.findUniqueOrThrow({ where: { id } });
+    await notifyDriverArrived(b);
+  }
 }
 
 /** Refus (depuis PENDING_DRIVER) ou annulation (depuis CONFIRMED) avec remboursement intégral. */

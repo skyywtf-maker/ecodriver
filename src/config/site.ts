@@ -1,10 +1,30 @@
+/**
+ * URL publique du site.
+ *
+ * `??` ne se déclenche que sur undefined : une variable d'environnement
+ * définie mais VIDE passait au travers, et `new URL("")` faisait échouer le
+ * build entier sur « Invalid URL ». On teste donc le contenu, pas l'absence.
+ *
+ * À défaut, Vercel fournit l'URL du déploiement : le site reste cohérent même
+ * si personne n'a renseigné le domaine.
+ */
+function siteUrl() {
+  const explicit = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  if (explicit) return explicit.replace(/\/+$/, "");
+
+  const vercel = process.env.NEXT_PUBLIC_VERCEL_URL?.trim();
+  if (vercel) return `https://${vercel.replace(/^https?:\/\//, "")}`;
+
+  return "http://localhost:3000";
+}
+
 export const SITE = {
   name: "Eco Driver",
   tagline: "Chauffeur privé, Grand Est.",
   phoneDisplay: "+33 [0 00 00 00 00]", // TODO: vrai numéro
   phoneHref: "tel:+33000000000",
   email: "contact@eco-driver.fr", // TODO
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  url: siteUrl(),
   /** Centre de la carte par défaut (Strasbourg) */
   base: { lng: 7.7521, lat: 48.5734 },
   /** Coordonnées issues de la Base Adresse Nationale, jamais saisies à la main. */

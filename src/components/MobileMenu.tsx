@@ -31,7 +31,8 @@ export function MobileMenu() {
   const pathname = usePathname();
   const panelId = useId();
 
-  // Toute navigation referme le menu, y compris un simple saut d'ancre.
+  // Un changement de page referme le menu. Les liens d'ancre, eux, ne
+  // modifient pas le chemin : ils ferment donc au clic (voir plus bas).
   useEffect(() => setOpen(false), [pathname]);
 
   useEffect(() => {
@@ -77,10 +78,10 @@ export function MobileMenu() {
             </div>
 
             <div className="flex flex-col gap-3 px-5 pb-12 pt-4">
-              <Link href="/" className="btn-primary w-full">
+              <Link href="/" onClick={() => setOpen(false)} className="btn-primary w-full">
                 Réserver une course
               </Link>
-              <a href={SITE.phoneHref} className="btn-ghost w-full">
+              <a href={SITE.phoneHref} onClick={() => setOpen(false)} className="btn-ghost w-full">
                 Appeler le chauffeur
               </a>
 
@@ -89,6 +90,7 @@ export function MobileMenu() {
                   <Link
                     key={l.label}
                     href={l.href}
+                    onClick={() => setOpen(false)}
                     className="flex min-h-[56px] items-center border-b border-white/[0.07] text-[17px] font-medium text-label-strong transition-colors last:border-0 hover:text-white"
                   >
                     {l.label}

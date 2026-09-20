@@ -84,14 +84,15 @@ function Car({ progress, scrollDriven, showHotspots, onReady }: Props) {
             // Pas d'occlusion : masquée par la carrosserie, l'étiquette
             // disparaissait sur la moitié de la rotation. Elle flotte donc
             // au-dessus du point qu'elle désigne, toujours lisible, reliée
-            // par un trait.
+            // par un trait. Affichée à toutes les tailles, en plus petit
+            // sur téléphone.
             zIndexRange={[10, 0]}
           >
-            <span className="pointer-events-none flex -translate-y-7 flex-col items-center">
-              <span className="glass-soft whitespace-nowrap rounded-full px-3 py-1.5 text-[11px] font-medium text-white/90">
+            <span className="pointer-events-none flex -translate-y-5 flex-col items-center md:-translate-y-7">
+              <span className="glass-soft whitespace-nowrap rounded-full px-2.5 py-1 text-[9px] font-medium text-white/90 md:px-3 md:py-1.5 md:text-[11px]">
                 {h.label}
               </span>
-              <span className="h-4 w-px bg-white/35" />
+              <span className="h-3 w-px bg-white/35 md:h-4" />
               <span className="h-1.5 w-1.5 rounded-full bg-white" />
             </span>
           </Html>

@@ -1,7 +1,6 @@
 "use client";
 
 import { Suspense, lazy, useCallback, useEffect, useRef, useState } from "react";
-import { useIsDesktop } from "@/lib/useIsDesktop";
 
 /** three.js et le modèle ne sont téléchargés qu'à l'approche de la section. */
 const CarScene = lazy(() => import("./CarScene"));
@@ -12,11 +11,6 @@ export function Car3D() {
   const [visible, setVisible] = useState(false);
   const [ready, setReady] = useState(false);
   const [scrollDriven, setScrollDriven] = useState(true);
-
-  // Les étiquettes ancrées demandent une passe de rendu de plus et deviennent
-  // illisibles sur un petit écran : elles restent aux grandes largeurs, et la
-  // liste de confort à côté dit la même chose pour tout le monde.
-  const showHotspots = useIsDesktop("(min-width: 1024px)");
 
   // Le visiteur qui a demandé moins d'animations ne subit ni la rotation au
   // défilement ni la rotation automatique ; il peut toujours faire tourner la
@@ -91,7 +85,7 @@ export function Car3D() {
           <CarScene
             progress={progress}
             scrollDriven={scrollDriven}
-            showHotspots={showHotspots && ready}
+            showHotspots={ready}
             onReady={onReady}
           />
         </Suspense>

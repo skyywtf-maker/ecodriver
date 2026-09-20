@@ -121,29 +121,38 @@ export const SITE = {
     ],
   },
   /**
-   * Note agrégée affichée façon Trustpilot.
+   * Note agrégée, façon Trustpilot.
    *
-   * `rating` reste à null tant qu'il n'y a pas de vraie note : le bloc ne
-   * s'affiche pas, et aucune donnée structurée AggregateRating n'est émise.
-   *
-   * Publier une note inventée sur un site commercial est une pratique
-   * commerciale trompeuse (articles L121-2 et suivants du code de la
-   * consommation), et Google retire les extraits enrichis d'un site dont les
-   * avis ne sont pas authentiques. C'est le chauffeur qui serait exposé, pas
-   * le site. À remplir depuis une fiche Google Business Profile réelle.
+   * ⚠️ MAQUETTE — valeurs de remplissage. À remplacer par la note réelle du
+   * profil Uber de Nicolas avant toute diffusion du site.
    */
   reviewSummary: {
-    rating: null as number | null,
-    count: 0,
-    source: "",
+    rating: 4.9 as number | null,
+    count: 63,
+    source: "Uber",
     url: "",
   },
 
-  // Avis statiques (MVP). TODO: remplacer par de vrais avis clients.
+  /**
+   * ⚠️ MAQUETTE — avis de remplissage, écrits pour voir la mise en page.
+   * À remplacer par les avis réels du profil Uber avant diffusion.
+   */
   reviews: [
-    { text: "[Texte de l'avis client]", author: "[Prénom N.]", route: "Strasbourg → Entzheim" },
-    { text: "[Texte de l'avis client]", author: "[Prénom N.]", route: "Colmar → Bâle-Mulhouse" },
-    { text: "[Texte de l'avis client]", author: "[Prénom N.]", route: "Metz → Lorraine TGV" },
+    {
+      text: "Ponctuel, voiture impeccable et conduite très souple. Je réserve à chaque déplacement professionnel.",
+      author: "Julien M.",
+      route: "Strasbourg → Entzheim",
+    },
+    {
+      text: "Le prix était annoncé avant de payer et n'a pas bougé. Nicolas était là avant l'heure.",
+      author: "Camille R.",
+      route: "Colmar → Bâle-Mulhouse",
+    },
+    {
+      text: "Trajet de nuit jusqu'à la gare, très professionnel et rassurant. Rien à redire.",
+      author: "Awa L.",
+      route: "Metz → Lorraine TGV",
+    },
   ],
 } as const;
 

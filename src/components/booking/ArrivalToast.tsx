@@ -5,15 +5,15 @@ import Image from "next/image";
 import { SITE } from "@/config/site";
 
 /**
- * Bandeau façon notification, posé sur la carte de l'accueil.
+ * Notification façon iOS, posée sur la carte de l'accueil.
  *
- * Il illustre la promesse du service — un chauffeur identifié qui arrive —
- * sans rien affirmer de vérifiable. Volontairement blanc sur le fond sombre :
- * c'est la seule surface claire de la page, elle attire l'œil là où il faut.
+ * Reprend la structure exacte d'une notification : bandeau d'en-tête avec
+ * l'icône de l'app, son nom en capitales et l'horodatage à droite, puis le
+ * corps avec titre en gras et texte. Variante sombre, translucide, pour
+ * rester dans la charte.
  *
- * Il apparaît après un court délai, comme une notification qui tombe. Le
- * mouvement est supprimé pour qui demande moins d'animations, et le bandeau
- * s'affiche alors directement.
+ * Elle tombe après un court délai, comme une vraie notification. Le mouvement
+ * est supprimé pour qui demande moins d'animations.
  */
 export function ArrivalToast() {
   const { firstName, photo } = SITE.driver;
@@ -31,37 +31,51 @@ export function ArrivalToast() {
 
   return (
     <div
-      className={`pointer-events-none flex items-center gap-4 rounded-[28px] bg-white py-3.5 pl-3.5 pr-6 shadow-[0_24px_60px_rgba(0,0,0,0.45)] transition-all duration-700 ease-[cubic-bezier(0.22,0.61,0.36,1)] ${
-        shown ? "translate-y-0 opacity-100" : "-translate-y-3 opacity-0"
+      className={`pointer-events-none w-[326px] overflow-hidden rounded-[22px] text-left border border-white/[0.12] shadow-[0_26px_70px_rgba(0,0,0,0.6)] transition-all duration-700 ease-[cubic-bezier(0.22,0.61,0.36,1)] ${
+        shown ? "translate-y-0 scale-100 opacity-100" : "-translate-y-4 scale-95 opacity-0"
       }`}
     >
-      <div className="relative h-[58px] w-[58px] shrink-0 overflow-hidden rounded-full bg-graphite">
-        {hasPhoto ? (
-          <Image
-            src={photo}
-            alt=""
-            fill
-            sizes="58px"
-            onError={() => setHasPhoto(false)}
-            className="object-cover object-top"
-          />
-        ) : (
-          <span className="flex h-full w-full items-center justify-center font-display text-lg font-bold text-white/40">
-            {firstName.charAt(0)}
-          </span>
-        )}
-      </div>
-
-      <div className="flex min-w-0 flex-col gap-0.5 text-ink">
-        <span className="w-fit rounded-md bg-ink px-2 py-0.5 font-display text-[11px] font-semibold tracking-[-0.01em] text-white">
+      {/* En-tête : icône, nom de l'app en capitales, horodatage. */}
+      <div className="flex items-center gap-2 bg-[rgba(44,44,46,0.82)] px-3.5 py-2 backdrop-blur-2xl">
+        <span className="flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-[6px] bg-ink">
+          <svg width="14" height="14" viewBox="0 0 64 64" aria-hidden>
+            <path d="M16 50c0-12 8-16 16-16s16-4 16-16" fill="none" stroke="#fff" strokeWidth="7" strokeLinecap="round" />
+            <circle cx="48" cy="17" r="8" fill="#0A84FF" />
+          </svg>
+        </span>
+        <span className="flex-1 text-[12px] font-semibold uppercase tracking-[0.04em] text-white/70">
           {SITE.name}
         </span>
-        <p className="font-display text-[19px] font-bold leading-tight tracking-[-0.02em]">
-          {firstName} arrive !
-        </p>
-        <p className="font-serif text-[13px] italic leading-snug text-ink/70">
-          Prise en charge à l&apos;heure choisie, prix déjà réglé.
-        </p>
+        <span className="text-[12px] font-medium text-white/45">maintenant</span>
+      </div>
+
+      {/* Corps : miniature, titre, message. */}
+      <div className="flex items-start gap-3 bg-[rgba(28,28,30,0.78)] px-3.5 py-3 backdrop-blur-2xl">
+        <div className="relative h-[42px] w-[42px] shrink-0 overflow-hidden rounded-[10px] bg-graphite">
+          {hasPhoto ? (
+            <Image
+              src={photo}
+              alt=""
+              fill
+              sizes="42px"
+              onError={() => setHasPhoto(false)}
+              className="object-cover object-top"
+            />
+          ) : (
+            <span className="flex h-full w-full items-center justify-center font-display text-sm font-bold text-white/40">
+              {firstName.charAt(0)}
+            </span>
+          )}
+        </div>
+
+        <div className="min-w-0 flex-1">
+          <p className="text-[15px] font-semibold leading-tight tracking-[-0.01em] text-white">
+            {firstName} arrive !
+          </p>
+          <p className="mt-0.5 text-[13px] leading-snug text-white/65">
+            Votre course est confirmée. Prise en charge à l&apos;heure choisie, prix déjà réglé.
+          </p>
+        </div>
       </div>
     </div>
   );

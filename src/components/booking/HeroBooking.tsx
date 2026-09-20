@@ -23,6 +23,10 @@ export function HeroBooking({ onContinue, showHeadline = true }: Props) {
   // baisse et rend l'écran à la carte. Sans objet sur grand écran, où la
   // carte de réservation occupe sa propre colonne.
   const [collapsed, setCollapsed] = useState(false);
+  // Premier écran sur téléphone : seulement les adresses. Le formulaire
+  // complet occupait les deux tiers de la hauteur et la carte ne se voyait
+  // plus, alors qu'elle est ce qui rend le service lisible.
+  const [expanded, setExpanded] = useState(false);
   const hasQuote = Boolean(route.q);
 
   useEffect(() => {
@@ -31,15 +35,16 @@ export function HeroBooking({ onContinue, showHeadline = true }: Props) {
   }, [desktop, hasQuote]);
 
   const sheetCollapsed = collapsed && !desktop;
+  const sheetPeek = !desktop && !sheetCollapsed && !expanded;
 
   const padding = useMemo(
     () =>
       desktop
         ? { top: 140, bottom: 220, left: 600, right: 120 }
-        : // Repliée, la feuille libère le bas de l'écran : l'itinéraire se
-          // recentre sur la place réellement visible.
-          { top: 110, bottom: sheetCollapsed ? 280 : 560, left: 40, right: 40 },
-    [desktop, sheetCollapsed]
+        : // La carte se recentre sur la place réellement laissée par la
+          // feuille, selon qu'elle est repliée, réduite ou dépliée.
+          { top: 110, bottom: sheetCollapsed ? 280 : sheetPeek ? 330 : 560, left: 40, right: 40 },
+    [desktop, sheetCollapsed, sheetPeek]
   );
 
   return (
@@ -50,7 +55,11 @@ export function HeroBooking({ onContinue, showHeadline = true }: Props) {
         {/* Poignée : indique que la feuille se manipule, comme sur mobile. */}
         <button
           type="button"
-          onClick={() => setCollapsed((v) => !v)}
+          onClick={() => {
+            if (sheetPeek) setExpanded(true);
+            else if (sheetCollapsed) setCollapsed(false);
+            else setCollapsed(true);
+          }}
           aria-label={sheetCollapsed ? "Déplier le formulaire" : "Replier le formulaire"}
           aria-expanded={!sheetCollapsed}
           className="mx-auto mb-3 flex h-4 w-full items-center justify-center md:hidden"
@@ -60,7 +69,11 @@ export function HeroBooking({ onContinue, showHeadline = true }: Props) {
 
         <TripForm
           collapsed={sheetCollapsed}
-          onExpand={() => setCollapsed(false)}
+          peek={sheetPeek}
+          onExpand={() => {
+            setCollapsed(false);
+            setExpanded(true);
+          }}
           onQuote={(q, from, to) => setRoute({ q, from, to })}
           onContinue={(d) => (onContinue ? onContinue(d) : router.push("/reserver"))}
         />

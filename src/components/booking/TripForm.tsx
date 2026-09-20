@@ -14,6 +14,8 @@ type Props = {
   onContinue: (draft: TripDraft) => void;
   /** Feuille repliée : le trajet est résumé en une ligne, la carte prend la place. */
   collapsed?: boolean;
+  /** Premier écran sur téléphone : seulement les adresses, pour voir la carte. */
+  peek?: boolean;
   onExpand?: () => void;
 };
 
@@ -24,7 +26,7 @@ function defaultWhen() {
   return { date: `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`, time: `${pad(d.getHours())}:${pad(d.getMinutes())}` };
 }
 
-export function TripForm({ onQuote, onContinue, collapsed = false, onExpand }: Props) {
+export function TripForm({ onQuote, onContinue, collapsed = false, peek = false, onExpand }: Props) {
   const [from, setFrom] = useState<(DraftPoint & { inGrandEst?: boolean }) | null>(null);
   const [to, setTo] = useState<(DraftPoint & { inGrandEst?: boolean }) | null>(null);
   const [date, setDate] = useState("");
@@ -140,7 +142,7 @@ export function TripForm({ onQuote, onContinue, collapsed = false, onExpand }: P
         <AddressInput label="Arrivée" placeholder="Adresse, gare, aéroport" marker="end" value={to} onChange={setTo} />
       </div>
 
-      <div className="grid grid-cols-2 gap-2.5">
+      <div className={`grid-cols-2 gap-2.5 ${peek ? "hidden" : "grid"}`}>
         <label className="field flex h-[60px] flex-col justify-center gap-0.5 px-[18px]">
           <span className="field-label">Date</span>
           <input type="date" required className="field-input text-[15px]" value={date} onChange={(e) => setDate(e.target.value)} />
@@ -155,12 +157,18 @@ export function TripForm({ onQuote, onContinue, collapsed = false, onExpand }: P
         </>
       )}
 
+      {peek && !error && (
+        <button type="button" onClick={onExpand} className="btn-ghost w-full text-[14px]">
+          Date, heure, passagers
+        </button>
+      )}
+
       {error ? (
         <p role="alert" className="rounded-2xl bg-[#FF453A]/12 px-4 py-3 text-sm font-medium text-[#FF6961]">
           {error}
         </p>
       ) : (
-        <div className="flex items-end justify-between px-1 pt-1.5" aria-live="polite">
+        <div className={`items-end justify-between px-1 pt-1.5 ${peek && !quote && !loading ? "hidden" : "flex"}`} aria-live="polite">
           <div className="flex flex-col gap-1">
             <span className="text-[13px] font-medium text-label">
               {quote
@@ -180,7 +188,7 @@ export function TripForm({ onQuote, onContinue, collapsed = false, onExpand }: P
       <button type="submit" disabled={!canContinue} className="btn-primary w-full">
         Continuer
       </button>
-      {!collapsed && (
+      {!collapsed && !peek && (
         <p className="text-center text-xs text-white/50">
           Réservation au moins {BOOKING_RULES.minLeadMinutes} min à l&apos;avance
         </p>

@@ -34,7 +34,7 @@ export function DriverProfile() {
 
       <div className="mt-10 grid gap-4 md:mt-12 lg:grid-cols-12 lg:items-center">
         {/* L'étoile : portrait au centre, pastilles réparties sur un cercle. */}
-        <div className="relative hidden aspect-square w-full lg:col-span-7 lg:block">
+        <div className="relative aspect-square w-full lg:col-span-7">
           <Orbit
             selected={selected}
             onSelect={setSelected}
@@ -50,22 +50,9 @@ export function DriverProfile() {
               firstName={firstName}
               role={role}
               rounded
-              sizes="28vw"
+              sizes="(min-width: 1024px) 28vw, 45vw"
             />
           </div>
-        </div>
-
-        {/* En dessous de lg : photo puis liste, sans géométrie. */}
-        <div className="relative aspect-[2/3] max-h-[560px] overflow-hidden rounded-4xl border border-white/[0.08] bg-graphite lg:hidden">
-          <Portrait
-            hasPhoto={hasPhoto}
-            onError={() => setHasPhoto(false)}
-            photo={photo}
-            firstName={firstName}
-            role={role}
-            rounded={false}
-            sizes="(min-width: 768px) 50vw, 100vw"
-          />
         </div>
 
         <div className="glass flex flex-col gap-5 rounded-4xl p-7 lg:col-span-5 lg:p-9">
@@ -77,24 +64,6 @@ export function DriverProfile() {
 
           <p className="border-t border-white/[0.08] pt-5 text-[14px] leading-relaxed text-label">{bio[1]}</p>
 
-          {/* Les mêmes pastilles, en liste, pour les écrans sans l'étoile. */}
-          <ul className="grid grid-cols-2 gap-2 lg:hidden">
-            {stats.map((s, i) => (
-              <li key={s.k}>
-                <button
-                  type="button"
-                  onClick={() => setSelected(i)}
-                  aria-pressed={i === selected}
-                  className={`flex h-full w-full flex-col gap-0.5 rounded-[14px] px-4 py-3 text-left transition-colors ${
-                    i === selected ? "bg-white/[0.12]" : "bg-white/[0.06]"
-                  }`}
-                >
-                  <span className="text-[11px] font-medium text-label">{s.k}</span>
-                  <span className="text-[14px] font-semibold">{s.v}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
         </div>
       </div>
     </section>
@@ -152,12 +121,12 @@ function Orbit({
             onFocus={() => onSelect(i)}
             aria-pressed={on}
             style={{ left: `${50 + Math.cos(a) * RADIUS}%`, top: `${50 + Math.sin(a) * RADIUS}%` }}
-            className={`absolute flex w-[158px] -translate-x-1/2 -translate-y-1/2 flex-col gap-0.5 rounded-2xl border px-4 py-2.5 text-left transition-all duration-300 ${
+            className={`absolute flex w-[104px] -translate-x-1/2 -translate-y-1/2 flex-col gap-0.5 rounded-xl border px-2.5 py-1.5 text-left transition-all duration-300 sm:w-[128px] sm:px-3 sm:py-2 lg:w-[158px] lg:rounded-2xl lg:px-4 lg:py-2.5 ${
               on ? "glass scale-[1.06] border-accent/50" : "glass-soft border-white/[0.10] hover:border-white/25"
             }`}
           >
-            <span className="text-[10px] font-medium uppercase tracking-[0.1em] text-label">{label}</span>
-            <span className="truncate font-display text-[15px] font-semibold tracking-[-0.015em]">{values[i]}</span>
+            <span className="text-[8px] font-medium uppercase tracking-[0.08em] text-label sm:text-[9px] lg:text-[10px] lg:tracking-[0.1em]">{label}</span>
+            <span className="truncate font-display text-[11px] font-semibold tracking-[-0.015em] sm:text-[13px] lg:text-[15px]">{values[i]}</span>
           </button>
         );
       })}

@@ -6,6 +6,7 @@ import { SiteStructuredData } from "@/components/StructuredData";
 import { VehicleShowcase } from "@/components/vehicle/VehicleShowcase";
 import { DriverProfile } from "@/components/DriverProfile";
 import { Reveal } from "@/components/Reveal";
+import { ReviewSummary } from "@/components/ReviewSummary";
 import { StepsTimeline } from "@/components/StepsTimeline";
 import { CitiesMap } from "@/components/CitiesMap";
 
@@ -45,6 +46,10 @@ export default function Home() {
         </Reveal>
 
         <section id="avis" className="scroll-mt-28 pt-24 md:pt-[120px]">
+          <div className="mb-8">
+            <ReviewSummary />
+          </div>
+
           <ul className="grid gap-4 md:grid-cols-3">
             {SITE.reviews.map((r, i) => (
               <Reveal as="li" key={i} delay={i * 80}>

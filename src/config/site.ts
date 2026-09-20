@@ -120,6 +120,25 @@ export const SITE = {
       { label: "Coffre avant", at: [0, 0.95, -1.9] },
     ],
   },
+  /**
+   * Note agrégée affichée façon Trustpilot.
+   *
+   * `rating` reste à null tant qu'il n'y a pas de vraie note : le bloc ne
+   * s'affiche pas, et aucune donnée structurée AggregateRating n'est émise.
+   *
+   * Publier une note inventée sur un site commercial est une pratique
+   * commerciale trompeuse (articles L121-2 et suivants du code de la
+   * consommation), et Google retire les extraits enrichis d'un site dont les
+   * avis ne sont pas authentiques. C'est le chauffeur qui serait exposé, pas
+   * le site. À remplir depuis une fiche Google Business Profile réelle.
+   */
+  reviewSummary: {
+    rating: null as number | null,
+    count: 0,
+    source: "",
+    url: "",
+  },
+
   // Avis statiques (MVP). TODO: remplacer par de vrais avis clients.
   reviews: [
     { text: "[Texte de l'avis client]", author: "[Prénom N.]", route: "Strasbourg → Entzheim" },

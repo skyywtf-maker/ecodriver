@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { RouteMap } from "@/components/RouteMap";
+import { ArrivalToast } from "./ArrivalToast";
 import { TripForm, type QuoteState } from "./TripForm";
 import type { DraftPoint, TripDraft } from "@/lib/draft";
 import { useIsDesktop } from "@/lib/useIsDesktop";
@@ -80,6 +81,9 @@ export function HeroBooking({ onContinue, showHeadline = true }: Props) {
 
       {showHeadline && (
         <div className="pointer-events-none absolute bottom-14 right-6 z-10 hidden max-w-[240px] flex-col items-end gap-5 text-right md:flex lg:right-16 lg:max-w-[400px] xl:max-w-[800px]">
+          <div className="pointer-events-auto mb-1 hidden lg:block">
+            <ArrivalToast />
+          </div>
           <p className="font-display text-[30px] font-extrabold leading-[1.05] tracking-[-0.035em] lg:text-[34px] xl:text-[48px] xl:leading-[1.02] xl:tracking-[-0.04em]">
             <span className="serif-accent">Nicolas,</span> votre chauffeur privé.
             <br />

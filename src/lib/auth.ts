@@ -5,7 +5,8 @@ import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
 
 export const SESSION_COOKIE = "ed_session";
-const MAX_AGE = 60 * 60 * 24 * 7;
+/** Déconnexion après 2 h, prolongée à chaque page consultée. */
+const MAX_AGE = 60 * 60 * 2;
 
 function secret() {
   const s = process.env.AUTH_SECRET;
@@ -32,7 +33,8 @@ export async function createSession() {
   (await cookies()).set(SESSION_COOKIE, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    // strict : le cookie ne part jamais depuis un autre site.
+    sameSite: "strict",
     path: "/",
     maxAge: MAX_AGE,
   });

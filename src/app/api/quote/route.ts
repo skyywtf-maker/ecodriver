@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server";
 import { buildQuote } from "@/lib/quote";
 import { tripSchema } from "@/lib/validation";
+import { clientIp, rateLimit, tooManyRequests } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
+  const limit = rateLimit(`quote:${clientIp(req)}`, 60, 60);
+  if (!limit.ok) return tooManyRequests(limit.retryAfterSeconds);
+
   const parsed = tripSchema.safeParse(await req.json().catch(() => null));
   if (!parsed.success) {
     return NextResponse.json({ ok: false, code: "INVALID", message: "Trajet incomplet." }, { status: 400 });

@@ -5,9 +5,14 @@ import { buildQuote } from "@/lib/quote";
 import { newReference } from "@/lib/bookings";
 import { bookingRequestSchema } from "@/lib/validation";
 import { PRICING } from "@/config/pricing";
+import { clientIp, rateLimit, tooManyRequests } from "@/lib/rate-limit";
 
 /** Crée la réservation (PENDING_PAYMENT) et le PaymentIntent. Le prix est TOUJOURS recalculé ici. */
 export async function POST(req: Request) {
+  // Protège le compte Stripe des essais de cartes en rafale.
+  const limit = rateLimit(`bookings:${clientIp(req)}`, 5, 600);
+  if (!limit.ok) return tooManyRequests(limit.retryAfterSeconds);
+
   const parsed = bookingRequestSchema.safeParse(await req.json().catch(() => null));
   if (!parsed.success) {
     return NextResponse.json({ ok: false, message: "Informations incomplètes ou invalides." }, { status: 400 });

@@ -5,7 +5,9 @@ import { SITE } from "@/config/site";
 import { SiteStructuredData } from "@/components/StructuredData";
 import { VehicleShowcase } from "@/components/vehicle/VehicleShowcase";
 import { DriverProfile } from "@/components/DriverProfile";
+import Link from "next/link";
 import { Reveal } from "@/components/Reveal";
+import { CitiesMapStatic } from "@/components/CitiesMapStatic";
 import { ReviewSummary } from "@/components/ReviewSummary";
 import { StepsTimeline } from "@/components/StepsTimeline";
 import { CitiesMap } from "@/components/CitiesMap";
@@ -63,6 +65,37 @@ export default function Home() {
             ))}
           </ul>
         </section>
+
+        {/* Dernier appel à l'action : après les avis, le visiteur convaincu
+            ne doit pas avoir à remonter toute la page pour réserver. */}
+        <Reveal>
+          <section className="pt-24 md:pt-[120px]">
+            <div className="glass flex flex-col gap-7 overflow-hidden rounded-5xl p-8 md:p-12">
+              <div className="flex flex-col gap-3">
+                <h2 className="font-display text-4xl font-bold tracking-[-0.035em] md:text-5xl">
+                  Votre trajet, <span className="serif-accent">maintenant.</span>
+                </h2>
+                <p className="max-w-[520px] text-[15px] leading-relaxed text-label">
+                  Deux adresses suffisent : le prix s&apos;affiche avant que vous ne payiez, et il ne bouge plus.
+                </p>
+              </div>
+
+              <div className="relative h-[220px] overflow-hidden rounded-4xl border border-white/[0.08] md:h-[280px]">
+                <CitiesMapStatic />
+              </div>
+
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <Link href="/" className="btn-primary">
+                  Voir le prix et réserver
+                </Link>
+                <a href={SITE.phoneHref} className="btn-ghost">
+                  Appeler {SITE.driver.firstName}
+                </a>
+              </div>
+            </div>
+          </section>
+        </Reveal>
+
       </main>
       <Footer />
     </>

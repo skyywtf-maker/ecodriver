@@ -1,4 +1,5 @@
 import { BOOKING_RULES } from "./pricing";
+import { CURATED_PLACES, type CuratedPlace } from "./places";
 import { SITE } from "./site";
 
 /**
@@ -222,7 +223,52 @@ export function cityLanding(name: string, km: string): Landing {
   };
 }
 
+/**
+ * Lieux déjà couverts par une page dédiée : inutile d'en générer une seconde
+ * sous /transfert.
+ */
+const ALREADY_COVERED = ["Gare de Strasbourg", "Aéroport de Strasbourg-Entzheim"];
+
+export const TRANSFER_PLACES = CURATED_PLACES.filter((p) => !ALREADY_COVERED.includes(p.label));
+
+/** Page de transfert vers un lieu précis : gare, aéroport, institution. */
+export function transferLanding(place: CuratedPlace): Landing {
+  const { label, address } = place;
+  return {
+    path: `/transfert/${citySlug(label)}`,
+    eyebrow: address,
+    h1: { lead: "Transfert VTC", accent: `${label}.` },
+    title: `VTC ${label} · Transfert avec chauffeur privé`,
+    description: `Transfert en VTC vers ${label} et au départ de ce lieu. Réservation en ligne, prix affiché avant paiement, chauffeur privé dans tout le Grand Est.`,
+    intro: `Prise en charge et dépose à ${label}. La course se réserve à l'avance, dans un sens comme dans l'autre, et le prix est fixé avant que vous ne payiez.`,
+    highlights: COMMON_HIGHLIGHTS,
+    sections: [
+      {
+        h2: `Se rendre à ${label}`,
+        body: [
+          `Le point de prise en charge est ${address}. Indiquez si besoin un point de rendez-vous plus précis dans la note au moment de la réservation.`,
+          ...AREA_BODY,
+        ],
+      },
+      {
+        h2: "Horaires tôt ou tardifs",
+        body: [
+          `Les réservations se prennent pour n'importe quelle heure. Une majoration de nuit s'applique alors, déjà comprise dans le prix affiché. Comptez ${LEAD} minutes entre la réservation et la prise en charge.`,
+        ],
+      },
+      { h2: "Le prix, connu avant de réserver", body: PRICE_BODY },
+    ],
+    faq: COMMON_FAQ,
+    area: label,
+    shortLabel: label,
+  };
+}
+
 /** Toutes les pages de référencement, pour le sitemap et le maillage interne. */
 export function allLandings(): Landing[] {
-  return [...LANDINGS, ...LANDING_CITIES.map((c) => cityLanding(c.name, c.km))];
+  return [
+    ...LANDINGS,
+    ...LANDING_CITIES.map((c) => cityLanding(c.name, c.km)),
+    ...TRANSFER_PLACES.map(transferLanding),
+  ];
 }

@@ -32,10 +32,17 @@ export async function searchPlaces(q: string): Promise<Place[]> {
   const trimmed = q.trim();
   if (trimmed.length < 2) return [];
 
-  const [addresses, pois] = await Promise.all([
+  const [addresses, allPois] = await Promise.all([
     ban.searchPlaces(trimmed).catch(() => [] as Place[]),
     photon.searchPlaces(trimmed).catch(() => [] as Place[]),
   ]);
+
+  // Les points d'intérêt hors région sont écartés : le service ne dessert
+  // que le Grand Est, et Photon remonte volontiers des homonymes lointains
+  // (« petit bivouac » renvoyait un camping du Hainaut). Les adresses
+  // postales, elles, gardent leur mention « Hors Grand Est » : quelqu'un qui
+  // saisit la sienne doit comprendre pourquoi elle est refusée.
+  const pois = allPois.filter((p) => p.inGrandEst);
 
   const first = looksLikeStreetAddress(trimmed) ? addresses : pois;
   const second = first === addresses ? pois : addresses;
@@ -57,5 +64,10 @@ export async function searchPlaces(q: string): Promise<Place[]> {
     out.push(p);
   }
 
-  return out.slice(0, 8);
+  // Dès qu'un résultat est dans la région, on masque les autres : « petit
+  // bivouac » remontait sinon des adresses de Martinique. S'il n'y en a
+  // aucun, on montre les résultats lointains avec leur mention « Hors Grand
+  // Est » — mieux vaut expliquer le refus que n'afficher aucune réponse.
+  const inRegion = out.filter((p) => p.inGrandEst);
+  return (inRegion.length > 0 ? inRegion : out).slice(0, 8);
 }

@@ -81,13 +81,18 @@ function Car({ progress, scrollDriven, showHotspots, onReady }: Props) {
             key={h.label}
             position={h.at as [number, number, number]}
             center
-            // occlude : l'étiquette passe derrière la carrosserie quand le
-            // point qu'elle désigne part de l'autre côté de la voiture.
-            occlude="blending"
+            // Pas d'occlusion : masquée par la carrosserie, l'étiquette
+            // disparaissait sur la moitié de la rotation. Elle flotte donc
+            // au-dessus du point qu'elle désigne, toujours lisible, reliée
+            // par un trait.
             zIndexRange={[10, 0]}
           >
-            <span className="glass-soft whitespace-nowrap rounded-full px-3 py-1.5 text-[11px] font-medium text-white/90">
-              {h.label}
+            <span className="pointer-events-none flex -translate-y-7 flex-col items-center">
+              <span className="glass-soft whitespace-nowrap rounded-full px-3 py-1.5 text-[11px] font-medium text-white/90">
+                {h.label}
+              </span>
+              <span className="h-4 w-px bg-white/35" />
+              <span className="h-1.5 w-1.5 rounded-full bg-white" />
             </span>
           </Html>
         ))}

@@ -40,6 +40,10 @@ export default function Home() {
           <StepsTimeline steps={STEPS} />
         </section>
 
+        <Reveal>
+          <DriverProfile />
+        </Reveal>
+
         <section id="avis" className="scroll-mt-28 pt-24 md:pt-[120px]">
           <ul className="grid gap-4 md:grid-cols-3">
             {SITE.reviews.map((r, i) => (

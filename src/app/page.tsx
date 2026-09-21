@@ -52,6 +52,40 @@ export default function Home() {
             <ReviewSummary />
           </div>
 
+          <ul className="mt-8 grid gap-4 md:grid-cols-3">
+            {SITE.reviewHighlights.map((h, i) => (
+              <Reveal as="li" key={h.title} delay={i * 80} className="tile flex flex-col gap-2.5 rounded-4xl p-7">
+                <h3 className="font-display text-xl font-bold tracking-[-0.02em]">{h.title}</h3>
+                <p className="text-[15px] leading-relaxed text-label">{h.text}</p>
+              </Reveal>
+            ))}
+          </ul>
+
+          {SITE.reviews.length > 0 && (
+            <ul className="mt-4 grid gap-4 md:grid-cols-3">
+              {SITE.reviews.map((r, i) => (
+                <Reveal as="li" key={i} delay={i * 80}>
+                  <figure className="tile flex h-full flex-col justify-between gap-6 rounded-4xl p-7">
+                    <blockquote className="font-serif text-[22px] italic leading-snug">« {r.text} »</blockquote>
+                    <figcaption className="text-[13px] font-medium text-label">
+                      <span className="font-semibold text-white">{r.author}</span> · {r.route}
+                    </figcaption>
+                  </figure>
+                </Reveal>
+              ))}
+            </ul>
+          )}
+        </section>
+
+        <Reveal>
+          <DriverProfile />
+        </Reveal>
+
+        <section id="avis" className="scroll-mt-28 pt-24 md:pt-[120px]">
+          <div className="mb-8">
+            <ReviewSummary />
+          </div>
+
           <ul className="grid gap-4 md:grid-cols-3">
             {SITE.reviews.map((r, i) => (
               <Reveal as="li" key={i} delay={i * 80}>

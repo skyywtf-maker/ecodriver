@@ -1,6 +1,6 @@
 import { requireDriver } from "@/lib/auth";
 import { getDriver } from "@/lib/driver";
-import { PRICING, BOOKING_RULES } from "@/config/pricing";
+import { PRICING, BOOKING_RULES, VEHICLES } from "@/config/pricing";
 import { euros } from "@/lib/pricing";
 import { DriverNav } from "../DriverNav";
 import { changePassword, updateContact } from "../actions";
@@ -60,20 +60,22 @@ export default async function ParametresPage() {
           </p>
         </div>
         <dl className="flex flex-col divide-y divide-white/[0.08]">
+          {VEHICLES.map((v) => (
+            <div key={v.id} className="flex items-baseline justify-between gap-4 py-3">
+              <dt className="text-[14px] text-label">{v.name}</dt>
+              <dd className="text-right font-display text-[15px] font-semibold">{v.priceHint}</dd>
+            </div>
+          ))}
           {[
-            ["Prise en charge", euros(PRICING.baseFare)],
-            ["Prix au kilomètre", euros(PRICING.perKm)],
             [
               "Majoration nuit et week-end",
               `× ${PRICING.surchargeMultiplier} (de ${PRICING.nightStartHour} h à ${PRICING.nightEndHour} h)`,
             ],
-            ["Montant plancher", euros(PRICING.minimumFare)],
             ["Délai minimum de réservation", `${BOOKING_RULES.minLeadMinutes} minutes`],
-            ["Capacité", `${BOOKING_RULES.maxPassengers} passagers · ${BOOKING_RULES.maxLuggage} bagages`],
-          ].map(([k, v]) => (
+          ].map(([k, val]) => (
             <div key={k} className="flex items-baseline justify-between gap-4 py-3">
               <dt className="text-[14px] text-label">{k}</dt>
-              <dd className="font-display text-[15px] font-semibold">{v}</dd>
+              <dd className="text-right font-display text-[15px] font-semibold">{val}</dd>
             </div>
           ))}
         </dl>

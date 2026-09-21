@@ -1,13 +1,13 @@
 import "server-only";
-import { BOOKING_RULES } from "@/config/pricing";
-import { getRoute, isInGrandEst, type Route } from "./geo";
+import { BOOKING_RULES, DEFAULT_VEHICLE, type VehicleId } from "@/config/pricing";
+import { getRoute, type Route } from "./geo";
 import { computePrice, type PriceBreakdown } from "./pricing";
 import { minutesFromNow, parisLocalToUtc } from "./time";
 import type { TripInput } from "./validation";
 
 export type QuoteResult =
   | { ok: true; pickupAt: Date; route: Route; price: PriceBreakdown }
-  | { ok: false; code: "OUT_OF_AREA" | "TOO_SOON" | "IN_PAST" | "NO_ROUTE"; message: string };
+  | { ok: false; code: "TOO_SOON" | "IN_PAST" | "NO_ROUTE"; message: string };
 
 /** Calcul de référence, utilisé pour l'affichage ET pour le paiement. */
 export async function buildQuote(trip: TripInput): Promise<QuoteResult> {
@@ -23,20 +23,10 @@ export async function buildQuote(trip: TripInput): Promise<QuoteResult> {
       message: `Réservez au moins ${BOOKING_RULES.minLeadMinutes} minutes à l'avance. Choisissez un horaire plus tardif.`,
     };
   }
-  const [fromOk, toOk] = await Promise.all([
-    isInGrandEst(trip.from.lat, trip.from.lng),
-    isInGrandEst(trip.to.lat, trip.to.lng),
-  ]);
-  if (!fromOk || !toOk) {
-    return {
-      ok: false,
-      code: "OUT_OF_AREA",
-      message: "Le départ et l'arrivée doivent se trouver dans le Grand Est.",
-    };
-  }
   const route = await getRoute(trip.from, trip.to);
   if (!route) {
     return { ok: false, code: "NO_ROUTE", message: "Itinéraire introuvable entre ces deux adresses." };
   }
-  return { ok: true, pickupAt, route, price: computePrice(route.distanceKm, pickupAt) };
+  const vehicleId = (trip.vehicle ?? DEFAULT_VEHICLE) as VehicleId;
+  return { ok: true, pickupAt, route, price: computePrice(route.distanceKm, pickupAt, vehicleId, route.durationMin) };
 }

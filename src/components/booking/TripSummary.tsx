@@ -39,10 +39,15 @@ export function TripSummary({ draft, detailed = false }: { draft: TripDraft; det
       </dl>
       {detailed && (
         <dl className="flex flex-col gap-2.5 border-t border-white/10 pt-4 text-sm">
-          <Row k="Prise en charge" v={euros(p.baseFare)} />
-          <Row k={`${p.distanceKm.toLocaleString("fr-FR")} km × ${euros(p.perKm)}`} v={euros(p.distanceCost)} />
-          {p.surchargeApplied && <Row k={`Majoration nuit/week-end (× ${p.surchargeMultiplier.toLocaleString("fr-FR")})`} v="incluse" />}
-          {p.minimumApplied && <Row k="Tarif minimum appliqué" v={euros(p.total)} />}
+          {/* Le détail vient de la grille du véhicule choisi : chaque palier
+              de distance donne sa propre ligne. */}
+          <Row k="Véhicule" v={p.vehicleName} />
+          {p.lines.map((l) => (
+            <Row key={l.label} k={l.label} v={euros(l.amount)} />
+          ))}
+          {p.surchargeApplied && (
+            <Row k={`Majoration nuit/week-end (× ${p.surchargeMultiplier.toLocaleString("fr-FR")})`} v="incluse" />
+          )}
         </dl>
       )}
       <div className="mt-auto flex items-end justify-between border-t border-white/10 pt-5">

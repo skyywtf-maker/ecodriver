@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { BOOKING_RULES } from "@/config/pricing";
+import { BOOKING_RULES, VEHICLE_IDS } from "@/config/pricing";
 
 export const pointSchema = z.object({
   label: z.string().min(3).max(300),
@@ -14,6 +14,7 @@ export const tripSchema = z.object({
   time: z.string().regex(/^\d{2}:\d{2}$/),
   passengers: z.number().int().min(1).max(BOOKING_RULES.maxPassengers),
   luggage: z.number().int().min(0).max(BOOKING_RULES.maxLuggage),
+  vehicle: z.enum(VEHICLE_IDS).optional(),
 });
 
 export const contactSchema = z.object({

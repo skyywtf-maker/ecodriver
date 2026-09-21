@@ -1,4 +1,23 @@
 /**
+ * Logo du site.
+ *
+ * `file` est la source de vérité : déposer le fichier dans public/ et
+ * renseigner son chemin ici suffit, le composant Logo n'a pas à changer.
+ * Tant qu'il vaut null, le logotype texte prend le relais.
+ *
+ * `fileDark` est la déclinaison pour fonds clairs, facultative.
+ */
+export const LOGO = {
+  // Passer à "/logo.png" dès que le fichier est déposé dans public/.
+  file: null as string | null,
+  fileDark: null as string | null,
+  alt: "Eco'Driver, transport de personnes",
+  /** Proportions du fichier fourni, pour réserver la place avant chargement. */
+  width: 1600,
+  height: 800,
+} as const;
+
+/**
  * URL publique du site.
  *
  * `??` ne se déclenche que sur undefined : une variable d'environnement
@@ -49,15 +68,8 @@ export const SITE = {
      * ramenés à 132 Ko. Un monogramme prend le relais si le fichier manque.
      */
     photo: "/nicolas.webp",
-    /**
-     * ⚠️ VALEUR INVENTÉE, POUR LA MAQUETTE UNIQUEMENT.
-     *
-     * Elle sert à voir la section remplie, rien d'autre. Elle porte sur une
-     * personne réelle et nommée, et c'est un argument sur lequel un client
-     * s'appuie pour choisir son chauffeur : à remplacer par le vrai chiffre
-     * avant toute mise en ligne, ou à retirer de la page.
-     */
-    experienceYears: "9",
+    /** Validé avec Nicolas : ancienneté, sans date de création précise. */
+    experienceYears: "4",
     /**
      * Pastilles disposées autour du portrait.
      *
@@ -67,7 +79,7 @@ export const SITE = {
      * une tromperie commerciale, pas un texte de remplissage.
      */
     stats: [
-      { k: "Expérience", v: "9 ans", d: "Au volant depuis 2017, dont [X] ans en VTC." },
+      { k: "Expérience", v: "4 ans", d: "Quatre ans de transport de personnes, 500 courses notées 4,99 sur 5." },
       { k: "Véhicule", v: "Tesla Model 3", d: "Berline électrique, 4 passagers, deux coffres." },
       { k: "Secteur", v: "Grand Est", d: "Départ et arrivée dans la région, de Strasbourg à Reims." },
       { k: "Langues", v: "[À compléter]", d: "Langues parlées à bord, à confirmer avec Nicolas." },
@@ -121,38 +133,31 @@ export const SITE = {
     ],
   },
   /**
-   * Note agrégée, façon Trustpilot.
-   *
-   * ⚠️ MAQUETTE — valeurs de remplissage. À remplacer par la note réelle du
-   * profil Uber de Nicolas avant toute diffusion du site.
+   * Note réelle du profil Uber de Nicolas, relevée le 22 septembre 2026 :
+   * 4,99 sur 500 dernières courses (496 × 5★, 3 × 4★, 1 × 1★).
+   * À réactualiser de temps en temps, elle évolue avec les courses.
    */
   reviewSummary: {
-    rating: 4.9 as number | null,
-    count: 63,
+    rating: 4.99 as number | null,
+    count: 500,
     source: "Uber",
     url: "",
   },
 
   /**
-   * ⚠️ MAQUETTE — avis de remplissage, écrits pour voir la mise en page.
-   * À remplacer par les avis réels du profil Uber avant diffusion.
+   * Motifs de satisfaction les plus cités par les passagers, tels
+   * qu'agrégés par Uber. Ce sont des catégories, pas des avis individuels :
+   * on ne leur invente donc ni auteur ni texte.
    */
+  reviewHighlights: [
+    { title: "Excellent service", text: "Service aimable, attentionné et professionnel." },
+    { title: "Beau véhicule", text: "Véhicule confortable et bien entretenu." },
+    { title: "Conduite fluide", text: "Conduite sûre, fluide et confortable." },
+  ],
+
+  /** Commentaires laissés par des passagers. Verbatim, sans retouche. */
   reviews: [
-    {
-      text: "Ponctuel, voiture impeccable et conduite très souple. Je réserve à chaque déplacement professionnel.",
-      author: "Julien M.",
-      route: "Strasbourg → Entzheim",
-    },
-    {
-      text: "Le prix était annoncé avant de payer et n'a pas bougé. Nicolas était là avant l'heure.",
-      author: "Camille R.",
-      route: "Colmar → Bâle-Mulhouse",
-    },
-    {
-      text: "Trajet de nuit jusqu'à la gare, très professionnel et rassurant. Rien à redire.",
-      author: "Awa L.",
-      route: "Metz → Lorraine TGV",
-    },
+    { text: "Hyper sympathique.", author: "Un passager", route: "Avis Uber" },
   ],
 } as const;
 

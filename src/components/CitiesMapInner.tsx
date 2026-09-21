@@ -30,9 +30,11 @@ export default function CitiesMapInner() {
       container: el.current,
       style: STYLE,
       // Cadrage sur l'ensemble du Grand Est.
+      // Emprise élargie à l'Allemagne desservie : Francfort et Stuttgart
+      // font désormais partie des destinations.
       bounds: [
-        [3.9, 47.6],
-        [8.1, 49.9],
+        [3.9, 47.4],
+        [9.6, 50.4],
       ],
       fitBoundsOptions: { padding: 48 },
       attributionControl: false,

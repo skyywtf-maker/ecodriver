@@ -52,7 +52,7 @@ export function HeroBooking({ onContinue, showHeadline = true }: Props) {
         ? { top: 140, bottom: 220, left: 600, right: 120 }
         : // La carte se recentre sur la place réellement laissée par la
           // feuille, selon qu'elle est repliée, réduite ou dépliée.
-          { top: 110, bottom: sheetCollapsed ? 280 : sheetPeek ? 330 : 560, left: 40, right: 40 },
+          { top: 96, bottom: sheetCollapsed ? 260 : sheetPeek ? 300 : 540, left: 32, right: 32 },
     [desktop, sheetCollapsed, sheetPeek]
   );
 
@@ -103,7 +103,7 @@ export function HeroBooking({ onContinue, showHeadline = true }: Props) {
           zone claire. Uniquement sur petit écran, où le texte est en haut. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 z-[5] h-[46%] bg-[linear-gradient(180deg,rgba(10,10,10,0.85)_0%,rgba(10,10,10,0.55)_60%,rgba(10,10,10,0)_100%)] md:hidden"
+        className="pointer-events-none absolute inset-x-0 top-0 z-[5] h-[30%] bg-[linear-gradient(180deg,rgba(10,10,10,0.78)_0%,rgba(10,10,10,0.32)_65%,rgba(10,10,10,0)_100%)] md:hidden"
       />
 
       {/* En dessous de lg, le titre de droite disparaît : l'écran n'affichait

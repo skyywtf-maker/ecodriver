@@ -51,7 +51,7 @@ export const VEHICLES: Vehicle[] = [
     passengers: 4,
     luggage: 3,
     image: "/vehicules/berline.jpg",
-    model3d: "/vehicule/tesla-model-3.glb",
+    model3d: "/vehicule/toyota-corolla.glb",
     priceHint: "15 € jusqu'à 5 km, puis au kilomètre",
     from: "dès 15 €",
     tariff: {
@@ -71,6 +71,7 @@ export const VEHICLES: Vehicle[] = [
     passengers: 4,
     luggage: 5,
     image: "/vehicules/touring.jpg",
+    model3d: "/vehicule/toyota-corolla.glb",
     priceHint: "15 € jusqu'à 5 km, puis au kilomètre",
     from: "dès 15 €",
     // Même grille que la berline pour l'instant, mais dans une variable
@@ -92,6 +93,7 @@ export const VEHICLES: Vehicle[] = [
     passengers: 8,
     luggage: 8,
     image: "/vehicules/van.jpg",
+    model3d: "/vehicule/mercedes-v-class.glb",
     priceHint: "60 € par heure, mise à disposition",
     from: "60 € / heure",
     tariff: { mode: "hourly", perHour: 60, minimumHours: 2 },

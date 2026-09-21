@@ -5,7 +5,7 @@ import { Suspense, lazy, useCallback, useEffect, useRef, useState } from "react"
 /** three.js et le modèle ne sont téléchargés qu'à l'approche de la section. */
 const CarScene = lazy(() => import("./CarScene"));
 
-export function Car3D() {
+export function Car3D({ src }: { src: string }) {
   const holder = useRef<HTMLDivElement>(null);
   const progress = useRef(0);
   const [visible, setVisible] = useState(false);
@@ -75,6 +75,9 @@ export function Car3D() {
 
   const onReady = useCallback(() => setReady(true), []);
 
+  // Changer de véhicule recharge un autre fichier : on réaffiche l'attente.
+  useEffect(() => setReady(false), [src]);
+
   return (
     <div
       ref={holder}
@@ -83,9 +86,9 @@ export function Car3D() {
       {visible && (
         <Suspense fallback={null}>
           <CarScene
+            src={src}
             progress={progress}
             scrollDriven={scrollDriven}
-            showHotspots={ready}
             onReady={onReady}
           />
         </Suspense>

@@ -22,7 +22,7 @@ const INK = "#0A0B0D";
 const ACCENT = "#0A84FF";
 const LABEL = "rgba(235,235,245,0.6)";
 
-const CITIES = ["Strasbourg", "Colmar", "Mulhouse", "Nancy", "Metz"];
+const CITIES = ["Strasbourg", "Colmar", "Mulhouse", "Stuttgart", "Francfort"];
 
 /** Marque : l'itinéraire en blanc, le marqueur d'arrivée en accent bleu. */
 const MARK = (x, y, scale) => `
@@ -47,8 +47,8 @@ const openGraph = `
 
   <rect x="80" y="268" width="84" height="5" rx="2.5" fill="${ACCENT}"/>
 
-  <text x="80" y="376" font-family="Poppins" font-weight="700" font-size="70" fill="#fff" letter-spacing="-2.2">Nicolas, votre chauffeur privé.</text>
-  <text x="80" y="456" font-family="Playfair Display" font-style="italic" font-size="70" fill="#fff" letter-spacing="-1.4">Partout en Grand Est.</text>
+  <text x="80" y="376" font-family="Poppins" font-weight="700" font-size="70" fill="#fff" letter-spacing="-2.2">Votre chauffeur privé,</text>
+  <text x="80" y="456" font-family="Playfair Display" font-style="italic" font-size="70" fill="#fff" letter-spacing="-1.4">partout en Grand Est.</text>
 
   <text x="80" y="524" font-family="Montserrat" font-size="26" fill="${LABEL}">4,99 sur 5 · 500 courses · prix ferme payé en ligne</text>
   <text x="80" y="570" font-family="Montserrat" font-size="21" fill="${LABEL}">${CITIES.join("  ·  ")}</text>

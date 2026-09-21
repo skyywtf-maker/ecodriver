@@ -58,6 +58,10 @@ export const SITE = {
     { name: "Troyes", km: "≈ 325 km", lng: 4.0751, lat: 48.2928 },
     { name: "Reims", km: "≈ 345 km", lng: 4.0556, lat: 49.2509 },
     { name: "Charleville-Mézières", km: "≈ 360 km", lng: 4.7173, lat: 49.7676 },
+    { name: "Baden-Baden", km: "≈ 60 km", lng: 8.2406, lat: 48.7606 },
+    { name: "Karlsruhe", km: "≈ 85 km", lng: 8.4037, lat: 49.0069 },
+    { name: "Stuttgart", km: "≈ 155 km", lng: 9.1829, lat: 48.7758 },
+    { name: "Francfort", km: "≈ 220 km", lng: 8.6821, lat: 50.1109 },
   ],
   /**
    * Chiffres de la marque, vérifiables. Remplacent la fiche individuelle du

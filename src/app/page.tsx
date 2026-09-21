@@ -32,7 +32,7 @@ export default function Home() {
 
         <section id="villes" className="scroll-mt-28 pt-24 md:pt-[120px]">
           <h2 className="font-display text-4xl font-bold tracking-[-0.035em] md:text-5xl">
-            Huit villes, <span className="serif-accent">un seul chauffeur.</span>
+            {SITE.cities.length} destinations, <span className="serif-accent">un seul chauffeur.</span>
           </h2>
           <div className="mt-10 md:mt-12">
             <CitiesMap />

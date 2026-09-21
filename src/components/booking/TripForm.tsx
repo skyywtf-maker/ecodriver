@@ -110,6 +110,10 @@ export function TripForm({ onQuote, onContinue, collapsed = false, peek = false,
 
   return (
     <form onSubmit={submit} className="flex flex-col gap-5">
+      {peek && (
+        <p className="px-1 text-[13px] font-medium text-label">Où allez-vous ?</p>
+      )}
+
       {collapsed ? (
         // Repliée, la feuille ne garde que l'essentiel : le trajet, le prix,
         // et le bouton. Un appui la rouvre pour modifier quoi que ce soit.
@@ -133,12 +137,14 @@ export function TripForm({ onQuote, onContinue, collapsed = false, peek = false,
         </button>
       ) : (
         <>
-      <div className="flex items-baseline justify-between">
-        <h1 className="font-display text-[30px] font-bold leading-tight tracking-[-0.03em]">
-          Où <span className="serif-accent">allez-vous ?</span>
-        </h1>
-        <span className="text-xs font-medium text-label">Grand Est</span>
-      </div>
+      {!peek && (
+        <div className="flex items-baseline justify-between">
+          <h1 className="font-display text-[30px] font-bold leading-tight tracking-[-0.03em]">
+            Où <span className="serif-accent">allez-vous ?</span>
+          </h1>
+          <span className="text-xs font-medium text-label">Grand Est</span>
+        </div>
+      )}
 
       <div className="field flex flex-col">
         <AddressInput label="Départ" placeholder="Adresse, gare, aéroport" marker="start" value={from} onChange={setFrom} className="border-b border-white/[0.08]" />
@@ -158,7 +164,7 @@ export function TripForm({ onQuote, onContinue, collapsed = false, peek = false,
         <Counter label="Bagages" unit="bagage" value={luggage} min={0} max={BOOKING_RULES.maxLuggage} onChange={setLuggage} />
       </div>
 
-      <VehiclePicker value={vehicle} onChange={setVehicle} />
+      {!peek && <VehiclePicker value={vehicle} onChange={setVehicle} />}
         </>
       )}
 

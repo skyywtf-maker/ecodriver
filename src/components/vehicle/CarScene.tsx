@@ -4,7 +4,6 @@ import { Suspense, useEffect, useMemo, useRef, type RefObject } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { ContactShadows, Environment, Html, Lightformer, OrbitControls, useGLTF } from "@react-three/drei";
 import { Box3, Vector3, type Group, type PerspectiveCamera } from "three";
-import { SITE } from "@/config/site";
 
 /**
  * Scène 3D du véhicule.
@@ -24,18 +23,19 @@ const TARGET: [number, number, number] = [0, 0.6, 0];
 const SCROLL_TURN = Math.PI * 1.1;
 
 type Props = {
+  /** Fichier du modèle, propre à la catégorie affichée. */
+  src: string;
   /** Avancée du défilement dans la section, de 0 à 1. Un ref, pour ne pas
       redessiner React à chaque pixel de scroll. */
   progress: RefObject<number>;
   scrollDriven: boolean;
-  showHotspots: boolean;
   onReady: () => void;
 };
 
-function Car({ progress, scrollDriven, showHotspots, onReady }: Props) {
+function Car({ src, progress, scrollDriven, onReady }: Props) {
   // useDraco à false : le modèle est compressé en meshopt, inutile d'aller
   // chercher un décodeur Draco sur un CDN tiers.
-  const { scene } = useGLTF(SITE.vehicle.model3d, false);
+  const { scene } = useGLTF(src, false);
   const spin = useRef<Group>(null);
 
   // Le fichier est exporté dans ses propres unités (~111 par mètre) et n'est
@@ -164,4 +164,3 @@ export default function CarScene(props: Props) {
   );
 }
 
-useGLTF.preload(SITE.vehicle.model3d, false);

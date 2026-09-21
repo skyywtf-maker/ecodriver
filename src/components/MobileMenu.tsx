@@ -9,7 +9,8 @@ import { SITE } from "@/config/site";
 const LINKS = [
   { href: "/#villes", label: "Destinations" },
   { href: "/#deroule", label: "Comment ça marche" },
-  { href: "/#vehicule", label: "Le véhicule" },
+  { href: "/#services", label: "Nos prestations" },
+  { href: "/#vehicule", label: "Les véhicules" },
   { href: "/#chauffeur", label: "Votre chauffeur" },
   { href: "/#avis", label: "Avis" },
   { href: "/services/transferts-aeroport", label: "Transferts aéroport" },

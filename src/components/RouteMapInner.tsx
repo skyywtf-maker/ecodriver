@@ -51,7 +51,10 @@ export default function RouteMapInner({ from, to, geometry, padding, className =
         container: el.current,
         style: STYLE,
         center: [SITE.base.lng, SITE.base.lat],
-        zoom: 11.5,
+        // On démarre très large : l'arrivée sur la page enchaîne sur un
+        // mouvement de zoom vers Strasbourg, qui fait comprendre d'emblée
+        // qu'il s'agit d'une carte et non d'une texture de fond.
+        zoom: 5.2,
         attributionControl: false,
         // Sur mobile, un doigt fait défiler la page ; deux doigts manipulent
         // la carte. Sans cela la page se bloque dès qu'on la frôle.
@@ -88,10 +91,19 @@ export default function RouteMapInner({ from, to, geometry, padding, className =
               m.setLayoutProperty(layer.id, "visibility", "none");
             }
           }
-          m.setZoom(12.4);
         }
 
         setReady(true);
+
+        // Le mouvement d'ouverture. Supprimé pour qui demande moins
+        // d'animations : la carte s'affiche alors directement au bon cadrage.
+        const mobile = window.matchMedia("(max-width: 767px)").matches;
+        const target = mobile ? 12.4 : 11.6;
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          m.setZoom(target);
+        } else {
+          m.flyTo({ center: [SITE.base.lng, SITE.base.lat], zoom: target, duration: 2600, essential: true });
+        }
       });
 
       // Le conteneur peut encore mesurer zéro au moment où la carte est

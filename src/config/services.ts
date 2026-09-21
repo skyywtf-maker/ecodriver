@@ -16,6 +16,8 @@ export type Service = {
   /** Arguments courts, affichés en tuiles. */
   points: { k: string; v: string }[];
   sections: { h2: string; body: string[] }[];
+  /** Visuel de tête. Null quand aucun n'est fourni : le bloc est alors omis. */
+  image: string | null;
   /** Objet pré-rempli du formulaire de devis. */
   subject: string;
 };
@@ -52,6 +54,7 @@ export const SERVICES: Service[] = [
         ],
       },
     ],
+    image: "/services/transferts-aeroport.webp",
     subject: "Demande — transfert aéroport",
   },
   {
@@ -85,6 +88,7 @@ export const SERVICES: Service[] = [
         ],
       },
     ],
+    image: "/services/strasbourg-institutions.webp",
     subject: "Demande — Strasbourg et institutions européennes",
   },
   {
@@ -118,6 +122,7 @@ export const SERVICES: Service[] = [
         ],
       },
     ],
+    image: "/services/route-des-vins.webp",
     subject: "Demande — circuit route des vins",
   },
   {
@@ -145,6 +150,7 @@ export const SERVICES: Service[] = [
         ],
       },
     ],
+    image: null,
     subject: "Demande de devis — événementiel",
   },
   {
@@ -177,6 +183,7 @@ export const SERVICES: Service[] = [
         ],
       },
     ],
+    image: null,
     subject: "Demande de partenariat — professionnels",
   },
 ];

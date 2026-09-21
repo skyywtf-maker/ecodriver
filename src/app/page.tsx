@@ -5,6 +5,7 @@ import { SITE } from "@/config/site";
 import { SiteStructuredData } from "@/components/StructuredData";
 import { VehicleShowcase } from "@/components/vehicle/VehicleShowcase";
 import { TrustSection } from "@/components/TrustSection";
+import { ServicesSection } from "@/components/ServicesSection";
 import Link from "next/link";
 import { Reveal } from "@/components/Reveal";
 import { CitiesMapStatic } from "@/components/CitiesMapStatic";
@@ -38,6 +39,10 @@ export default function Home() {
             <CitiesMap />
           </div>
         </section>
+
+        <Reveal>
+          <ServicesSection />
+        </Reveal>
 
         <section id="deroule" className="scroll-mt-28 pt-24 md:pt-[120px]">
           <StepsTimeline steps={STEPS} />
@@ -75,29 +80,6 @@ export default function Home() {
               ))}
             </ul>
           )}
-        </section>
-
-        <Reveal>
-          <TrustSection />
-        </Reveal>
-
-        <section id="avis" className="scroll-mt-28 pt-24 md:pt-[120px]">
-          <div className="mb-8">
-            <ReviewSummary />
-          </div>
-
-          <ul className="grid gap-4 md:grid-cols-3">
-            {SITE.reviews.map((r, i) => (
-              <Reveal as="li" key={i} delay={i * 80}>
-                <figure className="tile flex h-[240px] flex-col justify-between rounded-4xl p-8">
-                  <blockquote className="font-serif text-[22px] italic leading-snug">« {r.text} »</blockquote>
-                  <figcaption className="text-[13px] font-medium text-label">
-                    <span className="font-semibold text-white">{r.author}</span> · {r.route}
-                  </figcaption>
-                </figure>
-              </Reveal>
-            ))}
-          </ul>
         </section>
 
         {/* Dernier appel à l'action : après les avis, le visiteur convaincu

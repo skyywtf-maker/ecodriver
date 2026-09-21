@@ -104,25 +104,40 @@ export default function CitiesMapInner() {
         className="relative h-[300px] overflow-hidden rounded-4xl border border-white/[0.08] bg-graphite md:col-span-7 md:h-[420px]"
       />
 
-      <ul className="flex flex-wrap gap-2 md:col-span-5 md:content-start">
-        {SITE.cities.map((c, i) => (
-          <li key={c.name}>
-            <button
-              type="button"
-              onMouseEnter={() => setActive(c.name)}
-              onMouseLeave={() => setActive(null)}
-              onFocus={() => setActive(c.name)}
-              onBlur={() => setActive(null)}
-              className={`tile flex items-baseline gap-2 rounded-full px-4 py-2.5 text-left transition-all duration-500 ${
-                i < revealed ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"
-              } ${active === c.name ? "border-accent/60 bg-white/[0.10]" : ""}`}
-            >
-              <span className="font-display text-[14px] font-semibold tracking-[-0.015em]">{c.name}</span>
-              <span className="text-[12px] font-medium text-label">{c.km}</span>
-            </button>
-          </li>
+      {/* Deux listes groupées par pays, chaque ligne alignée sur sa distance.
+          Les pastilles en largeur libre donnaient un bord droit en dents de
+          scie et ne disaient rien de la géographie. */}
+      <div className="flex flex-col gap-6 md:col-span-5 md:content-start">
+        {["France", "Allemagne"].map((country) => (
+          <div key={country} className="flex flex-col gap-1">
+            <h3 className="mb-1 text-[11px] font-medium uppercase tracking-[0.12em] text-white/35">{country}</h3>
+            <ul className="flex flex-col">
+              {SITE.cities
+                .map((c, i) => ({ ...c, i }))
+                .filter((c) => c.country === country)
+                .map((c) => (
+                  <li key={c.name}>
+                    <button
+                      type="button"
+                      onMouseEnter={() => setActive(c.name)}
+                      onMouseLeave={() => setActive(null)}
+                      onFocus={() => setActive(c.name)}
+                      onBlur={() => setActive(null)}
+                      className={`flex w-full items-baseline justify-between gap-4 border-b border-white/[0.07] px-1 py-2.5 text-left transition-all duration-500 last:border-0 ${
+                        c.i < revealed ? "translate-y-0 opacity-100" : "translate-y-1 opacity-0"
+                      } ${active === c.name ? "text-white" : ""}`}
+                    >
+                      <span className="font-display text-[15px] font-semibold tracking-[-0.015em]">{c.name}</span>
+                      <span className={`text-[13px] font-medium ${active === c.name ? "text-accent" : "text-label"}`}>
+                        {c.km}
+                      </span>
+                    </button>
+                  </li>
+                ))}
+            </ul>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }

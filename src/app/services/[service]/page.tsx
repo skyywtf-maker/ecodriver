@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
@@ -58,6 +59,12 @@ export default async function ServicePage({ params }: { params: Promise<{ servic
           {s.h1.lead} <span className="serif-accent">{s.h1.accent}</span>
         </h1>
         <p className="mt-6 max-w-[620px] text-[17px] leading-relaxed text-label-strong md:text-lg">{s.intro}</p>
+
+        {s.image && (
+          <div className="relative mt-10 aspect-[16/9] overflow-hidden rounded-4xl border border-white/[0.08] bg-graphite">
+            <Image src={s.image} alt="" fill priority sizes="(min-width: 900px) 900px, 100vw" className="object-cover" />
+          </div>
+        )}
 
         <ul className="mt-12 grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
           {s.points.map((p, i) => (

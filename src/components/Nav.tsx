@@ -17,6 +17,7 @@ export function Nav({ children }: { children?: React.ReactNode }) {
           <Link href="/#villes" className="hover:text-white">Destinations</Link>
           <Link href="/#deroule" className="hover:text-white">Comment ça marche</Link>
           <Link href="/#vehicule" className="hover:text-white">Véhicule</Link>
+          <Link href="/services/professionnels" className="hover:text-white">Professionnels</Link>
           <Link href="/#avis" className="hover:text-white">Avis</Link>
         </div>
       )}

@@ -42,6 +42,21 @@ export const CURATED_PLACES: CuratedPlace[] = [
     address: "Rue de l'Aéroport 68300 Saint-Louis",
   },
   {
+    label: "Aéroport de Francfort",
+    keywords: ["francfort", "frankfurt", "fra", "aeroport francfort"],
+    address: "Frankfurt Airport, 60547 Frankfurt am Main",
+  },
+  {
+    label: "Aéroport de Stuttgart",
+    keywords: ["stuttgart", "str", "aeroport stuttgart"],
+    address: "Flughafen Stuttgart, 70629 Stuttgart",
+  },
+  {
+    label: "Baden Airpark, Baden-Baden",
+    keywords: ["baden", "baden baden", "karlsruhe", "fkb", "baden airpark"],
+    address: "Victoria Boulevard, 77836 Rheinmünster",
+  },
+  {
     label: "Gare de Colmar",
     keywords: ["gare colmar"],
     address: "Place de la Gare 68000 Colmar",

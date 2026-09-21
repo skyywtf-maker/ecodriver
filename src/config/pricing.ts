@@ -26,6 +26,8 @@ export type VehicleTariff =
 export type Vehicle = {
   id: VehicleId;
   name: string;
+  /** Modèle réel ou capacité, affiché sous le nom de la catégorie. */
+  model: string;
   tagline: string;
   passengers: number;
   luggage: number;
@@ -36,18 +38,22 @@ export type Vehicle = {
   tariff: VehicleTariff;
   /** Phrase affichée sous le nom dans le sélecteur. */
   priceHint: string;
+  /** Prix de départ affiché sur la carte du sélecteur. */
+  from: string;
 };
 
 export const VEHICLES: Vehicle[] = [
   {
     id: "BERLINE",
     name: "Berline confort",
-    tagline: "Citadine, pour les trajets du quotidien et les transferts.",
+    model: "Toyota Corolla",
+    tagline: "Pour les trajets du quotidien et les transferts aéroport.",
     passengers: 4,
     luggage: 3,
     image: "/vehicules/berline.jpg",
     model3d: "/vehicule/tesla-model-3.glb",
     priceHint: "15 € jusqu'à 5 km, puis au kilomètre",
+    from: "dès 15 €",
     tariff: {
       mode: "distance",
       tiers: [
@@ -60,11 +66,13 @@ export const VEHICLES: Vehicle[] = [
   {
     id: "TOURING",
     name: "Voiture touring",
-    tagline: "Break, pour les bagages volumineux et les longues distances.",
+    model: "Break",
+    tagline: "Pour les bagages volumineux et les longues distances.",
     passengers: 4,
     luggage: 5,
     image: "/vehicules/touring.jpg",
     priceHint: "15 € jusqu'à 5 km, puis au kilomètre",
+    from: "dès 15 €",
     // Même grille que la berline pour l'instant, mais dans une variable
     // distincte : la différencier plus tard ne demandera pas de toucher au code.
     tariff: {
@@ -79,11 +87,13 @@ export const VEHICLES: Vehicle[] = [
   {
     id: "VAN",
     name: "Van / XL",
+    model: "8 places",
     tagline: "Mise à disposition avec chauffeur, groupes et événements.",
     passengers: 8,
     luggage: 8,
     image: "/vehicules/van.jpg",
     priceHint: "60 € par heure, mise à disposition",
+    from: "60 € / heure",
     tariff: { mode: "hourly", perHour: 60, minimumHours: 2 },
   },
 ];

@@ -31,6 +31,7 @@ export async function POST(req: Request) {
       toLat: trip.to.lat,
       toLng: trip.to.lng,
       pickupAt: q.pickupAt,
+      vehicle: q.price.vehicleId,
       distanceKm: q.route.distanceKm,
       durationMin: q.route.durationMin,
       priceCents: q.price.totalCents,

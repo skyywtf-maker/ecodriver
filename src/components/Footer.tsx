@@ -1,11 +1,25 @@
 import Link from "next/link";
 import { allLandings } from "@/config/landing";
+import { SERVICES } from "@/config/services";
 import { SITE } from "@/config/site";
 import { Logo } from "./Logo";
 
 export function Footer() {
   return (
     <footer className="mx-auto mt-24 flex max-w-[1440px] flex-col gap-10 border-t border-white/[0.08] px-4 py-12 text-sm text-label md:mt-[120px] md:px-16">
+      <nav aria-label="Prestations" className="flex flex-col gap-3">
+        <h2 className="text-[11px] font-medium uppercase tracking-[0.12em] text-white/35">Prestations</h2>
+        <ul className="flex flex-wrap gap-x-6 gap-y-2.5">
+          {SERVICES.map((s) => (
+            <li key={s.slug}>
+              <Link href={`/services/${s.slug}`} className="hover:text-white">
+                {s.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
       {/* Maillage interne vers les pages locales : discret, hors navigation principale. */}
       <nav aria-label="Zones desservies" className="flex flex-col gap-3">
         <h2 className="text-[11px] font-medium uppercase tracking-[0.12em] text-white/35">Zones desservies</h2>

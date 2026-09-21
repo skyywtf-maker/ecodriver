@@ -1,6 +1,7 @@
 "use client";
 
 import type { PriceBreakdown } from "./pricing";
+import type { VehicleId } from "@/config/pricing";
 
 export type DraftPoint = { label: string; lat: number; lng: number };
 
@@ -11,6 +12,7 @@ export type TripDraft = {
   time: string;
   passengers: number;
   luggage: number;
+  vehicle: VehicleId;
   quote: { distanceKm: number; durationMin: number; price: PriceBreakdown; geometry: [number, number][] };
 };
 

@@ -12,6 +12,9 @@ const LINKS = [
   { href: "/#vehicule", label: "Le véhicule" },
   { href: "/#chauffeur", label: "Votre chauffeur" },
   { href: "/#avis", label: "Avis" },
+  { href: "/services/evenementiel", label: "Événementiel" },
+  { href: "/services/tourisme", label: "Circuits touristiques" },
+  { href: "/services/professionnels", label: "Professionnels" },
   { href: "/#villes", label: "Zones desservies" },
 ];
 

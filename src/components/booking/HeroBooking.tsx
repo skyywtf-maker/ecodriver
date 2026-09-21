@@ -111,9 +111,9 @@ export function HeroBooking({ onContinue, showHeadline = true }: Props) {
       {showHeadline && (
         <div className="pointer-events-none absolute inset-x-6 top-[88px] z-10 flex flex-col gap-3 md:hidden">
           <p className="font-display text-[26px] font-extrabold leading-[1.05] tracking-[-0.035em] sm:text-[32px]">
-            <span className="serif-accent">Nicolas,</span> votre chauffeur privé.
+            Votre chauffeur privé,
             <br />
-            Partout en Grand Est.
+            <span className="serif-accent">partout en Grand Est.</span>
           </p>
           <p className="text-[13px] leading-snug text-label-strong">Prix ferme, payé en ligne.</p>
         </div>
@@ -122,9 +122,9 @@ export function HeroBooking({ onContinue, showHeadline = true }: Props) {
       {showHeadline && (
         <div className="pointer-events-none absolute bottom-14 right-6 z-10 hidden max-w-[240px] flex-col items-end gap-5 text-right md:flex lg:right-16 lg:max-w-[400px] xl:max-w-[800px]">
           <p className="font-display text-[30px] font-extrabold leading-[1.05] tracking-[-0.035em] lg:text-[34px] xl:text-[48px] xl:leading-[1.02] xl:tracking-[-0.04em]">
-            <span className="serif-accent">Nicolas,</span> votre chauffeur privé.
+            Votre chauffeur privé,
             <br />
-            Partout en Grand Est.
+            <span className="serif-accent">partout en Grand Est.</span>
           </p>
           <ul className="hidden gap-2 lg:flex">
             {["Paiement sécurisé", "Confirmé par le chauffeur", "Remboursement intégral si refus"].map((c) => (

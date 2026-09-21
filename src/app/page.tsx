@@ -4,7 +4,7 @@ import { HeroBooking } from "@/components/booking/HeroBooking";
 import { SITE } from "@/config/site";
 import { SiteStructuredData } from "@/components/StructuredData";
 import { VehicleShowcase } from "@/components/vehicle/VehicleShowcase";
-import { DriverProfile } from "@/components/DriverProfile";
+import { TrustSection } from "@/components/TrustSection";
 import Link from "next/link";
 import { Reveal } from "@/components/Reveal";
 import { CitiesMapStatic } from "@/components/CitiesMapStatic";
@@ -44,7 +44,7 @@ export default function Home() {
         </section>
 
         <Reveal>
-          <DriverProfile />
+          <TrustSection />
         </Reveal>
 
         <section id="avis" className="scroll-mt-28 pt-24 md:pt-[120px]">
@@ -78,7 +78,7 @@ export default function Home() {
         </section>
 
         <Reveal>
-          <DriverProfile />
+          <TrustSection />
         </Reveal>
 
         <section id="avis" className="scroll-mt-28 pt-24 md:pt-[120px]">
@@ -123,7 +123,7 @@ export default function Home() {
                   Voir le prix et réserver
                 </Link>
                 <a href={SITE.phoneHref} className="btn-ghost">
-                  Appeler {SITE.driver.firstName}
+                  Appeler
                 </a>
               </div>
             </div>

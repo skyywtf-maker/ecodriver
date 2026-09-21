@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { AddressInput } from "@/components/AddressInput";
 import { Counter } from "@/components/Counter";
-import { BOOKING_RULES } from "@/config/pricing";
+import { BOOKING_RULES, DEFAULT_VEHICLE, type VehicleId } from "@/config/pricing";
+import { VehiclePicker } from "./VehiclePicker";
 import { euros } from "@/lib/pricing";
 import { loadDraft, saveDraft, type DraftPoint, type TripDraft } from "@/lib/draft";
 
@@ -33,6 +34,7 @@ export function TripForm({ onQuote, onContinue, collapsed = false, peek = false,
   const [time, setTime] = useState("");
   const [passengers, setPassengers] = useState(1);
   const [luggage, setLuggage] = useState(0);
+  const [vehicle, setVehicle] = useState<VehicleId>(DEFAULT_VEHICLE);
   const [quote, setQuote] = useState<QuoteState>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -47,6 +49,7 @@ export function TripForm({ onQuote, onContinue, collapsed = false, peek = false,
       setTime(d.time);
       setPassengers(d.passengers);
       setLuggage(d.luggage);
+      if (d.vehicle) setVehicle(d.vehicle);
     } else {
       const w = defaultWhen();
       setDate(w.date);
@@ -71,7 +74,7 @@ export function TripForm({ onQuote, onContinue, collapsed = false, peek = false,
         const r = await fetch("/api/quote", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ from: strip(from), to: strip(to), date, time, passengers, luggage }),
+          body: JSON.stringify({ from: strip(from), to: strip(to), date, time, passengers, luggage, vehicle }),
           signal: ctrl.signal,
         });
         const data = await r.json();
@@ -93,14 +96,14 @@ export function TripForm({ onQuote, onContinue, collapsed = false, peek = false,
       ctrl.abort();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [from, to, date, time]);
+  }, [from, to, date, time, vehicle]);
 
   const canContinue = !!(from && to && date && time && quote && !error && !loading);
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!canContinue || !from || !to || !quote) return;
-    const draft: TripDraft = { from: strip(from), to: strip(to), date, time, passengers, luggage, quote };
+    const draft: TripDraft = { from: strip(from), to: strip(to), date, time, passengers, luggage, vehicle, quote };
     saveDraft(draft);
     onContinue(draft);
   }
@@ -154,6 +157,8 @@ export function TripForm({ onQuote, onContinue, collapsed = false, peek = false,
         <Counter label="Passagers" unit="passager" value={passengers} min={1} max={BOOKING_RULES.maxPassengers} onChange={setPassengers} />
         <Counter label="Bagages" unit="bagage" value={luggage} min={0} max={BOOKING_RULES.maxLuggage} onChange={setLuggage} />
       </div>
+
+      <VehiclePicker value={vehicle} onChange={setVehicle} />
         </>
       )}
 

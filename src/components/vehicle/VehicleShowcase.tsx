@@ -1,24 +1,24 @@
+import { VEHICLES } from "@/config/pricing";
 import { SITE } from "@/config/site";
 import { Car3D } from "./Car3D";
 
 /**
- * Section véhicule : le modèle en 3D, le confort à bord juste à côté.
+ * Section véhicules : les trois catégories, avec leur capacité et leur tarif.
  *
- * La liste est rendue côté serveur — elle reste lisible et indexable même si
- * la 3D ne se charge pas (JavaScript coupé, WebGL indisponible, mobile ancien).
+ * Le modèle 3D illustre la berline ; les deux autres catégories s'appuient sur
+ * leur fiche. Aucun argumentaire lié à la motorisation : le véhicule réel est
+ * une Toyota Corolla, pas un véhicule électrique.
  */
 export function VehicleShowcase() {
-  const { model, accent, comfort } = SITE.vehicle;
+  const { accent, intro } = SITE.vehicle;
 
   return (
     <section id="vehicule" className="scroll-mt-28 pt-24 md:pt-[120px]">
       <div className="flex flex-col gap-3">
         <h2 className="font-display text-4xl font-bold tracking-[-0.035em] md:text-5xl">
-          {model}, <span className="serif-accent">{accent}</span>
+          Un véhicule par besoin, <span className="serif-accent">{accent}</span>
         </h2>
-        <p className="max-w-[560px] text-[15px] leading-relaxed text-label">
-          Ce qui change pour vous, à l&apos;arrière : le silence, la place, la température.
-        </p>
+        <p className="max-w-[560px] text-[15px] leading-relaxed text-label">{intro}</p>
       </div>
 
       <div className="mt-10 grid gap-4 md:mt-12 md:grid-cols-12">
@@ -26,17 +26,29 @@ export function VehicleShowcase() {
           <Car3D />
         </div>
 
-        <div className="glass flex flex-col gap-4 rounded-4xl p-7 md:col-span-5 md:p-8">
-          <h3 className="text-[11px] font-medium uppercase tracking-[0.12em] text-label">Le confort à bord</h3>
-          <dl className="flex flex-col">
-            {comfort.map((c) => (
-              <div key={c.k} className="flex flex-col gap-1 border-b border-white/[0.07] py-3.5 last:border-0 last:pb-0">
-                <dt className="font-display text-[16px] font-semibold tracking-[-0.015em]">{c.k}</dt>
-                <dd className="text-[13px] leading-snug text-label">{c.v}</dd>
+        <ul className="flex flex-col gap-3 md:col-span-5">
+          {VEHICLES.map((v) => (
+            <li key={v.id} className="glass flex flex-col gap-3 rounded-4xl p-6">
+              <div className="flex items-baseline justify-between gap-3">
+                <h3 className="font-display text-[19px] font-bold tracking-[-0.02em]">{v.name}</h3>
+                <span className="shrink-0 font-display text-[14px] font-semibold text-accent">{v.from}</span>
               </div>
-            ))}
-          </dl>
-        </div>
+              <p className="text-[13px] leading-relaxed text-label">{v.tagline}</p>
+              <dl className="flex flex-wrap gap-2">
+                {[
+                  ["Modèle", v.model],
+                  ["Passagers", String(v.passengers)],
+                  ["Bagages", String(v.luggage)],
+                ].map(([k, val]) => (
+                  <div key={k} className="flex flex-col gap-0.5 rounded-[12px] bg-white/[0.06] px-3.5 py-2">
+                    <dt className="text-[10px] font-medium uppercase tracking-[0.08em] text-label">{k}</dt>
+                    <dd className="text-[13px] font-semibold">{val}</dd>
+                  </div>
+                ))}
+              </dl>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );

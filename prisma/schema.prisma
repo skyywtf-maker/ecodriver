@@ -31,6 +31,9 @@ model Booking {
   toLng           Float
   pickupAt        DateTime
 
+  /** Catégorie choisie : BERLINE, TOURING ou VAN. */
+  vehicle         String        @default("BERLINE")
+
   distanceKm      Float
   durationMin     Int
   priceCents      Int

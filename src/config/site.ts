@@ -59,80 +59,27 @@ export const SITE = {
     { name: "Reims", km: "≈ 345 km", lng: 4.0556, lat: 49.2509 },
     { name: "Charleville-Mézières", km: "≈ 360 km", lng: 4.7173, lat: 49.7676 },
   ],
-  driver: {
-    firstName: "Nicolas",
-    role: "Chauffeur VTC indépendant",
-    /**
-     * Portrait détouré (fond transparent), converti en WebP : 3,2 Mo de PNG
-     * ramenés à 132 Ko. Un monogramme prend le relais si le fichier manque.
-     */
-    photo: "/nicolas.webp",
-    /** Validé avec Nicolas : ancienneté, sans date de création précise. */
-    experienceYears: "4",
-    /**
-     * Pastilles disposées autour du portrait.
-     *
-     * Tout ce qui est entre crochets reste à remplir. Rien ici n'invente de
-     * note, d'avis ni de nombre de courses : ce sont des affirmations
-     * vérifiables sur une personne réelle, et une fausse note publiée est
-     * une tromperie commerciale, pas un texte de remplissage.
-     */
-    stats: [
-      { k: "Expérience", v: "4 ans", d: "Quatre ans de transport de personnes, 500 courses notées 4,99 sur 5." },
-      { k: "Véhicule", v: "Tesla Model 3", d: "Berline électrique, 4 passagers, deux coffres." },
-      { k: "Secteur", v: "Grand Est", d: "Départ et arrivée dans la région, de Strasbourg à Reims." },
-      { k: "Langues", v: "[À compléter]", d: "Langues parlées à bord, à confirmer avec Nicolas." },
-      { k: "Carte VTC", v: "[N° EVTC]", d: "Inscription au registre des VTC, obligatoire et vérifiable." },
-      { k: "Paiement", v: "Prix ferme", d: "Réglé en ligne à la réservation, aucun supplément à l'arrivée." },
-    ],
-
-    /** TODO: à faire valider par Nicolas, c'est lui qui parle ici. */
-    bio: [
-      "Chauffeur indépendant basé à Strasbourg, au volant de sa propre voiture.",
-      "Un seul véhicule et un seul interlocuteur : celui qui confirme votre course est celui qui vient vous chercher.",
-    ],
-  },
-
-  vehicle: {
-    model: "Tesla Model 3",
-    /** Mot d'accent en Playfair dans le titre de la section. */
-    accent: "100 % électrique.",
-    /** Modèle 3D compressé (2,25 Mo), chargé seulement à l'approche de la section. */
-    model3d: "/vehicule/tesla-model-3.glb",
-
-    /**
-     * Ce que le passager ressent, et rien d'autre.
-     *
-     * Les chiffres de catalogue (autonomie, 0 à 100, kWh/100 km, classe
-     * énergétique) ont été retirés : ils ne disent rien à quelqu'un qui monte
-     * à l'arrière pour aller à l'aéroport, et une partie n'est pas vérifiable
-     * sur le véhicule de Nicolas.
-     *
-     * Tout ce qui figure ici est soit propre à un véhicule électrique, soit
-     * commun à toutes les Model 3, soit une règle de service déjà validée.
-     */
-    comfort: [
-      { k: "Silence à bord", v: "Moteur électrique, aucune vibration" },
-      { k: "Climatisation", v: "Habitacle mis à température avant la montée" },
-      { k: "Bagages", v: "Coffre arrière et coffre avant" },
-      { k: "Places", v: "Jusqu'à 4 passagers" },
-      { k: "Wifi", v: "Inclus, sans rien demander" },
-      { k: "Siège enfant", v: "Sur demande à la réservation" },
-    ],
-
-    /**
-     * Étiquettes ancrées sur la voiture en 3D, au-dessus de `lg`.
-     * Le +Z du modèle est l'AVANT du véhicule : le coffre arrière est donc
-     * en Z négatif. L'inverse plaçait le coffre arrière sur le capot.
-     */
-    hotspots: [
-      { label: "Coffre arrière", at: [0, 1.05, 2.0] },
-      { label: "Silence à bord", at: [0, 1.5, 0.15] },
-      { label: "Coffre avant", at: [0, 0.95, -1.9] },
-    ],
-  },
   /**
-   * Note réelle du profil Uber de Nicolas, relevée le 22 septembre 2026 :
+   * Chiffres de la marque, vérifiables. Remplacent la fiche individuelle du
+   * chauffeur : c'est le service qu'on met en avant, pas une personne.
+   */
+  trust: [
+    { k: "Expérience", v: "4 ans", d: "de transport de personnes dans le Grand Est." },
+    { k: "Courses notées", v: "500", d: "sur les 500 dernières évaluations Uber." },
+    { k: "Note moyenne", v: "4,99 / 5", d: "496 courses notées cinq étoiles." },
+    { k: "Prix", v: "Ferme", d: "affiché avant paiement, jamais révisé après." },
+  ],
+
+  /** Section véhicules de l'accueil. Les fiches vivent dans config/pricing.ts. */
+  vehicle: {
+    accent: "trois catégories.",
+    intro: "Du trajet quotidien au groupe de huit, avec la même exigence de confort et de ponctualité.",
+    /** Modèle 3D d'illustration de la berline. */
+    model3d: "/vehicule/tesla-model-3.glb",
+  },
+
+  /**
+   * Note réelle relevée sur le profil Uber du chauffeur, le 22 septembre 2026 :
    * 4,99 sur 500 dernières courses (496 × 5★, 3 × 4★, 1 × 1★).
    * À réactualiser de temps en temps, elle évolue avec les courses.
    */

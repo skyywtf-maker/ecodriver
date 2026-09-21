@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { allLandings } from "@/config/landing";
+import { SERVICES } from "@/config/services";
 import { SITE } from "@/config/site";
 
 type Entry = { path: string; priority: number; changeFrequency: "monthly" | "yearly" };
@@ -23,7 +24,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     changeFrequency: "monthly",
   }));
 
-  return [...CORE, ...landings].map((r) => ({
+  const services: Entry[] = SERVICES.map((s) => ({
+    path: `/services/${s.slug}`,
+    priority: 0.7,
+    changeFrequency: "monthly",
+  }));
+
+  return [...CORE, ...services, ...landings].map((r) => ({
     url: `${SITE.url}${r.path}`,
     lastModified,
     changeFrequency: r.changeFrequency,

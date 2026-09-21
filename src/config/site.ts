@@ -8,13 +8,12 @@
  * `fileDark` est la déclinaison pour fonds clairs, facultative.
  */
 export const LOGO = {
-  // Passer à "/logo.png" dès que le fichier est déposé dans public/.
-  file: null as string | null,
+  file: "/logo.png" as string | null,
   fileDark: null as string | null,
   alt: "Eco'Driver, transport de personnes",
   /** Proportions du fichier fourni, pour réserver la place avant chargement. */
-  width: 1600,
-  height: 800,
+  width: 2811,
+  height: 900,
 } as const;
 
 /**

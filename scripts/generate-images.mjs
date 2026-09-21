@@ -10,7 +10,7 @@
  * `npm run images` après une modification de la charte ou du nom des villes.
  */
 import { Resvg } from "@resvg/resvg-js";
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -31,6 +31,8 @@ const MARK = (x, y, scale) => `
     <circle cx="48" cy="17" r="7" fill="${ACCENT}"/>
   </g>`;
 
+const logoDataUri = "data:image/png;base64," + readFileSync(join(ROOT, "public/logo.png")).toString("base64");
+
 const openGraph = `
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <defs>
@@ -41,16 +43,14 @@ const openGraph = `
   </defs>
   <rect width="1200" height="630" fill="url(#bg)"/>
 
-  ${MARK(80, 62, 0.72)}
-  <text x="136" y="104" font-family="Poppins" font-weight="700" font-size="30" fill="#fff" letter-spacing="-0.6">Eco</text>
-  <text x="196" y="104" font-family="Playfair Display" font-style="italic" font-size="31" fill="#fff">Driver</text>
+  <image href="${logoDataUri}" x="80" y="56" width="330" height="106" preserveAspectRatio="xMinYMid meet"/>
 
   <rect x="80" y="268" width="84" height="5" rx="2.5" fill="${ACCENT}"/>
 
-  <text x="80" y="370" font-family="Poppins" font-weight="700" font-size="82" fill="#fff" letter-spacing="-2.9">Chauffeur privé,</text>
-  <text x="80" y="458" font-family="Playfair Display" font-style="italic" font-size="82" fill="#fff" letter-spacing="-1.6">Grand Est.</text>
+  <text x="80" y="376" font-family="Poppins" font-weight="700" font-size="70" fill="#fff" letter-spacing="-2.2">Nicolas, votre chauffeur privé.</text>
+  <text x="80" y="456" font-family="Playfair Display" font-style="italic" font-size="70" fill="#fff" letter-spacing="-1.4">Partout en Grand Est.</text>
 
-  <text x="80" y="524" font-family="Montserrat" font-size="26" fill="${LABEL}">Prix immédiat, paiement en ligne, confirmation par le chauffeur.</text>
+  <text x="80" y="524" font-family="Montserrat" font-size="26" fill="${LABEL}">4,99 sur 5 · 500 courses · prix ferme payé en ligne</text>
   <text x="80" y="570" font-family="Montserrat" font-size="21" fill="${LABEL}">${CITIES.join("  ·  ")}</text>
 </svg>`;
 

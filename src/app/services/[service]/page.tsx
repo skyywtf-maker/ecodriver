@@ -81,7 +81,7 @@ export default async function ServicePage({ params }: { params: Promise<{ servic
           </Reveal>
         ))}
 
-        {s.slug === "tourisme" && (
+        {s.slug === "route-des-vins" && (
           <Reveal>
             <section className="pt-16 md:pt-20">
               <h2 className="font-display text-2xl font-bold tracking-[-0.025em] md:text-3xl">

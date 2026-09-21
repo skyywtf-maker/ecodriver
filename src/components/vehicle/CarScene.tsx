@@ -123,13 +123,14 @@ export default function CarScene(props: Props) {
       style={{ touchAction: "pan-y" }}
     >
       <Suspense fallback={null}>
-        {/* Éclairage de studio généré dans la scène : aucune image HDR à
-            télécharger, et la touche bleue reprend l'accent de la charte. */}
+        {/* Éclairage de studio généré dans la scène, sans image HDR à
+            télécharger. Volontairement neutre : une source colorée teintait
+            la carrosserie de reflets bleus peu flatteurs. */}
         <Environment resolution={256}>
           <Lightformer intensity={2.2} position={[0, 5, -9]} scale={[12, 12, 1]} />
           <Lightformer intensity={1.4} position={[-6, 1.5, -1]} rotation-y={Math.PI / 2} scale={[20, 1.5, 1]} />
           <Lightformer intensity={1.4} position={[6, 1.5, -1]} rotation-y={-Math.PI / 2} scale={[20, 1.5, 1]} />
-          <Lightformer intensity={0.9} color="#0A84FF" position={[0, 2, 7]} scale={[12, 5, 1]} />
+          <Lightformer intensity={1.1} position={[0, 2.5, 7]} scale={[12, 5, 1]} />
         </Environment>
 
         <ambientLight intensity={0.4} />

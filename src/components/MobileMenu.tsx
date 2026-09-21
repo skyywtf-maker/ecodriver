@@ -12,8 +12,10 @@ const LINKS = [
   { href: "/#vehicule", label: "Le véhicule" },
   { href: "/#chauffeur", label: "Votre chauffeur" },
   { href: "/#avis", label: "Avis" },
+  { href: "/services/transferts-aeroport", label: "Transferts aéroport" },
+  { href: "/services/strasbourg-institutions", label: "Strasbourg & institutions" },
+  { href: "/services/route-des-vins", label: "Route des vins" },
   { href: "/services/evenementiel", label: "Événementiel" },
-  { href: "/services/tourisme", label: "Circuits touristiques" },
   { href: "/services/professionnels", label: "Professionnels" },
   { href: "/#villes", label: "Zones desservies" },
 ];

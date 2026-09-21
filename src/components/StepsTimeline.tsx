@@ -34,14 +34,14 @@ export function StepsTimeline({ steps }: { steps: Step[] }) {
       const r = el.getBoundingClientRect();
       // Le remplissage court de l'entrée du bloc dans l'écran jusqu'au
       // moment où son bas atteint le milieu de l'écran.
-      const start = window.innerHeight * 0.85;
-      const end = window.innerHeight * 0.25;
+      const start = window.innerHeight * 0.95;
+      const end = window.innerHeight * 0.6;
       const raw = (start - r.top) / Math.max(1, r.height + (start - end));
       const p = Math.min(1, Math.max(0, raw));
 
       el.style.setProperty("--progress", p.toFixed(4));
       setReached((prev) => {
-        const next = Math.min(steps.length, Math.floor(p * steps.length + 0.35));
+        const next = Math.min(steps.length, Math.floor(p * steps.length + 0.6));
         return next === prev ? prev : next;
       });
     };

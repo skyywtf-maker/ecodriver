@@ -1,5 +1,3 @@
-import { SERVICE_ZONES } from "./pricing";
-
 /**
  * Prestations proposées en plus du trajet classique.
  *
@@ -22,9 +20,106 @@ export type Service = {
   subject: string;
 };
 
-const ZONES = SERVICE_ZONES.map((z) => z.name).join(", ");
-
 export const SERVICES: Service[] = [
+  {
+    slug: "transferts-aeroport",
+    label: "Transferts aéroport",
+    eyebrow: "Entzheim, Bâle-Mulhouse, Francfort, Stuttgart, Baden",
+    h1: { lead: "Transferts", accent: "aéroport." },
+    title: "Transfert aéroport avec chauffeur · Strasbourg, Bâle, Francfort — Eco'Driver",
+    description:
+      "Transferts vers les aéroports de Strasbourg-Entzheim, Bâle-Mulhouse, Francfort, Stuttgart et Baden-Baden. Prix ferme, véhicules avec chauffeur.",
+    intro:
+      "Gagnez du temps, voyagez l'esprit tranquille. Le prix est fixé avant le départ et ne bouge plus, quel que soit le trafic.",
+    points: [
+      { k: "Aéroports", v: "France et Allemagne" },
+      { k: "Horaires", v: "Vols tôt et tardifs" },
+      { k: "Prix", v: "Ferme, payé en ligne" },
+      { k: "Bagages", v: "Jusqu'à 8 en van" },
+    ],
+    sections: [
+      {
+        h2: "Les aéroports desservis",
+        body: [
+          "Strasbourg-Entzheim à une quinzaine de kilomètres du centre, l'EuroAirport Bâle-Mulhouse, et côté allemand Baden Airpark, Stuttgart et Francfort.",
+          "Pour un vol au départ, indiquez votre numéro de vol dans la note : il sert de repère si l'horaire bouge.",
+        ],
+      },
+      {
+        h2: "Tôt le matin, tard le soir",
+        body: [
+          "Les réservations se prennent pour n'importe quelle heure. Une majoration de nuit s'applique alors, déjà comprise dans le prix affiché au moment de réserver.",
+        ],
+      },
+    ],
+    subject: "Demande — transfert aéroport",
+  },
+  {
+    slug: "strasbourg-institutions",
+    label: "Strasbourg & institutions",
+    eyebrow: "Parlement européen, Conseil de l'Europe, CEDH",
+    h1: { lead: "Strasbourg et les", accent: "institutions européennes." },
+    title: "VTC Strasbourg & institutions européennes — Eco'Driver",
+    description:
+      "Transport avec chauffeur vers le Parlement européen, le Conseil de l'Europe et la CEDH. Sessions parlementaires, délégations, transferts depuis l'aéroport et la gare.",
+    intro:
+      "Partez à la découverte du cœur de l'Europe avec un service de transport fiable et confortable. Sessions, délégations, rendez-vous institutionnels : les horaires sont tenus.",
+    points: [
+      { k: "Ponctualité", v: "Horaires institutionnels tenus" },
+      { k: "Confort", v: "Berline ou van, au choix" },
+      { k: "Chauffeur", v: "Professionnel et discret" },
+      { k: "Transferts", v: "Gare et aéroport inclus" },
+    ],
+    sections: [
+      {
+        h2: "Pour qui",
+        body: [
+          "Délégations en session, collaborateurs parlementaires, visiteurs et journalistes accrédités, entreprises reçues au quartier européen.",
+          "Les prises en charge se font à la gare de Strasbourg, à l'aéroport d'Entzheim ou devant votre hôtel, selon ce qui vous arrange.",
+        ],
+      },
+      {
+        h2: "Pendant les sessions",
+        body: [
+          "Les semaines de session concentrent les demandes. Réservez à l'avance : les créneaux se remplissent, et une mise à disposition sur la journée évite d'avoir à recommander à chaque déplacement.",
+        ],
+      },
+    ],
+    subject: "Demande — Strasbourg et institutions européennes",
+  },
+  {
+    slug: "route-des-vins",
+    label: "Route des vins d'Alsace",
+    eyebrow: "Circuits et mise à disposition",
+    h1: { lead: "La route des vins", accent: "d'Alsace." },
+    title: "Route des vins d'Alsace avec chauffeur — Eco'Driver",
+    description:
+      "Circuits sur la route des vins d'Alsace avec chauffeur privé : villages authentiques, domaines viticoles, dégustations. Mise à disposition à l'heure, jusqu'à 8 passagers.",
+    intro:
+      "Des villages authentiques, des paysages uniques, une expérience inoubliable. Le chauffeur reste avec vous : vous dégustez, il conduit.",
+    points: [
+      { k: "Découverte", v: "Villages et domaines" },
+      { k: "Gastronomie", v: "Dégustations sans conduire" },
+      { k: "Sur mesure", v: "Parcours libre" },
+      { k: "Tarif", v: "60 € par heure" },
+    ],
+    sections: [
+      {
+        h2: "La mise à disposition",
+        body: [
+          "Le véhicule et le chauffeur sont à vous pour la durée réservée. Vous vous arrêtez où vous voulez, aussi longtemps que vous voulez, et vous repartez quand vous le décidez.",
+          "C'est la formule qui convient aux dégustations : personne n'a à se priver ni à surveiller l'heure du retour.",
+        ],
+      },
+      {
+        h2: "Les incontournables",
+        body: [
+          "Obernai, Ribeauvillé, Riquewihr, Kaysersberg, Eguisheim : la route des vins se parcourt du nord au sud sur une centaine de kilomètres. Une demi-journée permet d'en voir trois ou quatre, une journée complète d'aller jusqu'à Colmar.",
+        ],
+      },
+    ],
+    subject: "Demande — circuit route des vins",
+  },
   {
     slug: "evenementiel",
     label: "Événementiel",
@@ -36,8 +131,8 @@ export const SERVICES: Service[] = [
     intro:
       "Un mariage, un séminaire, une soirée : les trajets ne se résument plus à un aller simple. On cale les horaires, les véhicules et les rotations ensemble, et le devis est fixé à l'avance.",
     points: [
-      { k: "Rotations", v: "Plusieurs trajets sur une même soirée" },
-      { k: "Véhicules", v: "Jusqu'à 8 passagers en van" },
+      { k: "Rotations", v: "Plusieurs trajets sur une soirée" },
+      { k: "Véhicules", v: "Jusqu'à 8 passagers" },
       { k: "Horaires", v: "Nuit et week-end compris" },
       { k: "Devis", v: "Fixé avant l'événement" },
     ],
@@ -49,47 +144,8 @@ export const SERVICES: Service[] = [
           "Le nombre de véhicules et les horaires se définissent en amont : c'est ce qui permet d'annoncer un prix ferme plutôt qu'une estimation.",
         ],
       },
-      {
-        h2: "Comment ça se passe",
-        body: [
-          "Vous décrivez l'événement dans le formulaire ci-dessous — date, lieux, nombre de personnes, horaires envisagés. Vous recevez un devis par retour, et rien n'est engagé tant que vous ne l'avez pas accepté.",
-        ],
-      },
     ],
     subject: "Demande de devis — événementiel",
-  },
-  {
-    slug: "tourisme",
-    label: "Circuits touristiques",
-    eyebrow: "Mise à disposition, à l'heure",
-    h1: { lead: "L'Alsace,", accent: "à votre rythme." },
-    title: "Circuits touristiques avec chauffeur · Alsace — Eco'Driver",
-    description:
-      "Mise à disposition avec chauffeur pour découvrir Strasbourg et l'Alsace : route des vins, châteaux, marchés de Noël. Tarif horaire, véhicule jusqu'à 8 passagers.",
-    intro:
-      "Une journée ou une demi-journée, le véhicule et le chauffeur sont à vous. Pas de compteur kilométrique : on facture le temps, vous décidez du parcours.",
-    points: [
-      { k: "Tarif", v: "60 € par heure" },
-      { k: "Véhicule", v: "Van jusqu'à 8 passagers" },
-      { k: "Parcours", v: "Libre, modifiable en route" },
-      { k: "Durée", v: "Demi-journée ou journée" },
-    ],
-    sections: [
-      {
-        h2: "La mise à disposition",
-        body: [
-          "Le chauffeur reste avec vous pendant toute la durée réservée. Vous vous arrêtez où vous voulez, aussi longtemps que vous voulez, et vous repartez quand vous le décidez.",
-          "C'est la formule qui convient aux visites : route des vins, châteaux du Bas-Rhin, villages alsaciens, marchés de Noël en décembre.",
-        ],
-      },
-      {
-        h2: "Au départ de Strasbourg et au-delà",
-        body: [
-          `Le point de départ se choisit librement, y compris depuis les aéroports desservis : ${ZONES}.`,
-        ],
-      },
-    ],
-    subject: "Demande de devis — circuit touristique",
   },
   {
     slug: "professionnels",
@@ -98,7 +154,7 @@ export const SERVICES: Service[] = [
     h1: { lead: "Vos clients,", accent: "pris en charge." },
     title: "VTC entreprises et professionnels · Grand Est — Eco'Driver",
     description:
-      "Mise à disposition pour entreprises, hôtels, agences et établissements de nuit dans le Grand Est. Transferts récurrents, clientèle VIP, facturation au mois.",
+      "Mise à disposition pour entreprises, hôtels, agences et établissements de nuit dans le Grand Est. Transferts récurrents, clientèle VIP, facturation groupée.",
     intro:
       "Transferts de collaborateurs, navettes clients, prises en charge VIP. Un interlocuteur unique, un chauffeur identifié, et des trajets qui se répètent sans avoir à tout réexpliquer.",
     points: [
@@ -118,7 +174,6 @@ export const SERVICES: Service[] = [
         h2: "Ce qu'on met en place",
         body: [
           "Un échange pour cadrer vos besoins — fréquence, destinations habituelles, véhicules — puis une grille tarifaire qui vous est propre. Les courses se commandent ensuite directement, sans repasser par un devis à chaque fois.",
-          "Pas de compte en ligne à ce stade : tout passe par email et par téléphone, ce qui reste le plus rapide pour ce volume.",
         ],
       },
     ],
@@ -131,7 +186,7 @@ export function serviceBySlug(slug: string) {
 }
 
 /**
- * Points d'intérêt mis en avant sur la page tourisme.
+ * Points d'intérêt mis en avant sur la page route des vins.
  *
  * Coordonnées relevées sur la Base Adresse Nationale. Les visuels sont à
  * déposer dans public/tourisme/ ; un dégradé prend le relais tant qu'ils

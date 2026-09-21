@@ -46,12 +46,12 @@ export const VEHICLES: Vehicle[] = [
   {
     id: "BERLINE",
     name: "Berline confort",
-    model: "Toyota Corolla",
+    model: "Mercedes Classe E",
     tagline: "Pour les trajets du quotidien et les transferts aéroport.",
     passengers: 4,
     luggage: 3,
     image: "/vehicules/berline.jpg",
-    model3d: "/vehicule/toyota-corolla.glb",
+    model3d: "/vehicule/mercedes-e-class.glb",
     priceHint: "15 € jusqu'à 5 km, puis au kilomètre",
     from: "dès 15 €",
     tariff: {
@@ -66,7 +66,7 @@ export const VEHICLES: Vehicle[] = [
   {
     id: "TOURING",
     name: "Voiture touring",
-    model: "Break",
+    model: "Toyota Corolla Touring",
     tagline: "Pour les bagages volumineux et les longues distances.",
     passengers: 4,
     luggage: 5,

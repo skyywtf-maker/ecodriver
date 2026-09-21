@@ -82,8 +82,13 @@ export default function RouteMapInner({ from, to, geometry, padding, className =
         // les étiquettes en dessous de 768 px, la voirie suffit à situer.
         if (window.matchMedia("(max-width: 767px)").matches) {
           for (const layer of m.getStyle().layers ?? []) {
-            if (layer.type === "symbol") m.setLayoutProperty(layer.id, "visibility", "none");
+            // Les noms de communes restent : ce sont eux qui font comprendre
+            // qu'il s'agit d'une carte. Rues et points d'intérêt disparaissent.
+            if (layer.type === "symbol" && !/place|city|town|country/i.test(layer.id)) {
+              m.setLayoutProperty(layer.id, "visibility", "none");
+            }
           }
+          m.setZoom(12.4);
         }
 
         setReady(true);

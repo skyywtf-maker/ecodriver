@@ -6,11 +6,11 @@ import { SITE } from "@/config/site";
 import { Car3D } from "./Car3D";
 
 /**
- * Section véhicules : les trois catégories, avec leur capacité et leur tarif.
+ * Section véhicules.
  *
- * La fiche sélectionnée pilote le modèle 3D affiché à côté. Aucun
- * argumentaire lié à la motorisation : le véhicule est une Toyota Corolla
- * thermique, pas un véhicule électrique.
+ * Les trois catégories tiennent sur une seule ligne d'onglets, et seule la
+ * fiche choisie est détaillée : empilées, les trois fiches obligeaient à
+ * faire défiler pour comparer. Le modèle 3D suit l'onglet actif.
  */
 export function VehicleShowcase() {
   const { accent, intro } = SITE.vehicle;
@@ -26,48 +26,60 @@ export function VehicleShowcase() {
         <p className="max-w-[560px] text-[15px] leading-relaxed text-label">{intro}</p>
       </div>
 
-      <div className="mt-10 grid gap-4 md:mt-12 md:grid-cols-12">
+      {/* Onglets : trois colonnes égales, toujours visibles d'un coup d'œil. */}
+      <div role="tablist" aria-label="Catégories de véhicule" className="mt-8 grid grid-cols-3 gap-2">
+        {VEHICLES.map((v) => {
+          const on = v.id === selected;
+          return (
+            <button
+              key={v.id}
+              type="button"
+              role="tab"
+              aria-selected={on}
+              onClick={() => setSelected(v.id)}
+              className={`flex flex-col items-start gap-0.5 rounded-2xl border px-3 py-2.5 text-left transition-colors sm:px-4 sm:py-3 ${
+                on ? "border-accent bg-white/[0.10]" : "border-white/[0.10] bg-white/[0.04] hover:border-white/25"
+              }`}
+            >
+              <span className="font-display text-[13px] font-semibold leading-tight tracking-[-0.015em] sm:text-[15px]">
+                {v.name}
+              </span>
+              <span className={`text-[11px] font-semibold sm:text-[12px] ${on ? "text-accent" : "text-label"}`}>
+                {v.from}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="mt-3 grid gap-3 md:grid-cols-12">
         <div className="md:col-span-7">
           <Car3D src={active.model3d ?? ""} />
         </div>
 
-        <ul className="flex flex-col gap-3 md:col-span-5">
-          {VEHICLES.map((v) => {
-            const on = v.id === selected;
-            return (
-              <li key={v.id}>
-                <button
-                  type="button"
-                  onClick={() => setSelected(v.id)}
-                  aria-pressed={on}
-                  className={`flex w-full flex-col gap-3 rounded-4xl border p-6 text-left transition-colors ${
-                    on ? "glass border-accent/50" : "tile border-white/[0.08] hover:bg-white/[0.07]"
-                  }`}
-                >
-                  <span className="flex items-baseline justify-between gap-3">
-                    <span className="font-display text-[19px] font-bold tracking-[-0.02em]">{v.name}</span>
-                    <span className={`shrink-0 font-display text-[14px] font-semibold ${on ? "text-accent" : "text-label"}`}>
-                      {v.from}
-                    </span>
-                  </span>
-                  <span className="text-[13px] leading-relaxed text-label">{v.tagline}</span>
-                  <span className="flex flex-wrap gap-2">
-                    {[
-                      ["Modèle", v.model],
-                      ["Passagers", String(v.passengers)],
-                      ["Bagages", String(v.luggage)],
-                    ].map(([k, val]) => (
-                      <span key={k} className="flex flex-col gap-0.5 rounded-[12px] bg-white/[0.06] px-3.5 py-2">
-                        <span className="text-[10px] font-medium uppercase tracking-[0.08em] text-label">{k}</span>
-                        <span className="text-[13px] font-semibold">{val}</span>
-                      </span>
-                    ))}
-                  </span>
-                </button>
-              </li>
-            );
-          })}
-        </ul>
+        <div className="glass flex flex-col gap-4 rounded-4xl p-6 md:col-span-5 md:justify-center md:p-7">
+          <div className="flex flex-col gap-1.5">
+            <h3 className="font-display text-[21px] font-bold tracking-[-0.02em]">{active.name}</h3>
+            <p className="text-[14px] leading-relaxed text-label">{active.tagline}</p>
+          </div>
+
+          <dl className="grid grid-cols-3 gap-2">
+            {[
+              ["Modèle", active.model],
+              ["Passagers", String(active.passengers)],
+              ["Bagages", String(active.luggage)],
+            ].map(([k, val]) => (
+              <div key={k} className="flex flex-col gap-0.5 rounded-[12px] bg-white/[0.06] px-3 py-2.5">
+                <dt className="text-[10px] font-medium uppercase tracking-[0.08em] text-label">{k}</dt>
+                <dd className="text-[13px] font-semibold leading-tight">{val}</dd>
+              </div>
+            ))}
+          </dl>
+
+          <p className="border-t border-white/[0.08] pt-3.5 text-[13px] text-label">
+            Tarif : <span className="font-semibold text-white">{active.priceHint}</span>
+          </p>
+        </div>
       </div>
     </section>
   );

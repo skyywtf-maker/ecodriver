@@ -104,7 +104,7 @@ export default function CitiesMapInner() {
         className="relative h-[300px] overflow-hidden rounded-4xl border border-white/[0.08] bg-graphite md:col-span-7 md:h-[420px]"
       />
 
-      <ul className="grid grid-cols-2 gap-3 md:col-span-5 md:content-start">
+      <ul className="flex flex-wrap gap-2 md:col-span-5 md:content-start">
         {SITE.cities.map((c, i) => (
           <li key={c.name}>
             <button
@@ -113,12 +113,12 @@ export default function CitiesMapInner() {
               onMouseLeave={() => setActive(null)}
               onFocus={() => setActive(c.name)}
               onBlur={() => setActive(null)}
-              className={`tile flex h-[86px] w-full flex-col justify-between rounded-[20px] px-5 py-4 text-left transition-all duration-500 ${
-                i < revealed ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
-              } ${active === c.name ? "border-accent/60 bg-white/[0.09]" : ""}`}
+              className={`tile flex items-baseline gap-2 rounded-full px-4 py-2.5 text-left transition-all duration-500 ${
+                i < revealed ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"
+              } ${active === c.name ? "border-accent/60 bg-white/[0.10]" : ""}`}
             >
-              <span className="font-display text-[15px] font-semibold tracking-[-0.02em]">{c.name}</span>
-              <span className="text-[13px] font-medium text-label">{c.km}</span>
+              <span className="font-display text-[14px] font-semibold tracking-[-0.015em]">{c.name}</span>
+              <span className="text-[12px] font-medium text-label">{c.km}</span>
             </button>
           </li>
         ))}

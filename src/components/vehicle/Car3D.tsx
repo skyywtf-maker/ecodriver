@@ -76,7 +76,14 @@ export function Car3D({ src }: { src: string }) {
   const onReady = useCallback(() => setReady(true), []);
 
   // Changer de véhicule recharge un autre fichier : on réaffiche l'attente.
-  useEffect(() => setReady(false), [src]);
+  // Pas au montage : les effets de l'enfant s'exécutent avant ceux du parent,
+  // ce qui annulerait le signal de fin de chargement déjà reçu.
+  const known = useRef(src);
+  useEffect(() => {
+    if (known.current === src) return;
+    known.current = src;
+    setReady(false);
+  }, [src]);
 
   return (
     <div

@@ -86,7 +86,9 @@ export function HeroBooking({ onContinue, showHeadline = true }: Props) {
         onLandmark={pickLandmark}
       />
 
-      <div className="glass absolute inset-x-2 bottom-2 z-20 rounded-5xl p-5 shadow-[0_30px_80px_rgba(0,0,0,0.45)] transition-[padding] duration-300 md:inset-x-auto md:bottom-auto md:left-16 md:top-[120px] md:w-[440px] md:p-7">
+      {/* Sur téléphone, la feuille s'arrête sous la barre de navigation et
+          défile à l'intérieur : dépliée, elle passait dessous. */}
+      <div className="glass absolute inset-x-2 bottom-2 z-20 max-h-[calc(100svh-104px)] overflow-y-auto overscroll-contain rounded-5xl p-5 shadow-[0_30px_80px_rgba(0,0,0,0.45)] transition-[padding] duration-300 md:inset-x-auto md:bottom-auto md:left-16 md:top-[120px] md:max-h-none md:w-[440px] md:overflow-visible md:p-7">
         {/* Poignée : indique que la feuille se manipule, comme sur mobile. */}
         {/* Poignée réellement manipulable : glisser vers le haut déplie la
             feuille, vers le bas la replie. Le clic fait la même chose, pour

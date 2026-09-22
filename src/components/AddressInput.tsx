@@ -12,13 +12,17 @@ type Props = {
   value: DraftPoint | null;
   onChange: (p: (DraftPoint & { inGrandEst: boolean }) | null) => void;
   className?: string;
+  /** Appelé à la prise de focus : la feuille réduite se déplie pour laisser la place à la liste. */
+  onFocus?: () => void;
 };
 
-export function AddressInput({ label, placeholder, marker, value, onChange, className = "" }: Props) {
+export function AddressInput({ label, placeholder, marker, value, onChange, className = "", onFocus }: Props) {
   const [text, setText] = useState(value?.label ?? "");
   const [results, setResults] = useState<Place[]>([]);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(0);
+  /** Recherche terminée sans aucun lieu dans la zone : on le dit plutôt que rien. */
+  const [empty, setEmpty] = useState(false);
   const listId = useId();
   const skipFetch = useRef(false);
 
@@ -34,6 +38,7 @@ export function AddressInput({ label, placeholder, marker, value, onChange, clas
     const q = text.trim();
     if (q.length < 2 || q === value?.label) {
       setResults([]);
+      setEmpty(false);
       return;
     }
     const ctrl = new AbortController();
@@ -42,6 +47,7 @@ export function AddressInput({ label, placeholder, marker, value, onChange, clas
         const r = await fetch(`/api/geocode?q=${encodeURIComponent(q)}`, { signal: ctrl.signal });
         const data = (await r.json()) as { places: Place[] };
         setResults(data.places);
+        setEmpty(data.places.length === 0 && q.length >= 3);
         setActive(0);
         setOpen(true);
       } catch {}
@@ -86,7 +92,10 @@ export function AddressInput({ label, placeholder, marker, value, onChange, clas
             setText(e.target.value);
             if (value) onChange(null);
           }}
-          onFocus={() => results.length && setOpen(true)}
+          onFocus={() => {
+            onFocus?.();
+            if (results.length) setOpen(true);
+          }}
           onBlur={() => setTimeout(() => setOpen(false), 150)}
           onKeyDown={(e) => {
             if (!open || !results.length) return;
@@ -114,6 +123,7 @@ export function AddressInput({ label, placeholder, marker, value, onChange, clas
             skipFetch.current = true;
             setText("");
             setResults([]);
+            setEmpty(false);
             setOpen(false);
             onChange(null);
           }}
@@ -124,6 +134,11 @@ export function AddressInput({ label, placeholder, marker, value, onChange, clas
             <path d="M6 6l12 12M18 6L6 18" />
           </svg>
         </button>
+      )}
+      {open && empty && (
+        <p className="absolute left-2 right-2 top-[calc(100%+6px)] z-40 rounded-2xl border border-white/[0.12] bg-[#17191E] px-4 py-3 text-[13px] text-label shadow-[0_24px_60px_rgba(0,0,0,0.65)]">
+          Aucun lieu trouvé dans la zone desservie. Essayez une adresse avec la ville.
+        </p>
       )}
       {open && results.length > 0 && (
         // Fond opaque et non « glass » : la liste est posée dans la carte de
@@ -151,7 +166,6 @@ export function AddressInput({ label, placeholder, marker, value, onChange, clas
               <span className="min-w-0 flex-1">
                 <span className="block truncate font-medium">{p.label}</span>
                 {p.hint && <span className="block truncate text-xs text-label">{p.hint}</span>}
-                {!p.inGrandEst && <span className="block text-xs text-[#FF9F0A]">Hors Grand Est</span>}
               </span>
             </li>
           ))}

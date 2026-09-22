@@ -160,7 +160,14 @@ export default function RouteMapGoogle({ from, to, geometry, padding, className 
     }
 
     const coords = path.length > 1 ? path : pts.map((p) => ({ lat: p.lat, lng: p.lng }));
+    const hadRoute = hasRoute.current;
     hasRoute.current = coords.length > 0;
+    // Champs vidés (la croix) : la carte revient en douceur à la vue d'ensemble.
+    if (hadRoute && coords.length === 0 && el.current) {
+      const z = targetZoom();
+      stopAnim.current();
+      stopAnim.current = animateZoom(m, viewCenter(z, el.current), z, 900);
+    }
     if (coords.length > 0) stopAnim.current();
     // Les repères restent tant que seule l'arrivée est choisie (pour en
     // changer d'un geste) et s'effacent devant le trajet complet.

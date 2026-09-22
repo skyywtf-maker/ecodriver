@@ -9,6 +9,7 @@ import { useIsDesktop } from "@/lib/useIsDesktop";
 import { OPEN_BOOKING_EVENT } from "@/components/StickyBookBar";
 import { MAP_LANDMARKS, type Landmark } from "@/config/services";
 import { useGoogleMaps } from "@/lib/google-maps";
+import { RatingBadge } from "@/components/ReviewSummary";
 
 type Props = {
   /** Sur l'accueil, "Continuer" mène à /reserver. Dans /reserver, passe à l'étape suivante. */
@@ -182,6 +183,7 @@ export function HeroBooking({ onContinue, showHeadline = true }: Props) {
             <span className="serif-accent">partout en Grand Est.</span>
           </p>
           <p className="text-[13px] leading-snug text-label-strong">Prix ferme, payé en ligne.</p>
+          <RatingBadge />
         </div>
       )}
 
@@ -192,6 +194,7 @@ export function HeroBooking({ onContinue, showHeadline = true }: Props) {
             <br />
             <span className="serif-accent">partout en Grand Est.</span>
           </p>
+          <RatingBadge />
           <ul className="hidden gap-2 lg:flex">
             {["Paiement sécurisé", "Confirmé par le chauffeur", "Remboursement intégral si refus"].map((c) => (
               <li key={c} className="glass-soft flex h-9 items-center rounded-full px-4 text-[13px] font-medium text-white/85">

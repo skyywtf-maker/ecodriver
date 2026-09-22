@@ -55,13 +55,39 @@ export function ReviewSummary() {
   );
 }
 
-/** Étoile pleine, à moitié pleine ou vide. */
-function Star({ fill, index }: { fill: 0 | 0.5 | 1; index: number }) {
-  // Identifiant déterministe : un Math.random() ici ferait diverger le rendu
-  // serveur et le rendu client.
-  const id = `etoile-moitie-${index}`;
+/**
+ * Note compacte, sans donnée structurée : pour l'en-tête de l'accueil, où la
+ * section avis publie déjà l'AggregateRating. Rien tant qu'aucune note réelle.
+ */
+export function RatingBadge({ className = "" }: { className?: string }) {
+  const { rating, count, source } = SITE.reviewSummary;
+  if (rating === null || count <= 0) return null;
+  const rounded = Math.round(rating * 2) / 2;
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden>
+    <p className={`flex items-center gap-2 ${className}`}>
+      <span className="flex items-center gap-0.5" aria-hidden>
+        {[1, 2, 3, 4, 5].map((i) => (
+          <Star key={i} index={i} prefix="entete" size={14} fill={rounded >= i ? 1 : rounded >= i - 0.5 ? 0.5 : 0} />
+        ))}
+      </span>
+      <span className="whitespace-nowrap text-[13px] font-medium text-label-strong">
+        <span className="font-display font-bold text-white">{rating.toLocaleString("fr-FR")}</span>
+        <span className="text-label">
+          {" "}
+          · {count} avis{source ? ` ${source}` : ""}
+        </span>
+      </span>
+    </p>
+  );
+}
+
+/** Étoile pleine, à moitié pleine ou vide. */
+function Star({ fill, index, prefix = "avis", size = 18 }: { fill: 0 | 0.5 | 1; index: number; prefix?: string; size?: number }) {
+  // Identifiant déterministe : un Math.random() ici ferait diverger le rendu
+  // serveur et le rendu client. Le préfixe évite deux dégradés de même id.
+  const id = `etoile-moitie-${prefix}-${index}`;
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden>
       {fill === 0.5 && (
         <defs>
           <linearGradient id={id}>

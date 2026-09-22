@@ -19,16 +19,24 @@ export async function getRoute(
   const url = new URL(`${BASE}/route/v1/driving/${coords}`);
   url.searchParams.set("overview", "full");
   url.searchParams.set("geometries", "geojson");
+  // Le prix se calcule au kilomètre : on demande les variantes et on garde
+  // la plus COURTE, là où le moteur renvoie d'abord la plus rapide.
+  url.searchParams.set("alternatives", "3");
   const res = await fetch(url, { next: { revalidate: 600 } });
   if (!res.ok) return null;
   const data = (await res.json()) as {
     routes?: { distance: number; duration: number; geometry: { coordinates: [number, number][] } }[];
   };
-  const r = data.routes?.[0];
+  const r = shortest(data.routes ?? []);
   if (!r) return null;
   return {
     distanceKm: Math.round((r.distance / 1000) * 10) / 10,
     durationMin: Math.round(r.duration / 60),
     geometry: r.geometry.coordinates,
   };
+}
+
+/** L'itinéraire le plus court en distance parmi les variantes proposées. */
+function shortest<T extends { distance: number }>(routes: T[]): T | undefined {
+  return routes.reduce<T | undefined>((best, r) => (!best || r.distance < best.distance ? r : best), undefined);
 }

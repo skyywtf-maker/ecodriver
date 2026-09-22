@@ -33,6 +33,8 @@ export async function getRoute(
       travelMode: "DRIVE",
       // Sans trafic : un prix ferme ne doit pas dépendre de l'heure du devis.
       routingPreference: "TRAFFIC_UNAWARE",
+      // Le prix se calcule au kilomètre : variantes demandées, la plus courte retenue.
+      computeAlternativeRoutes: true,
       languageCode: "fr-FR",
       units: "METRIC",
     }),
@@ -42,10 +44,12 @@ export async function getRoute(
     console.error("[routes] Google a répondu", res.status, await res.text().catch(() => ""));
     return null;
   }
-  const data = (await res.json()) as {
-    routes?: { distanceMeters?: number; duration?: string; polyline?: { encodedPolyline?: string } }[];
-  };
-  const r = data.routes?.[0];
+  type GRoute = { distanceMeters?: number; duration?: string; polyline?: { encodedPolyline?: string } };
+  const data = (await res.json()) as { routes?: GRoute[] };
+  const r = (data.routes ?? []).reduce<GRoute | undefined>(
+    (best, x) => (x.distanceMeters && (!best?.distanceMeters || x.distanceMeters < best.distanceMeters) ? x : best),
+    undefined
+  );
   if (!r?.distanceMeters) return null;
   return {
     distanceKm: Math.round((r.distanceMeters / 1000) * 10) / 10,

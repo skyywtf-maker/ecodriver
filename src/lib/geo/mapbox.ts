@@ -62,12 +62,17 @@ export async function getRoute(from: { lat: number; lng: number }, to: { lat: nu
   url.searchParams.set("access_token", TOKEN);
   url.searchParams.set("geometries", "geojson");
   url.searchParams.set("overview", "full");
+  // Prix au kilomètre : variantes demandées, la plus courte retenue.
+  url.searchParams.set("alternatives", "true");
   const res = await fetch(url, { next: { revalidate: 600 } });
   if (!res.ok) return null;
   const data = (await res.json()) as {
     routes: { distance: number; duration: number; geometry: { coordinates: [number, number][] } }[];
   };
-  const r = data.routes?.[0];
+  const r = (data.routes ?? []).reduce<(typeof data.routes)[number] | undefined>(
+    (best, x) => (!best || x.distance < best.distance ? x : best),
+    undefined
+  );
   if (!r) return null;
   return {
     distanceKm: Math.round((r.distance / 1000) * 10) / 10,

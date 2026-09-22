@@ -9,7 +9,6 @@ import { ServicesSection } from "@/components/ServicesSection";
 import Link from "next/link";
 import { Reveal } from "@/components/Reveal";
 import { CitiesMapStatic } from "@/components/CitiesMapStatic";
-import { ReviewSummary } from "@/components/ReviewSummary";
 import { StepsTimeline } from "@/components/StepsTimeline";
 import { CitiesMap } from "@/components/CitiesMap";
 
@@ -31,11 +30,14 @@ export default function Home() {
           <VehicleShowcase />
         </Reveal>
 
-        <section id="villes" className="scroll-mt-28 pt-24 md:pt-[120px]">
-          <h2 className="font-display text-4xl font-bold tracking-[-0.035em] md:text-5xl">
-            Nos destinations, <span className="serif-accent">un seul chauffeur.</span>
-          </h2>
-          <div className="mt-10 md:mt-12">
+        <section id="villes" className="scroll-mt-28 pt-16 md:pt-[104px]">
+          <div className="flex flex-col gap-3">
+            <p className="eyebrow">Destinations</p>
+            <h2 className="font-display text-[32px] font-bold leading-[1.05] tracking-[-0.035em] md:text-5xl">
+              Nos destinations, <span className="serif-accent">un seul chauffeur.</span>
+            </h2>
+          </div>
+          <div className="mt-7 md:mt-10">
             <CitiesMap />
           </div>
         </section>
@@ -44,7 +46,13 @@ export default function Home() {
           <ServicesSection />
         </Reveal>
 
-        <section id="deroule" className="scroll-mt-28 pt-24 md:pt-[120px]">
+        <section id="deroule" className="scroll-mt-28 pt-16 md:pt-[104px]">
+          <div className="mb-7 flex flex-col gap-3 md:mb-10">
+            <p className="eyebrow">Réservation</p>
+            <h2 className="font-display text-[32px] font-bold leading-[1.05] tracking-[-0.035em] md:text-5xl">
+              Trois étapes, <span className="serif-accent">pas une de plus.</span>
+            </h2>
+          </div>
           <StepsTimeline steps={STEPS} />
         </section>
 
@@ -52,43 +60,13 @@ export default function Home() {
           <TrustSection />
         </Reveal>
 
-        <section id="avis" className="scroll-mt-28 pt-24 md:pt-[120px]">
-          <div className="mb-8">
-            <ReviewSummary />
-          </div>
-
-          <ul className="mt-8 grid gap-4 md:grid-cols-3">
-            {SITE.reviewHighlights.map((h, i) => (
-              <Reveal as="li" key={h.title} delay={i * 80} className="tile flex flex-col gap-2.5 rounded-4xl p-7">
-                <h3 className="font-display text-xl font-bold tracking-[-0.02em]">{h.title}</h3>
-                <p className="text-[15px] leading-relaxed text-label">{h.text}</p>
-              </Reveal>
-            ))}
-          </ul>
-
-          {SITE.reviews.length > 0 && (
-            <ul className="mt-4 grid gap-4 md:grid-cols-3">
-              {SITE.reviews.map((r, i) => (
-                <Reveal as="li" key={i} delay={i * 80}>
-                  <figure className="tile flex h-full flex-col justify-between gap-6 rounded-4xl p-7">
-                    <blockquote className="font-serif text-[22px] italic leading-snug">« {r.text} »</blockquote>
-                    <figcaption className="text-[13px] font-medium text-label">
-                      <span className="font-semibold text-white">{r.author}</span> · {r.route}
-                    </figcaption>
-                  </figure>
-                </Reveal>
-              ))}
-            </ul>
-          )}
-        </section>
-
         {/* Dernier appel à l'action : après les avis, le visiteur convaincu
             ne doit pas avoir à remonter toute la page pour réserver. */}
         <Reveal>
-          <section className="pt-24 md:pt-[120px]">
-            <div className="glass flex flex-col gap-7 overflow-hidden rounded-5xl p-8 md:p-12">
+          <section className="pt-16 md:pt-[104px]">
+            <div className="glass flex flex-col gap-6 overflow-hidden rounded-4xl p-6 md:gap-7 md:p-12">
               <div className="flex flex-col gap-3">
-                <h2 className="font-display text-4xl font-bold tracking-[-0.035em] md:text-5xl">
+                <h2 className="font-display text-[32px] font-bold leading-[1.05] tracking-[-0.035em] md:text-5xl">
                   Votre trajet, <span className="serif-accent">maintenant.</span>
                 </h2>
                 <p className="max-w-[520px] text-[15px] leading-relaxed text-label">
@@ -96,7 +74,7 @@ export default function Home() {
                 </p>
               </div>
 
-              <div className="relative h-[220px] overflow-hidden rounded-4xl border border-white/[0.08] md:h-[280px]">
+              <div className="relative hidden h-[280px] overflow-hidden rounded-3xl border border-white/[0.08] md:block">
                 <CitiesMapStatic />
               </div>
 

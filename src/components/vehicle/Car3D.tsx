@@ -88,7 +88,7 @@ export function Car3D({ src }: { src: string }) {
   return (
     <div
       ref={holder}
-      className="relative h-[320px] w-full overflow-hidden rounded-4xl border border-white/[0.08] bg-graphite sm:h-[380px] md:h-[520px]"
+      className="relative h-[270px] w-full overflow-hidden rounded-3xl border border-white/[0.08] bg-graphite sm:h-[380px] md:h-[520px]"
     >
       {visible && (
         <Suspense fallback={null}>

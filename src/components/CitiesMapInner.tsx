@@ -7,6 +7,7 @@ import { SITE } from "@/config/site";
 
 const STYLE = "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json";
 const ACCENT = "#0A84FF";
+const COUNTRIES = ["France", "Allemagne"] as const;
 
 /**
  * Les villes desservies, posées sur la carte.
@@ -22,6 +23,7 @@ export default function CitiesMapInner() {
   const [ready, setReady] = useState(false);
   const [active, setActive] = useState<string | null>(null);
   const [revealed, setRevealed] = useState(0);
+  const [country, setCountry] = useState<(typeof COUNTRIES)[number]>("France");
 
   useEffect(() => {
     if (!el.current || map.current) return;
@@ -36,7 +38,9 @@ export default function CitiesMapInner() {
         [3.9, 47.4],
         [9.6, 50.4],
       ],
-      fitBoundsOptions: { padding: 48 },
+      // Sur téléphone, 48 px de marge sur une carte de 230 px dézoomaient
+      // jusqu'à Paris et tassaient les points au centre.
+      fitBoundsOptions: { padding: el.current.clientWidth < 500 ? 12 : 48 },
       attributionControl: false,
       interactive: false,
     });
@@ -95,48 +99,69 @@ export default function CitiesMapInner() {
     });
   }, [ready, revealed, active]);
 
+  const shown = SITE.cities.map((c, i) => ({ ...c, i })).filter((c) => c.country === country);
+
   return (
-    <div className="grid gap-4 md:grid-cols-12">
+    <div className="grid gap-3 md:grid-cols-12 md:gap-4">
       <div
         ref={el}
         role="img"
         aria-label="Carte des villes desservies dans le Grand Est"
-        className="relative h-[300px] overflow-hidden rounded-4xl border border-white/[0.08] bg-graphite md:col-span-7 md:h-[420px]"
+        className="relative h-[230px] overflow-hidden rounded-3xl border border-white/[0.08] bg-graphite md:col-span-7 md:h-[420px]"
       />
 
-      {/* Deux listes groupées par pays, chaque ligne alignée sur sa distance.
-          Les pastilles en largeur libre donnaient un bord droit en dents de
-          scie et ne disaient rien de la géographie. */}
-      <div className="flex flex-col gap-6 md:col-span-5 md:content-start">
-        {["France", "Allemagne"].map((country) => (
-          <div key={country} className="flex flex-col gap-1">
-            <h3 className="mb-1 text-[11px] font-medium uppercase tracking-[0.12em] text-white/35">{country}</h3>
-            <ul className="flex flex-col">
-              {SITE.cities
-                .map((c, i) => ({ ...c, i }))
-                .filter((c) => c.country === country)
-                .map((c) => (
-                  <li key={c.name}>
-                    <button
-                      type="button"
-                      onMouseEnter={() => setActive(c.name)}
-                      onMouseLeave={() => setActive(null)}
-                      onFocus={() => setActive(c.name)}
-                      onBlur={() => setActive(null)}
-                      className={`flex w-full items-baseline justify-between gap-4 border-b border-white/[0.07] px-1 py-2.5 text-left transition-all duration-500 last:border-0 ${
-                        c.i < revealed ? "translate-y-0 opacity-100" : "translate-y-1 opacity-0"
-                      } ${active === c.name ? "text-white" : ""}`}
-                    >
-                      <span className="font-display text-[15px] font-semibold tracking-[-0.015em]">{c.name}</span>
-                      <span className={`text-[13px] font-medium ${active === c.name ? "text-accent" : "text-label"}`}>
-                        {c.km}
-                      </span>
-                    </button>
-                  </li>
-                ))}
-            </ul>
-          </div>
-        ))}
+      {/* Un pays à la fois, villes sur deux colonnes : la liste complète
+          occupait plus d'un écran de téléphone à elle seule. */}
+      <div className="flex flex-col gap-3 md:col-span-5">
+        <div role="tablist" aria-label="Pays" className="grid grid-cols-2 gap-1 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-1">
+          {COUNTRIES.map((c) => {
+            const on = c === country;
+            return (
+              <button
+                key={c}
+                type="button"
+                role="tab"
+                aria-selected={on}
+                onClick={() => {
+                  setCountry(c);
+                  setActive(null);
+                }}
+                className={`flex h-10 items-center justify-center gap-2 rounded-xl font-display text-[13px] font-semibold transition-colors ${
+                  on ? "bg-white text-ink" : "text-label hover:text-white"
+                }`}
+              >
+                {c}
+                <span className={`text-[11px] font-medium ${on ? "text-ink/50" : "text-white/30"}`}>
+                  {SITE.cities.filter((x) => x.country === c).length}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        <ul className="grid grid-cols-2 gap-2">
+          {shown.map((c) => {
+            const on = active === c.name;
+            return (
+              <li key={c.name}>
+                <button
+                  type="button"
+                  onMouseEnter={() => setActive(c.name)}
+                  onMouseLeave={() => setActive(null)}
+                  onFocus={() => setActive(c.name)}
+                  onBlur={() => setActive(null)}
+                  onClick={() => setActive(on ? null : c.name)}
+                  className={`flex h-full w-full flex-col items-start justify-between gap-1 rounded-xl border px-3.5 py-2.5 text-left transition-all duration-500 ${
+                    c.i < revealed ? "translate-y-0 opacity-100" : "translate-y-1 opacity-0"
+                  } ${on ? "border-accent/60 bg-accent/[0.08]" : "border-white/[0.07] bg-white/[0.03]"}`}
+                >
+                  <span className="font-display text-[14px] font-semibold leading-tight tracking-[-0.015em]">{c.name}</span>
+                  <span className={`text-[12px] font-medium ${on ? "text-accent" : "text-label"}`}>{c.km}</span>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
       </div>
     </div>
   );

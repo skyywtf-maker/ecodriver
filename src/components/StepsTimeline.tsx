@@ -62,17 +62,17 @@ export function StepsTimeline({ steps }: { steps: Step[] }) {
   }, [steps.length]);
 
   return (
-    <ol ref={holder} className="relative grid gap-4 pl-10 md:grid-cols-3 md:pl-0">
+    <ol ref={holder} className="relative grid gap-2 pl-10 md:grid-cols-3 md:gap-4 md:pl-0">
       {/* Rail. Sur téléphone il court à gauche, HORS des cartes : posé à
           l'intérieur, il traversait les textes. Dès md il passe à
           l'horizontale, par le centre des pastilles. */}
       <span
         aria-hidden
-        className="absolute bottom-6 left-[15px] top-6 w-px bg-white/[0.10] md:bottom-auto md:left-8 md:right-8 md:top-[3.375rem] md:h-px md:w-auto"
+        className="absolute bottom-6 left-[15px] top-4 w-px bg-white/[0.10] md:bottom-auto md:left-8 md:right-8 md:top-[3.375rem] md:h-px md:w-auto"
       />
       <span
         aria-hidden
-        className="absolute bottom-6 left-[15px] top-6 w-px origin-top scale-y-[var(--progress,1)] bg-accent transition-transform duration-150 ease-out md:bottom-auto md:left-8 md:right-8 md:top-[3.375rem] md:h-px md:w-auto md:origin-left md:scale-y-100 md:scale-x-[var(--progress,1)]"
+        className="absolute bottom-6 left-[15px] top-4 w-px origin-top scale-y-[var(--progress,1)] bg-accent transition-transform duration-150 ease-out md:bottom-auto md:left-8 md:right-8 md:top-[3.375rem] md:h-px md:w-auto md:origin-left md:scale-y-100 md:scale-x-[var(--progress,1)]"
       />
 
       {steps.map((s, i) => {
@@ -80,20 +80,20 @@ export function StepsTimeline({ steps }: { steps: Step[] }) {
         return (
           <li
             key={s.t}
-            className={`tile relative flex flex-col gap-6 rounded-4xl p-6 transition-opacity duration-500 md:min-h-[240px] md:justify-between md:p-8 ${
+            className={`tile relative flex flex-col gap-6 rounded-3xl px-5 py-4 transition-opacity duration-500 md:min-h-[240px] md:justify-between md:p-8 ${
               active ? "opacity-100" : "opacity-60"
             }`}
           >
             <span
-              className={`absolute -left-10 top-6 flex h-[30px] w-[30px] items-center justify-center rounded-full font-display text-[13px] font-bold transition-colors duration-500 md:static md:h-11 md:w-11 md:text-base ${
+              className={`absolute -left-10 top-4 flex h-[30px] w-[30px] items-center justify-center rounded-full font-display text-[13px] font-bold transition-colors duration-500 md:static md:h-11 md:w-11 md:text-base ${
                 active ? "bg-white text-ink" : "bg-white/15 text-white/70"
               }`}
             >
               {i + 1}
             </span>
-            <div className="flex flex-col gap-2.5">
-              <h3 className="font-display text-2xl font-bold tracking-[-0.02em]">{s.t}</h3>
-              <p className="text-[15px] leading-relaxed text-label">{s.d}</p>
+            <div className="flex flex-col gap-1 md:gap-2.5">
+              <h3 className="font-display text-[17px] font-bold tracking-[-0.02em] md:text-2xl">{s.t}</h3>
+              <p className="text-[13px] leading-snug text-label md:text-[15px] md:leading-relaxed">{s.d}</p>
             </div>
           </li>
         );

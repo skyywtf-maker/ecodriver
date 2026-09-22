@@ -18,16 +18,17 @@ export function VehicleShowcase() {
   const active = VEHICLES.find((v) => v.id === selected)!;
 
   return (
-    <section id="vehicule" className="scroll-mt-28 pt-24 md:pt-[120px]">
+    <section id="vehicule" className="scroll-mt-28 pt-16 md:pt-[104px]">
       <div className="flex flex-col gap-3">
-        <h2 className="font-display text-4xl font-bold tracking-[-0.035em] md:text-5xl">
+        <p className="eyebrow">Véhicules</p>
+        <h2 className="font-display text-[32px] font-bold leading-[1.05] tracking-[-0.035em] md:text-5xl">
           Un véhicule par besoin, <span className="serif-accent">{accent}</span>
         </h2>
-        <p className="max-w-[560px] text-[15px] leading-relaxed text-label">{intro}</p>
+        <p className="hidden max-w-[560px] text-[15px] leading-relaxed text-label md:block">{intro}</p>
       </div>
 
       {/* Onglets : trois colonnes égales, toujours visibles d'un coup d'œil. */}
-      <div role="tablist" aria-label="Catégories de véhicule" className="mt-8 grid grid-cols-3 gap-2">
+      <div role="tablist" aria-label="Catégories de véhicule" className="mt-7 grid grid-cols-3 gap-2">
         {VEHICLES.map((v) => {
           const on = v.id === selected;
           return (
@@ -57,7 +58,7 @@ export function VehicleShowcase() {
           <Car3D src={active.model3d ?? ""} />
         </div>
 
-        <div className="glass flex flex-col gap-4 rounded-4xl p-6 md:col-span-5 md:justify-center md:p-7">
+        <div className="glass flex flex-col gap-4 rounded-3xl p-5 md:col-span-5 md:justify-center md:p-7">
           <div className="flex flex-col gap-1.5">
             <h3 className="font-display text-[21px] font-bold tracking-[-0.02em]">{active.name}</h3>
             <p className="text-[14px] leading-relaxed text-label">{active.tagline}</p>
@@ -69,7 +70,7 @@ export function VehicleShowcase() {
               ["Passagers", String(active.passengers)],
               ["Bagages", String(active.luggage)],
             ].map(([k, val]) => (
-              <div key={k} className="flex flex-col gap-0.5 rounded-[12px] bg-white/[0.06] px-3 py-2.5">
+              <div key={k} className="flex flex-col gap-0.5 rounded-xl bg-white/[0.06] px-3 py-2.5">
                 <dt className="text-[10px] font-medium uppercase tracking-[0.08em] text-label">{k}</dt>
                 <dd className="text-[13px] font-semibold leading-tight">{val}</dd>
               </div>

@@ -105,6 +105,26 @@ export function AddressInput({ label, placeholder, marker, value, onChange, clas
           }}
         />
       </label>
+      {/* Effacer d'un geste : un lieu touché par erreur sur la carte, ou une
+          adresse à reprendre, sans devoir tout supprimer au clavier. */}
+      {text && (
+        <button
+          type="button"
+          onClick={() => {
+            skipFetch.current = true;
+            setText("");
+            setResults([]);
+            setOpen(false);
+            onChange(null);
+          }}
+          aria-label={`Effacer : ${label}`}
+          className="-mr-2 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-white/55 transition-colors hover:bg-white/[0.08] hover:text-white"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" aria-hidden>
+            <path d="M6 6l12 12M18 6L6 18" />
+          </svg>
+        </button>
+      )}
       {open && results.length > 0 && (
         // Fond opaque et non « glass » : la liste est posée dans la carte de
         // réservation, elle-même en verre dépoli. Un flou d'arrière-plan

@@ -32,7 +32,7 @@ body { -webkit-font-smoothing: antialiased; font-variant-numeric: tabular-nums; 
   .field {
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 16px;
+    border-radius: 10px;
   }
   .field:focus-within { border-color: var(--accent); }
   .field-label { @apply text-[11px] font-medium text-label; }
@@ -44,7 +44,20 @@ body { -webkit-font-smoothing: antialiased; font-variant-numeric: tabular-nums; 
     @apply flex h-14 items-center justify-center rounded-2xl bg-white/[0.08] px-6 text-[15px] font-semibold text-white transition-colors hover:bg-white/[0.12];
   }
   .serif-accent { @apply font-serif font-normal italic tracking-[-0.02em]; }
+  .eyebrow { @apply text-[11px] font-medium uppercase tracking-[0.14em] text-white/40; }
 }
+
+/* Rangée défilante horizontale (sliders) : pas de barre visible, arrêt net sur chaque carte. */
+.rail {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+}
+.rail::-webkit-scrollbar { display: none; }
+.rail > * { scroll-snap-align: start; flex-shrink: 0; }
 
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 

@@ -13,6 +13,8 @@ import { importLibrary, setOptions } from "@googlemaps/js-api-loader";
 export const GOOGLE_MAPS_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY?.trim() || "";
 /** Map ID facultatif : active le rendu vectoriel et le thème sombre natif. */
 const MAP_ID = process.env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID?.trim() || "";
+/** Avec un Map ID, la carte est vectorielle : les zooms fractionnaires y restent nets. */
+export const hasMapId = MAP_ID.length > 0;
 
 const hasKey = GOOGLE_MAPS_KEY.length > 0;
 
@@ -71,9 +73,10 @@ const DARK_STYLE: google.maps.MapTypeStyle[] = [
   { featureType: "administrative.locality", elementType: "labels.text.fill", stylers: [{ color: "#c3c7ce" }] },
   { featureType: "poi", stylers: [{ visibility: "off" }] },
   { featureType: "transit", stylers: [{ visibility: "off" }] },
-  { featureType: "road", elementType: "geometry", stylers: [{ color: "#1e2127" }] },
+  { featureType: "road", elementType: "geometry", stylers: [{ color: "#262a31" }] },
   { featureType: "road", elementType: "geometry.stroke", stylers: [{ color: "#15171b" }] },
-  { featureType: "road.highway", elementType: "geometry", stylers: [{ color: "#2b2f37" }] },
+  { featureType: "road.highway", elementType: "geometry", stylers: [{ color: "#363b45" }] },
+  { featureType: "road.arterial", elementType: "geometry", stylers: [{ color: "#2d3139" }] },
   { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#6b707a" }] },
   { featureType: "water", elementType: "geometry", stylers: [{ color: "#0b1622" }] },
   { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#3d5a78" }] },
@@ -116,12 +119,14 @@ export function hideStreetLabels(map: google.maps.Map) {
 export function createDot(
   map: google.maps.Map,
   position: google.maps.LatLngLiteral,
-  element: HTMLElement
+  element: HTMLElement,
+  /** Point d'accroche de l'élément sur la coordonnée ; centré par défaut. */
+  transform = "translate(-50%, -50%)"
 ): { setMap: (m: google.maps.Map | null) => void; element: HTMLElement } {
   class Dot extends google.maps.OverlayView {
     onAdd() {
       element.style.position = "absolute";
-      element.style.transform = "translate(-50%, -50%)";
+      element.style.transform = transform;
       this.getPanes()?.overlayMouseTarget.appendChild(element);
     }
     draw() {

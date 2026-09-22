@@ -233,3 +233,19 @@ export const TOURIST_SPOTS = [
     lat: 48.5466,
   },
 ] as const;
+
+/**
+ * Repères affichés sur la carte d'accueil (Google Maps).
+ *
+ * Mêmes coordonnées que ci-dessus (Base Adresse Nationale) ; le Parlement
+ * européen vient d'OpenStreetMap (Photon, bâtiment Louise Weiss), la BAN ne
+ * connaissant que l'allée du Printemps. Aucune valeur devinée.
+ */
+export const MAP_LANDMARKS: { name: string; lng: number; lat: number }[] = [
+  ...TOURIST_SPOTS.map(({ name, lng, lat }) => ({
+    name: name.replace("Cathédrale de Strasbourg", "Cathédrale").replace("Gare de Strasbourg", "Gare").replace("Aéroport d'Entzheim", "Aéroport"),
+    lng,
+    lat,
+  })),
+  { name: "Parlement européen", lng: 7.7692853, lat: 48.597022 },
+];

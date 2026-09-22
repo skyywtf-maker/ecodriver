@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { SITE } from "@/config/site";
-import { animateZoom, baseOptions, createDot, hideStreetLabels, loadMaps, reducedMotion } from "@/lib/google-maps";
+import { MAP_LANDMARKS } from "@/config/services";
+import { animateZoom, baseOptions, createDot, hasMapId, hideStreetLabels, loadMaps, reducedMotion } from "@/lib/google-maps";
 
 type Pt = { lat: number; lng: number; label?: string };
 
@@ -15,12 +16,37 @@ type Props = {
 };
 
 const ACCENT = "#0A84FF";
-const INTRO_ZOOM = 5.2;
-const CENTER = { lat: SITE.base.lat, lng: SITE.base.lng };
+/*
+ * Les zooms de Google valent ceux de MapLibre plus un (tuiles de 256 px
+ * contre 512). Sans Map ID, la carte est en images : on s'arrête sur un
+ * zoom ENTIER, sinon Google agrandit les tuiles et les noms deviennent
+ * énormes et flous.
+ */
+const INTRO_ZOOM = 6;
+const BASE = { lat: SITE.base.lat, lng: SITE.base.lng };
 
-/** Cadrage d'arrivée sur Strasbourg, plus serré sur téléphone. */
+const isMobile = () => window.matchMedia("(max-width: 767px)").matches;
+
+/** Cadrage d'arrivée sur Strasbourg. */
 function targetZoom() {
-  return window.matchMedia("(max-width: 767px)").matches ? 12.4 : 11.6;
+  if (hasMapId) return isMobile() ? 13.4 : 12.6;
+  return 13;
+}
+
+/**
+ * Centre à donner à la carte pour que Strasbourg tombe dans la partie
+ * VISIBLE : sur téléphone, le formulaire couvre la moitié basse, on remonte
+ * donc la ville vers le tiers haut ; sur ordinateur, le panneau occupe la
+ * gauche, on la décale vers la droite.
+ */
+function viewCenter(zoom: number, node: HTMLElement): google.maps.LatLngLiteral {
+  const metersPerPx = (156543.03 * Math.cos((BASE.lat * Math.PI) / 180)) / 2 ** zoom;
+  if (isMobile()) {
+    const px = node.clientHeight * 0.2;
+    return { lat: BASE.lat - (px * metersPerPx) / 111320, lng: BASE.lng };
+  }
+  const px = 240;
+  return { lat: BASE.lat, lng: BASE.lng - (px * metersPerPx) / (111320 * Math.cos((BASE.lat * Math.PI) / 180)) };
 }
 
 /**
@@ -36,6 +62,7 @@ export default function RouteMapGoogle({ from, to, geometry, padding, className 
   const map = useRef<google.maps.Map | null>(null);
   const lines = useRef<google.maps.Polyline[]>([]);
   const dots = useRef<{ setMap: (m: google.maps.Map | null) => void }[]>([]);
+  const landmarks = useRef<{ setMap: (m: google.maps.Map | null) => void }[]>([]);
   const stopAnim = useRef<() => void>(() => {});
   const hasRoute = useRef(false);
   const [ready, setReady] = useState(false);
@@ -48,7 +75,8 @@ export default function RouteMapGoogle({ from, to, geometry, padding, className 
     loadMaps()
       .then(({ Map, Polyline }) => {
         if (cancelled || !el.current) return;
-        const m = new Map(el.current, baseOptions({ center: CENTER, zoom: INTRO_ZOOM, gestureHandling: "cooperative" }));
+        const node = el.current;
+        const m = new Map(node, baseOptions({ center: viewCenter(INTRO_ZOOM, node), zoom: INTRO_ZOOM, gestureHandling: "cooperative" }));
         if (window.matchMedia("(max-width: 767px)").matches) hideStreetLabels(m);
 
         // Halo puis trait plein, comme la version MapLibre.
@@ -57,12 +85,19 @@ export default function RouteMapGoogle({ from, to, geometry, padding, className 
           new Polyline({ map: m, strokeColor: ACCENT, strokeOpacity: 1, strokeWeight: 4.5, clickable: false }),
         ];
 
+        // Repères de la ville : pastille blanche et nom, en verre sombre.
+        landmarks.current = MAP_LANDMARKS.map((l) =>
+          // Accroche sur la pastille blanche, à gauche de l'étiquette.
+          createDot(m, { lat: l.lat, lng: l.lng }, landmark(l.name), "translate(-10px, -50%)")
+        );
+
         map.current = m;
         google.maps.event.addListenerOnce(m, "tilesloaded", () => {
           if (cancelled) return;
           setReady(true);
-          if (reducedMotion()) m.moveCamera({ center: CENTER, zoom: targetZoom() });
-          else if (!hasRoute.current) stopAnim.current = animateZoom(m, CENTER, targetZoom(), 2600);
+          const z = targetZoom();
+          if (reducedMotion()) m.moveCamera({ center: viewCenter(z, node), zoom: z });
+          else if (!hasRoute.current) stopAnim.current = animateZoom(m, viewCenter(z, node), z, 2600);
         });
       })
       .catch(() => setFailed(true));
@@ -72,6 +107,7 @@ export default function RouteMapGoogle({ from, to, geometry, padding, className 
       stopAnim.current();
       lines.current.forEach((l) => l.setMap(null));
       dots.current.forEach((d) => d.setMap(null));
+      landmarks.current.forEach((d) => d.setMap(null));
       map.current = null;
     };
   }, []);
@@ -100,6 +136,8 @@ export default function RouteMapGoogle({ from, to, geometry, padding, className 
     const coords = path.length > 1 ? path : pts.map((p) => ({ lat: p.lat, lng: p.lng }));
     hasRoute.current = coords.length > 0;
     if (coords.length > 0) stopAnim.current();
+    // Les repères s'effacent devant le trajet du client, et reviennent après.
+    landmarks.current.forEach((d) => d.setMap(coords.length > 0 ? null : m));
 
     if (coords.length >= 2) {
       const b = new google.maps.LatLngBounds();
@@ -110,7 +148,7 @@ export default function RouteMapGoogle({ from, to, geometry, padding, className 
       });
     } else if (coords.length === 1) {
       m.panTo(coords[0]!);
-      m.setZoom(13.5);
+      m.setZoom(14);
     }
   }, [ready, from, to, geometry, padding]);
 
@@ -129,9 +167,10 @@ export default function RouteMapGoogle({ from, to, geometry, padding, className 
           away = false;
           if (hasRoute.current || reducedMotion()) return;
           const target = targetZoom();
+          const c = viewCenter(target, node);
           stopAnim.current();
-          m.moveCamera({ center: CENTER, zoom: target - 0.9 });
-          stopAnim.current = animateZoom(m, CENTER, target, 1400);
+          m.moveCamera({ center: c, zoom: target - 1 });
+          stopAnim.current = animateZoom(m, c, target, 1400);
         }
       },
       { threshold: [0, 0.5] }
@@ -146,6 +185,16 @@ export default function RouteMapGoogle({ from, to, geometry, padding, className 
       {failed && <div className={`absolute inset-0 bg-[#0B0C0E] ${className}`} aria-hidden />}
     </>
   );
+}
+
+function landmark(name: string) {
+  const d = document.createElement("div");
+  d.style.cssText =
+    "display:flex;align-items:center;gap:6px;padding:4px 9px 4px 6px;border-radius:8px;background:rgba(10,11,13,.82);border:1px solid rgba(255,255,255,.16);color:#fff;font:600 11px/1 var(--font-montserrat),system-ui,sans-serif;white-space:nowrap;letter-spacing:-.01em;pointer-events:none;box-shadow:0 6px 18px rgba(0,0,0,.35)";
+  const pin = document.createElement("span");
+  pin.style.cssText = "width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.18)";
+  d.append(pin, document.createTextNode(name));
+  return d;
 }
 
 function dot(kind: "start" | "end") {

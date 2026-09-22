@@ -2,8 +2,14 @@
 
 import { useEffect, useRef, useState } from "react";
 import maplibregl from "maplibre-gl";
-import type { Map as MapLibreMap, Marker } from "maplibre-gl";
 import { SITE } from "@/config/site";
+import { baseOptions, createDot, loadMaps } from "@/lib/google-maps";
+
+/** Pose une pastille sur la carte, quel que soit le fond ; renvoie de quoi la retirer. */
+type AddDot = (lng: number, lat: number, node: HTMLElement) => () => void;
+
+/** Emprise commune aux deux fonds : Grand Est et Allemagne desservie. */
+const BOUNDS = { west: 3.9, south: 47.4, east: 9.6, north: 50.4 };
 
 const STYLE = "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json";
 const ACCENT = "#0A84FF";
@@ -16,47 +22,68 @@ const COUNTRIES = ["France", "Allemagne"] as const;
  * Les points apparaissent un à un à l'arrivée de la section dans l'écran,
  * et survoler une ville la met en avant des deux côtés.
  */
-export default function CitiesMapInner() {
+export default function CitiesMapInner({ google: withGoogle = false }: { google?: boolean }) {
   const el = useRef<HTMLDivElement>(null);
-  const map = useRef<MapLibreMap | null>(null);
-  const markers = useRef<Marker[]>([]);
+  const addDot = useRef<AddDot | null>(null);
+  const markers = useRef<(() => void)[]>([]);
   const [ready, setReady] = useState(false);
   const [active, setActive] = useState<string | null>(null);
   const [revealed, setRevealed] = useState(0);
   const [country, setCountry] = useState<(typeof COUNTRIES)[number]>("France");
 
   useEffect(() => {
-    if (!el.current || map.current) return;
+    const node = el.current;
+    if (!node || addDot.current) return;
+    // Sur téléphone, 48 px de marge sur une carte de 230 px dézoomaient
+    // jusqu'à Paris et tassaient les points au centre.
+    const padding = node.clientWidth < 500 ? 12 : 48;
+
+    if (withGoogle) {
+      let cancelled = false;
+      loadMaps()
+        .then(({ Map }) => {
+          if (cancelled) return;
+          const m = new Map(node, baseOptions({ gestureHandling: "none", draggable: false }));
+          m.fitBounds(BOUNDS, padding);
+          addDot.current = (lng, lat, dotNode) => {
+            const d = createDot(m, { lat, lng }, dotNode);
+            return () => d.setMap(null);
+          };
+          google.maps.event.addListenerOnce(m, "idle", () => !cancelled && setReady(true));
+        })
+        .catch(() => {});
+      return () => {
+        cancelled = true;
+        addDot.current = null;
+      };
+    }
 
     const m = new maplibregl.Map({
-      container: el.current,
+      container: node,
       style: STYLE,
-      // Cadrage sur l'ensemble du Grand Est.
-      // Emprise élargie à l'Allemagne desservie : Francfort et Stuttgart
-      // font désormais partie des destinations.
       bounds: [
-        [3.9, 47.4],
-        [9.6, 50.4],
+        [BOUNDS.west, BOUNDS.south],
+        [BOUNDS.east, BOUNDS.north],
       ],
-      // Sur téléphone, 48 px de marge sur une carte de 230 px dézoomaient
-      // jusqu'à Paris et tassaient les points au centre.
-      fitBoundsOptions: { padding: el.current.clientWidth < 500 ? 12 : 48 },
+      fitBoundsOptions: { padding },
       attributionControl: false,
       interactive: false,
     });
     m.addControl(new maplibregl.AttributionControl({ compact: true }), "bottom-right");
+    addDot.current = (lng, lat, dotNode) => {
+      const mk = new maplibregl.Marker({ element: dotNode }).setLngLat([lng, lat]).addTo(m);
+      return () => mk.remove();
+    };
     m.on("load", () => setReady(true));
 
     const ro = new ResizeObserver(() => m.resize());
-    ro.observe(el.current);
-    map.current = m;
-
+    ro.observe(node);
     return () => {
       ro.disconnect();
       m.remove();
-      map.current = null;
+      addDot.current = null;
     };
-  }, []);
+  }, [withGoogle]);
 
   // Les points apparaissent en cascade quand la section entre dans l'écran.
   useEffect(() => {
@@ -85,17 +112,17 @@ export default function CitiesMapInner() {
 
   // Repose les marqueurs à chaque changement d'état affiché.
   useEffect(() => {
-    const m = map.current;
-    if (!m || !ready) return;
+    const add = addDot.current;
+    if (!add || !ready) return;
 
-    markers.current.forEach((mk) => mk.remove());
+    markers.current.forEach((remove) => remove());
     markers.current = SITE.cities.slice(0, revealed).map((c) => {
       const isActive = active === c.name;
       const node = document.createElement("div");
       node.style.cssText = `width:${isActive ? 18 : 12}px;height:${isActive ? 18 : 12}px;border-radius:50%;background:${
         c.name === "Strasbourg" ? "#fff" : ACCENT
       };box-shadow:0 0 0 ${isActive ? 10 : 6}px rgba(10,132,255,${isActive ? 0.28 : 0.16});transition:all .25s ease`;
-      return new maplibregl.Marker({ element: node }).setLngLat([c.lng, c.lat]).addTo(m);
+      return add(c.lng, c.lat, node);
     });
   }, [ready, revealed, active]);
 

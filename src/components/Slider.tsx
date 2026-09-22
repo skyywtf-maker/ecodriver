@@ -18,6 +18,7 @@ export function Slider({
   label,
   itemClassName = "w-[82%] sm:w-[46%] lg:w-[31.5%]",
   className = "",
+  autoplay = 0,
 }: {
   children: React.ReactNode;
   /** Nom lu par les lecteurs d'écran, ex. « Prestations ». */
@@ -25,6 +26,12 @@ export function Slider({
   /** Largeur de chaque carte, par palier d'écran. */
   itemClassName?: string;
   className?: string;
+  /**
+   * Défilement automatique, en millisecondes (0 : désactivé). Il s'arrête
+   * dès que le visiteur touche la rangée, et ne tourne que si elle est à
+   * l'écran. Jamais pour qui demande moins d'animations.
+   */
+  autoplay?: number;
 }) {
   const rail = useRef<HTMLUListElement>(null);
   const items = Children.toArray(children);
@@ -52,10 +59,36 @@ export function Slider({
     };
   }, [measure]);
 
+  const [paused, setPaused] = useState(false);
+  const [onScreen, setOnScreen] = useState(false);
+
+  useEffect(() => {
+    const el = rail.current;
+    if (!el || !autoplay || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(([e]) => setOnScreen(Boolean(e?.isIntersecting)), { threshold: 0.6 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [autoplay]);
+
+  useEffect(() => {
+    const el = rail.current;
+    if (!el || !autoplay || paused || !onScreen) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const id = window.setInterval(() => {
+      const first = el.children[0] as HTMLElement | undefined;
+      if (!first) return;
+      const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 4;
+      // En bout de rangée, on revient au début plutôt que de s'arrêter.
+      el.scrollTo({ left: atEnd ? 0 : el.scrollLeft + first.offsetWidth + 12, behavior: "smooth" });
+    }, autoplay);
+    return () => window.clearInterval(id);
+  }, [autoplay, paused, onScreen]);
+
   const go = (dir: 1 | -1) => {
     const el = rail.current;
     const first = el?.children[0] as HTMLElement | undefined;
     if (!el || !first) return;
+    setPaused(true);
     el.scrollBy({ left: dir * (first.offsetWidth + 12), behavior: "smooth" });
   };
 
@@ -64,6 +97,10 @@ export function Slider({
       <ul
         ref={rail}
         aria-label={label}
+        // Le visiteur reprend la main : le défilement automatique s'arrête pour de bon.
+        onPointerDown={() => setPaused(true)}
+        onWheel={() => setPaused(true)}
+        onFocus={() => setPaused(true)}
         className="rail -mx-4 gap-3 scroll-px-4 px-4 md:mx-0 md:scroll-px-0 md:px-0"
       >
         {items.map((child, i) => (

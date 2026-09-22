@@ -4,196 +4,174 @@ import { requireDriver } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { getDriver } from "@/lib/driver";
 import { euros } from "@/lib/pricing";
-import { dashboardMetrics, lastSevenDays, type DayCount, type Metric } from "@/lib/stats";
-import { STATUS_LABEL, STATUS_TONE } from "@/lib/status";
+import { dashboardMetrics, lastSevenDays, type DayCount } from "@/lib/stats";
+import { STATUS_TONE } from "@/lib/status";
 import { formatParis } from "@/lib/time";
+import { Logo } from "@/components/Logo";
 import { DriverNav } from "../DriverNav";
-import { setAvailable } from "../actions";
-import { AvailabilityToggle } from "../ui";
+import { RidesPanel, type PanelTab, type RideRow } from "../RidesPanel";
 
 export const dynamic = "force-dynamic";
 
-const PER_PAGE = 20;
+/** Historique : les 60 dernières courses suffisent, la liste défile dans sa carte. */
+const HISTORY = 60;
 
 /**
- * Les demandes en attente passent devant : ce sont les seules qui réclament
- * une décision. Le reste suit par date de création décroissante.
+ * Tableau de bord, pensé comme une application : trois cartes empilées et
+ * une barre d'onglets en bas, presque sans défilement de page.
+ *
+ * 1. Le revenu du mois en grand, trois chiffres secondaires, et deux boutons
+ *    qui mènent droit aux courses à traiter et à venir.
+ * 2. Les courses des sept derniers jours, en barres compactes.
+ * 3. Les courses à onglets ; la liste défile dans sa carte, et les décisions
+ *    se prennent dans la ligne.
  */
-const RECENT_ORDER = [{ status: "asc" as const }, { createdAt: "desc" as const }];
-
-export default async function Dashboard({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
+export default async function Dashboard({ searchParams }: { searchParams: Promise<{ onglet?: string }> }) {
   await requireDriver();
 
-  const page = Math.max(1, Number((await searchParams).page ?? 1) || 1);
-
-  const [driver, metrics, days, total, recent, upcoming] = await Promise.all([
+  const asked = (await searchParams).onglet;
+  const [driver, metrics, days, pending, upcoming, history] = await Promise.all([
     getDriver(),
     dashboardMetrics(),
     lastSevenDays(),
-    db.booking.count({ where: { status: { not: "PENDING_PAYMENT" } } }),
+    db.booking.findMany({ where: { status: "PENDING_DRIVER" }, orderBy: { pickupAt: "asc" } }),
+    db.booking.findMany({ where: { status: "CONFIRMED" }, orderBy: { pickupAt: "asc" } }),
     db.booking.findMany({
-      where: { status: { not: "PENDING_PAYMENT" } },
-      orderBy: RECENT_ORDER,
-      skip: (page - 1) * PER_PAGE,
-      take: PER_PAGE,
-    }),
-    db.booking.findMany({
-      where: { status: "CONFIRMED", pickupAt: { gte: new Date() } },
-      orderBy: { pickupAt: "asc" },
-      take: 8,
+      where: { status: { in: ["COMPLETED", "REFUSED", "CANCELLED"] } },
+      orderBy: { pickupAt: "desc" },
+      take: HISTORY,
     }),
   ]);
 
-  const pages = Math.max(1, Math.ceil(total / PER_PAGE));
+  const [rides, revenue, average, loss] = metrics;
+  const initial: PanelTab =
+    asked === "avenir" || asked === "historique" || asked === "attente"
+      ? asked
+      : pending.length > 0
+        ? "attente"
+        : "avenir";
 
   return (
-    <div className="mx-auto max-w-[1100px] px-4 py-6 md:px-8 md:py-10">
-      <DriverNav current="bord" />
+    <div className="mx-auto max-w-[1100px] px-3 pb-28 pt-3 md:px-8 md:pt-8">
+      <DriverNav current={asked === "historique" ? "courses" : "accueil"} />
 
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div className="flex flex-col gap-1.5">
-          <h1 className="font-display text-3xl font-bold tracking-[-0.03em] md:text-4xl">
-            Bonjour{driver?.firstName ? ", " : ""}
-            {driver?.firstName && <span className="serif-accent">{driver.firstName}.</span>}
-          </h1>
-          <p className="text-[14px] text-label">Activité des 30 derniers jours</p>
-        </div>
-        <AvailabilityToggle value={Boolean(driver?.availableToday)} onToggle={setAvailable} />
-      </div>
+      <div className="grid grid-cols-1 gap-2.5 md:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] md:gap-4">
+        <div className="flex min-w-0 flex-col gap-2.5 md:gap-4">
+          {/* 1. En-tête : le chiffre du mois et les accès directs. */}
+          <section className="rounded-4xl border border-white/[0.08] bg-[#121317] p-4 md:p-6">
+            <div className="flex items-center justify-between gap-3">
+              <Logo className="text-[15px]" />
+              <span className="text-[12px] font-medium text-label">
+                Bonjour{driver?.firstName ? `, ${driver.firstName}` : ""}
+              </span>
+            </div>
 
-      <ul className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {metrics.map((m) => (
-          <li key={m.label}>
-            <MetricCard metric={m} />
-          </li>
-        ))}
-      </ul>
+            <div className="mt-5 flex items-end justify-between gap-3">
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-label">Revenu · 30 jours</p>
+                <p className="mt-1 font-display text-[34px] font-bold leading-none tracking-[-0.03em]">{revenue?.value}</p>
+              </div>
+              <Delta value={revenue?.delta ?? null} />
+            </div>
 
-      <section className="tile mt-4 rounded-4xl p-6 md:p-7">
-        <h2 className="text-[11px] font-medium uppercase tracking-[0.12em] text-label">Courses par jour</h2>
-        <Chart days={days} />
-      </section>
+            <dl className="mt-4 grid grid-cols-3 divide-x divide-white/[0.08] rounded-2xl bg-white/[0.04] py-2.5">
+              {[rides, average, loss].map((m) =>
+                m ? (
+                  <div key={m.label} className="px-3">
+                    <dt className="truncate text-[10px] font-medium text-label">{m.label}</dt>
+                    <dd className="mt-0.5 font-display text-[16px] font-bold">{m.value}</dd>
+                  </div>
+                ) : null
+              )}
+            </dl>
 
-      <section className="mt-10">
-        <div className="flex items-baseline justify-between gap-4">
-          <h2 className="font-display text-xl font-bold tracking-[-0.02em]">Nouvelles réservations</h2>
-          <span className="text-[13px] text-label">{total} au total</span>
-        </div>
-
-        {recent.length === 0 ? (
-          <p className="tile mt-4 rounded-3xl p-8 text-center text-sm text-label">Aucune réservation pour le moment.</p>
-        ) : (
-          <ul className="mt-4 flex flex-col gap-2">
-            {recent.map((b) => (
-              <li key={b.id}>
-                <Row booking={b} />
-              </li>
-            ))}
-          </ul>
-        )}
-
-        {pages > 1 && (
-          <nav className="mt-5 flex items-center justify-center gap-2" aria-label="Pagination">
-            {Array.from({ length: pages }, (_, i) => i + 1).map((n) => (
+            <div className="mt-3 grid grid-cols-2 gap-2">
               <Link
-                key={n}
-                href={`/chauffeur/tableau-de-bord?page=${n}`}
-                aria-current={n === page ? "page" : undefined}
-                className={`flex h-9 min-w-9 items-center justify-center rounded-full px-3 text-sm font-medium transition-colors ${
-                  n === page ? "bg-white text-ink" : "bg-white/[0.06] text-label hover:text-white"
+                href="?onglet=attente#courses"
+                className={`flex h-11 items-center justify-center gap-2 rounded-2xl text-[13px] font-semibold transition-colors ${
+                  pending.length ? "bg-white text-ink hover:opacity-90" : "bg-white/[0.08] text-white hover:bg-white/[0.12]"
                 }`}
               >
-                {n}
+                À traiter
+                <span className={`rounded-full px-1.5 text-[11px] leading-5 ${pending.length ? "bg-[#FF9F0A] text-ink" : "bg-white/10"}`}>
+                  {pending.length}
+                </span>
               </Link>
-            ))}
-          </nav>
-        )}
-      </section>
+              <Link
+                href="?onglet=avenir#courses"
+                className="flex h-11 items-center justify-center gap-2 rounded-2xl bg-white/[0.08] text-[13px] font-semibold text-white transition-colors hover:bg-white/[0.12]"
+              >
+                À venir
+                <span className="rounded-full bg-white/10 px-1.5 text-[11px] leading-5">{upcoming.length}</span>
+              </Link>
+            </div>
+          </section>
 
-      <section className="mt-10">
-        <h2 className="font-display text-xl font-bold tracking-[-0.02em]">Prochaines courses</h2>
-        {upcoming.length === 0 ? (
-          <p className="tile mt-4 rounded-3xl p-8 text-center text-sm text-label">Aucune course confirmée à venir.</p>
-        ) : (
-          <ul className="mt-4 flex flex-col gap-2">
-            {upcoming.map((b) => (
-              <li key={b.id}>
-                <Row booking={b} showCountdown />
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+          {/* 2. Activité de la semaine. */}
+          <section className="rounded-4xl border border-white/[0.08] bg-[#121317] px-4 pb-3 pt-4 md:px-6">
+            <div className="flex items-baseline justify-between">
+              <h2 className="text-[12px] font-semibold text-label-strong">Courses · 7 jours</h2>
+              <span className="text-[12px] text-label">{days.reduce((n, d) => n + d.count, 0)} au total</span>
+            </div>
+            <Bars days={days} />
+          </section>
+        </div>
+
+        {/* 3. Les courses. */}
+        {/* La clé remonte le panneau quand un bouton demande un autre onglet. */}
+        <RidesPanel
+          key={initial}
+          initial={initial}
+          pending={pending.map(toRow)}
+          upcoming={upcoming.map(toRow)}
+          history={history.map(toRow)}
+        />
+      </div>
     </div>
   );
 }
 
-function MetricCard({ metric }: { metric: Metric }) {
-  const { label, value, delta, hint } = metric;
-  const tone = delta === null ? "text-label" : delta >= 0 ? "text-[#30D158]" : "text-[#FF6961]";
+function toRow(b: Booking): RideRow {
+  return {
+    id: b.id,
+    name: `${b.firstName} ${b.lastName}`,
+    from: b.fromLabel,
+    to: b.toLabel,
+    when: formatParis(b.pickupAt),
+    price: euros(b.priceCents / 100),
+    status: b.status,
+    tone: STATUS_TONE[b.status],
+    enRoute: b.enRoute,
+    arrived: b.arrived,
+  };
+}
 
+function Delta({ value }: { value: number | null }) {
+  if (value === null) return <span className="text-[12px] text-label">— vs 30 j préc.</span>;
+  const up = value >= 0;
   return (
-    <div className="tile flex h-full flex-col gap-2 rounded-3xl p-5">
-      <span className="text-[11px] font-medium uppercase tracking-[0.1em] text-label">{label}</span>
-      <span className="font-display text-[28px] font-bold leading-none tracking-[-0.03em]">{value}</span>
-      <span className="flex items-baseline gap-2 text-[12px]">
-        <span className={`font-semibold ${tone}`}>
-          {delta === null ? "—" : `${delta >= 0 ? "+" : ""}${delta} %`}
-        </span>
-        <span className="text-label">{hint}</span>
-      </span>
-    </div>
+    <span className={`rounded-lg px-2 py-1 text-[12px] font-semibold ${up ? "bg-[#30D158]/12 text-[#30D158]" : "bg-[#FF453A]/12 text-[#FF6961]"}`}>
+      {up ? "+" : ""}
+      {value} %
+    </span>
   );
 }
 
-/**
- * Histogramme des sept derniers jours.
- *
- * Dessiné en CSS plutôt qu'avec une bibliothèque de graphiques : sept barres
- * ne justifient pas d'embarquer du JavaScript supplémentaire.
- */
-function Chart({ days }: { days: DayCount[] }) {
+/** Sept barres fines, dessinées en CSS : pas de bibliothèque pour si peu. */
+function Bars({ days }: { days: DayCount[] }) {
   const max = Math.max(1, ...days.map((d) => d.count));
-
   return (
-    <ol className="mt-5 flex h-[140px] items-end gap-2">
-      {days.map((d) => (
-        <li key={d.date} className="flex h-full flex-1 flex-col items-center justify-end gap-2">
-          <span className="text-[12px] font-semibold text-white">{d.count}</span>
+    <ol className="mt-3 flex h-[76px] items-end gap-2">
+      {days.map((d, i) => (
+        <li key={d.date} className="flex h-full flex-1 flex-col items-center justify-end gap-1.5">
           <span
-            className="w-full rounded-t-lg bg-accent/70"
-            style={{ height: `${Math.max(3, (d.count / max) * 100)}%` }}
+            className={`w-full rounded-md ${i === days.length - 1 ? "bg-accent" : "bg-white/15"}`}
+            style={{ height: `${Math.max(6, (d.count / max) * 100)}%` }}
             title={`${d.count} course(s) le ${d.date}`}
           />
-          <span className="text-[11px] text-label">{d.label}</span>
+          <span className="text-[10px] text-label">{d.label}</span>
         </li>
       ))}
     </ol>
-  );
-}
-
-function Row({ booking: b, showCountdown = false }: { booking: Booking; showCountdown?: boolean }) {
-  return (
-    <Link
-      href={`/chauffeur/course/${b.id}`}
-      className="tile flex flex-col gap-3 rounded-3xl p-5 transition-colors hover:bg-white/[0.07] md:flex-row md:items-center md:gap-5"
-    >
-      <div className="flex min-w-0 flex-1 flex-col gap-1">
-        <span className="font-display text-[15px] font-semibold tracking-[-0.015em]">
-          {b.firstName} {b.lastName}
-        </span>
-        <span className="truncate text-[13px] text-label">
-          {b.fromLabel} → {b.toLabel}
-        </span>
-      </div>
-
-      <div className="flex items-center justify-between gap-4 md:justify-end">
-        <span className="text-[13px] text-label-strong">{formatParis(b.pickupAt)}</span>
-        <span className="font-display text-[15px] font-semibold">{euros(b.priceCents / 100)}</span>
-        <span className={`shrink-0 rounded-full px-3 py-1 text-[11px] font-semibold ${STATUS_TONE[b.status]}`}>
-          {showCountdown && b.enRoute ? (b.arrived ? "Sur place" : "En route") : STATUS_LABEL[b.status]}
-        </span>
-      </div>
-    </Link>
   );
 }

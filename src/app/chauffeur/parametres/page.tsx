@@ -13,10 +13,10 @@ export default async function ParametresPage() {
   const driver = await getDriver();
 
   return (
-    <div className="mx-auto max-w-[760px] px-4 py-6 md:px-8 md:py-10">
+    <div className="mx-auto max-w-[760px] px-3 pb-28 pt-3 md:px-8 md:pt-10">
       <DriverNav current="parametres" />
 
-      <h1 className="font-display text-3xl font-bold tracking-[-0.03em] md:text-4xl">
+      <h1 className="px-1 font-display text-[26px] font-bold tracking-[-0.03em] md:text-4xl">
         Vos <span className="serif-accent">paramètres.</span>
       </h1>
 
@@ -27,7 +27,7 @@ export default async function ParametresPage() {
         </p>
       )}
 
-      <section className="glass mt-8 flex flex-col gap-5 rounded-4xl p-7">
+      <section className="glass mt-4 flex flex-col gap-4 rounded-4xl p-5 md:p-7">
         <div className="flex flex-col gap-1">
           <h2 className="font-display text-xl font-bold tracking-[-0.02em]">Notifications</h2>
           <p className="text-[14px] text-label">
@@ -40,7 +40,7 @@ export default async function ParametresPage() {
         </ActionForm>
       </section>
 
-      <section className="glass mt-4 flex flex-col gap-5 rounded-4xl p-7">
+      <section className="glass mt-3 flex flex-col gap-4 rounded-4xl p-5 md:p-7">
         <div className="flex flex-col gap-1">
           <h2 className="font-display text-xl font-bold tracking-[-0.02em]">Mot de passe</h2>
           <p className="text-[14px] text-label">Dix caractères minimum. L&apos;actuel est demandé pour confirmer que c&apos;est bien vous.</p>
@@ -52,7 +52,7 @@ export default async function ParametresPage() {
         </ActionForm>
       </section>
 
-      <section className="tile mt-4 flex flex-col gap-4 rounded-4xl p-7">
+      <section className="tile mt-3 flex flex-col gap-4 rounded-4xl p-5 md:p-7">
         <div className="flex flex-col gap-1">
           <h2 className="font-display text-xl font-bold tracking-[-0.02em]">Tarifs appliqués</h2>
           <p className="text-[14px] text-label">

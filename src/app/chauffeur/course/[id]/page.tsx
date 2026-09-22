@@ -8,6 +8,7 @@ import { formatParis } from "@/lib/time";
 import { STATUS_LABEL, STATUS_TONE } from "@/lib/status";
 import { accept, arrived, cancel, complete, onTheWay, refuse } from "../../actions";
 import { ActionButton } from "../../ui";
+import { DriverNav } from "../../DriverNav";
 
 export const dynamic = "force-dynamic";
 
@@ -33,14 +34,15 @@ export default async function CoursePage({ params }: { params: Promise<{ id: str
   ];
 
   return (
-    <div className="mx-auto max-w-[720px] px-4 py-6 md:py-10">
-      <Link href="/chauffeur/tableau-de-bord" className="text-sm font-medium text-label hover:text-white">← Toutes les courses</Link>
-      <div className="glass mt-6 rounded-5xl p-6 md:p-8">
+    <div className="mx-auto max-w-[720px] px-3 pb-28 pt-3 md:px-4 md:pt-10">
+      <DriverNav current="courses" />
+      <Link href="/chauffeur/tableau-de-bord" className="px-1 text-sm font-medium text-label hover:text-white">← Toutes les courses</Link>
+      <div className="glass mt-3 rounded-4xl p-5 md:mt-6 md:rounded-5xl md:p-8">
         <span className={`inline-flex h-8 items-center rounded-full px-3.5 text-[13px] font-semibold ${STATUS_TONE[b.status]}`}>{STATUS_LABEL[b.status]}</span>
-        <h1 className="mt-4 font-display text-3xl font-bold tracking-[-0.03em]">Course {b.reference}</h1>
+        <h1 className="mt-3 font-display text-[24px] font-bold tracking-[-0.03em] md:mt-4 md:text-3xl">Course {b.reference}</h1>
         <dl className="mt-6 flex flex-col divide-y divide-white/[0.08]">
           {rows.map(([k, v]) => (
-            <div key={k} className="grid grid-cols-[140px_1fr] gap-4 py-3 text-[15px]">
+            <div key={k} className="grid grid-cols-[112px_1fr] gap-3 py-2.5 text-[14px] md:grid-cols-[140px_1fr] md:gap-4 md:py-3 md:text-[15px]">
               <dt className="text-label">{k}</dt>
               <dd className="font-medium">{v}</dd>
             </div>

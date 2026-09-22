@@ -38,7 +38,9 @@ export function Car3D({ src, yaw = 0 }: { src: string; yaw?: number }) {
           io.disconnect();
         }
       },
-      { rootMargin: "300px" }
+      // Large marge : le chargement démarre pendant que le visiteur est
+      // encore sur la carte d'accueil, pas au moment où il arrive dessus.
+      { rootMargin: "1200px" }
     );
     io.observe(el);
     return () => io.disconnect();

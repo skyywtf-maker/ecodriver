@@ -4,6 +4,15 @@ import { Suspense, useEffect, useMemo, useRef, type RefObject } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { ContactShadows, Environment, Html, Lightformer, OrbitControls, useGLTF } from "@react-three/drei";
 import { Box3, Vector3, type Group, type PerspectiveCamera } from "three";
+import { VEHICLES } from "@/config/pricing";
+
+/**
+ * Décodeur Draco servi par le site lui-même (public/draco/), copié depuis
+ * three : les modèles sont compressés en Draco, qui divise leur poids par 2
+ * à 5 par rapport à meshopt sur ces maillages denses (Classe V : 6,5 → 1,3 Mo).
+ * Aucun CDN tiers.
+ */
+const DRACO = "/draco/";
 
 /**
  * Scène 3D du véhicule.
@@ -35,9 +44,7 @@ type Props = {
 };
 
 function Car({ src, yaw = 0, progress, scrollDriven, onReady }: Props) {
-  // useDraco à false : le modèle est compressé en meshopt, inutile d'aller
-  // chercher un décodeur Draco sur un CDN tiers.
-  const { scene } = useGLTF(src, false);
+  const { scene } = useGLTF(src, DRACO);
   const spin = useRef<Group>(null);
 
   // Le fichier est exporté dans ses propres unités (~111 par mètre) et n'est
@@ -69,6 +76,17 @@ function Car({ src, yaw = 0, progress, scrollDriven, onReady }: Props) {
   // Dépend aussi de la scène : changer d'onglet remplace le fichier sans
   // démonter le composant, et le bandeau de chargement restait affiché.
   useEffect(() => onReady(), [onReady, scene]);
+
+  // Le premier modèle affiché, on précharge les autres en arrière-plan :
+  // changer d'onglet devient instantané au lieu de relancer un chargement.
+  useEffect(() => {
+    const idle = window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 1200));
+    idle(() => {
+      for (const v of VEHICLES) if (v.model3d && v.model3d !== src) useGLTF.preload(v.model3d, DRACO);
+    });
+    // Une seule fois : le cache de useGLTF garde ensuite les trois modèles.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // La voiture tourne sur elle-même au fil du défilement. On lisse vers la
   // cible plutôt que de la suivre au pixel : le mouvement reste doux même

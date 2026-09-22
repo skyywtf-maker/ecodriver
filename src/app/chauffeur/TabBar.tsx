@@ -43,15 +43,20 @@ export function TabBar({ current, available: initial, demo = false }: { current:
             {available ? "Dispo" : "Absent"}
           </button>
         </li>
-        <Item href={demo ? "#" : "/chauffeur/parametres"} label="Réglages" on={current === "parametres"} icon={<IconGear />} />
-        <li>
-          <form action={demo ? undefined : logout} onSubmit={demo ? (e) => e.preventDefault() : undefined}>
-            <button className="flex w-full flex-col items-center gap-1 py-1.5 text-[10px] font-medium text-label transition-colors hover:text-white">
-              <IconOut />
-              Quitter
-            </button>
-          </form>
-        </li>
+        <Item href={demo ? "/apercu-chauffeur/reglages" : "/chauffeur/parametres"} label="Réglages" on={current === "parametres"} icon={<IconGear />} />
+        {demo ? (
+          // Dans l'aperçu, « Quitter » ramène simplement au site.
+          <Item href="/" label="Quitter" on={false} icon={<IconOut />} />
+        ) : (
+          <li>
+            <form action={logout}>
+              <button className="flex w-full flex-col items-center gap-1 py-1.5 text-[10px] font-medium text-label transition-colors hover:text-white">
+                <IconOut />
+                Quitter
+              </button>
+            </form>
+          </li>
+        )}
       </ul>
     </nav>
   );

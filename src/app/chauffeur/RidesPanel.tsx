@@ -98,7 +98,7 @@ function Row({ r, demo }: { r: RideRow; demo: boolean }) {
   const guard = (fn: () => Promise<void>) => (demo ? async () => window.alert("Aperçu : cette action est désactivée.") : fn);
   return (
     <li className="border-b border-white/[0.06] px-3 py-3 last:border-0">
-      <Link href={demo ? "#courses" : `/chauffeur/course/${r.id}`} className="block">
+      <Link href={demo ? `/apercu-chauffeur/course/${r.id}` : `/chauffeur/course/${r.id}`} className="block">
         <div className="flex items-center justify-between gap-3">
           <p className="flex items-center gap-2 text-[12px] font-semibold text-label-strong">
             <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${dot(r)}`} aria-hidden />

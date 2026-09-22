@@ -11,6 +11,7 @@ import { Reveal } from "@/components/Reveal";
 import { CitiesMapStatic } from "@/components/CitiesMapStatic";
 import { StepsTimeline } from "@/components/StepsTimeline";
 import { CitiesMap } from "@/components/CitiesMap";
+import { StickyBookBar } from "@/components/StickyBookBar";
 
 const STEPS = [
   { t: "Votre trajet", d: "Départ, arrivée, horaire. Le prix exact s’affiche tout de suite." },
@@ -91,7 +92,11 @@ export default function Home() {
         </Reveal>
 
       </main>
-      <Footer />
+      {/* Réserve la hauteur de la barre fixe sous le pied de page, sur téléphone. */}
+      <div className="pb-20 md:pb-0">
+        <Footer />
+      </div>
+      <StickyBookBar heroId="accueil-reservation" />
     </>
   );
 }

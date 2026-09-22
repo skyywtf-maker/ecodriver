@@ -22,6 +22,31 @@ type Props = {
 
 const ACCENT = "#0A84FF";
 
+/** Cadrage de départ du mouvement d'ouverture, très large. */
+const INTRO_ZOOM = 5.2;
+
+/**
+ * Mouvement d'ouverture vers Strasbourg. À l'arrivée, il part de la vue
+ * large ; au retour sur la carte, ce n'est qu'un léger recul suivi d'un
+ * rapprochement : rappeler le mouvement, sans refaire tout le voyage.
+ * Supprimé pour qui demande moins d'animations.
+ */
+function playIntro(m: MapLibreMap, replay: boolean) {
+  const mobile = window.matchMedia("(max-width: 767px)").matches;
+  const target = mobile ? 12.4 : 11.6;
+  const center: [number, number] = [SITE.base.lng, SITE.base.lat];
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    m.jumpTo({ center, zoom: target });
+    return;
+  }
+  if (replay) {
+    m.jumpTo({ center, zoom: target - 0.9 });
+    m.easeTo({ center, zoom: target, duration: 1400, essential: true });
+    return;
+  }
+  m.flyTo({ center, zoom: target, duration: 2600, essential: true });
+}
+
 /**
  * Fond de carte vectoriel sombre, libre et sans clé.
  *
@@ -37,6 +62,8 @@ export default function RouteMapInner({ from, to, geometry, padding, className =
   const map = useRef<MapLibreMap | null>(null);
   const markers = useRef<Marker[]>([]);
   const observer = useRef<ResizeObserver | null>(null);
+  /** Un trajet est affiché : on ne touche plus au cadrage de lui-même. */
+  const hasRoute = useRef(false);
   const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState(false);
 
@@ -54,7 +81,7 @@ export default function RouteMapInner({ from, to, geometry, padding, className =
         // On démarre très large : l'arrivée sur la page enchaîne sur un
         // mouvement de zoom vers Strasbourg, qui fait comprendre d'emblée
         // qu'il s'agit d'une carte et non d'une texture de fond.
-        zoom: 5.2,
+        zoom: INTRO_ZOOM,
         attributionControl: false,
         // Sur mobile, un doigt fait défiler la page ; deux doigts manipulent
         // la carte. Sans cela la page se bloque dès qu'on la frôle.
@@ -95,15 +122,7 @@ export default function RouteMapInner({ from, to, geometry, padding, className =
 
         setReady(true);
 
-        // Le mouvement d'ouverture. Supprimé pour qui demande moins
-        // d'animations : la carte s'affiche alors directement au bon cadrage.
-        const mobile = window.matchMedia("(max-width: 767px)").matches;
-        const target = mobile ? 12.4 : 11.6;
-        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-          m.setZoom(target);
-        } else {
-          m.flyTo({ center: [SITE.base.lng, SITE.base.lat], zoom: target, duration: 2600, essential: true });
-        }
+        playIntro(m, false);
       });
 
       // Le conteneur peut encore mesurer zéro au moment où la carte est
@@ -148,6 +167,7 @@ export default function RouteMapInner({ from, to, geometry, padding, className =
       }
 
       const coords: [number, number][] = geometry && geometry.length > 1 ? geometry : pts.map((p) => [p.lng, p.lat]);
+      hasRoute.current = coords.length > 0;
       if (coords.length >= 2) {
         const b = new maplibregl.LngLatBounds(coords[0], coords[0]);
         coords.forEach((c) => b.extend(c));
@@ -157,6 +177,31 @@ export default function RouteMapInner({ from, to, geometry, padding, className =
       }
     }
   }, [ready, from, to, geometry, padding]);
+
+  // Le zoom d'ouverture se rejoue à chaque retour sur la carte : une fois
+  // qu'elle a complètement quitté l'écran, la revoir à moitié relance le
+  // mouvement. Jamais pendant qu'un trajet est affiché, pour ne pas décadrer
+  // l'itinéraire que le client est en train de consulter.
+  useEffect(() => {
+    const node = el.current;
+    const m = map.current;
+    if (!node || !m || !ready || typeof IntersectionObserver === "undefined") return;
+
+    let away = false;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry) return;
+        if (!entry.isIntersecting) away = true;
+        else if (away && entry.intersectionRatio >= 0.5) {
+          away = false;
+          if (!hasRoute.current) playIntro(m, true);
+        }
+      },
+      { threshold: [0, 0.5] }
+    );
+    io.observe(node);
+    return () => io.disconnect();
+  }, [ready]);
 
   return (
     <>

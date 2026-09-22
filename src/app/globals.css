@@ -38,10 +38,10 @@ body { -webkit-font-smoothing: antialiased; font-variant-numeric: tabular-nums; 
   .field-label { @apply text-[11px] font-medium text-label; }
   .field-input { @apply w-full bg-transparent p-0 text-[16px] font-semibold text-white outline-none placeholder:text-white/35; }
   .btn-primary {
-    @apply flex h-14 items-center justify-center gap-3 rounded-2xl bg-white px-8 font-display text-base font-semibold text-ink transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40;
+    @apply flex h-12 items-center justify-center gap-3 rounded-2xl bg-white px-8 font-display text-[15px] font-semibold md:h-14 md:text-base text-ink transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40;
   }
   .btn-ghost {
-    @apply flex h-14 items-center justify-center rounded-2xl bg-white/[0.08] px-6 text-[15px] font-semibold text-white transition-colors hover:bg-white/[0.12];
+    @apply flex h-12 items-center justify-center rounded-2xl bg-white/[0.08] px-6 text-[15px] font-semibold md:h-14 text-white transition-colors hover:bg-white/[0.12];
   }
   .serif-accent { @apply font-serif font-normal italic tracking-[-0.02em]; }
   .eyebrow { @apply text-[11px] font-medium uppercase tracking-[0.14em] text-white/40; }

@@ -67,7 +67,7 @@ export function AddressInput({ label, placeholder, marker, value, onChange, clas
   }
 
   return (
-    <div className={`relative flex h-16 items-center gap-3.5 px-[18px] ${className}`}>
+    <div className={`relative flex h-[58px] items-center gap-3.5 px-4 md:h-16 md:px-[18px] ${className}`}>
       <span
         aria-hidden
         className={

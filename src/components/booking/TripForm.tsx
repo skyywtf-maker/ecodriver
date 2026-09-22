@@ -117,7 +117,7 @@ export function TripForm({ onQuote, onContinue, collapsed = false, peek = false,
   }
 
   return (
-    <form onSubmit={submit} className={`flex flex-col ${peek ? "gap-3" : "gap-5"}`}>
+    <form onSubmit={submit} className={`flex flex-col ${peek ? "gap-3" : "gap-4 md:gap-5"}`}>
       {peek && (
         <p className="px-1 text-[13px] font-medium text-label">Où allez-vous ?</p>
       )}
@@ -147,7 +147,7 @@ export function TripForm({ onQuote, onContinue, collapsed = false, peek = false,
         <>
       {!peek && (
         <div className="flex items-baseline justify-between">
-          <h1 className="font-display text-[30px] font-bold leading-tight tracking-[-0.03em]">
+          <h1 className="font-display text-[24px] font-bold leading-tight tracking-[-0.03em] md:text-[30px]">
             Où <span className="serif-accent">allez-vous ?</span>
           </h1>
           <span className="text-xs font-medium text-label">Grand Est</span>
@@ -160,11 +160,11 @@ export function TripForm({ onQuote, onContinue, collapsed = false, peek = false,
       </div>
 
       <div className={`grid-cols-2 gap-2.5 ${peek ? "hidden" : "grid"}`}>
-        <label className="field flex h-[60px] flex-col justify-center gap-0.5 px-[18px]">
+        <label className="field flex h-[54px] flex-col justify-center gap-0.5 px-4 md:h-[60px] md:px-[18px]">
           <span className="field-label">Date</span>
           <input type="date" required className="field-input text-[15px]" value={date} onChange={(e) => setDate(e.target.value)} />
         </label>
-        <label className="field flex h-[60px] flex-col justify-center gap-0.5 px-[18px]">
+        <label className="field flex h-[54px] flex-col justify-center gap-0.5 px-4 md:h-[60px] md:px-[18px]">
           <span className="field-label">Heure</span>
           <input type="time" required step={300} className="field-input text-[15px]" value={time} onChange={(e) => setTime(e.target.value)} />
         </label>
@@ -196,7 +196,7 @@ export function TripForm({ onQuote, onContinue, collapsed = false, peek = false,
             </span>
             <span className="text-xs text-white/50">Prix final TTC</span>
           </div>
-          <span className="font-display text-[44px] font-bold leading-none tracking-[-0.03em]">
+          <span className="font-display text-[36px] font-bold leading-none tracking-[-0.03em] md:text-[44px]">
             {quote ? euros(quote.price.total) : "–"}
           </span>
         </div>

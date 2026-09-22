@@ -68,6 +68,7 @@ export const SITE = {
    * chauffeur : c'est le service qu'on met en avant, pas une personne.
    */
   trust: [
+    // Confirmé par le client le 22 septembre 2026.
     { k: "Expérience", v: "4 ans", d: "de transport de personnes dans le Grand Est." },
     { k: "Courses notées", v: "500", d: "sur les 500 dernières évaluations Uber." },
     { k: "Note moyenne", v: "4,99 / 5", d: "496 courses notées cinq étoiles." },

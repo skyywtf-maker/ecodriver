@@ -1,6 +1,7 @@
 import "server-only";
 import { BOOKING_RULES } from "@/config/pricing";
 import type { Place } from "./types";
+import { isServedRegion } from "./zone";
 
 /**
  * Base Adresse Nationale — le référentiel officiel des adresses françaises.
@@ -35,7 +36,7 @@ function toPlace(f: BanFeature): Place {
     label: f.properties.label,
     lat,
     lng,
-    inGrandEst: regionOf(f) === BOOKING_RULES.allowedRegion,
+    inGrandEst: isServedRegion(regionOf(f)),
   };
 }
 

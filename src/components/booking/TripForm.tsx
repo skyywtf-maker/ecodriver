@@ -69,7 +69,7 @@ export function TripForm({ onQuote, onContinue, collapsed = false, peek = false,
     setQuote(null);
     onQuote?.(null, from, to);
     if (from?.inGrandEst === false || to?.inGrandEst === false) {
-      setError("Le départ et l'arrivée doivent se trouver dans le Grand Est.");
+      setError("Le départ et l'arrivée doivent se trouver dans la zone desservie : Grand Est, Bade-Wurtemberg ou Hesse.");
       return;
     }
     setError(null);
@@ -155,8 +155,8 @@ export function TripForm({ onQuote, onContinue, collapsed = false, peek = false,
       )}
 
       <div className="field flex flex-col">
-        <AddressInput label="Départ" placeholder="Adresse, gare, aéroport" marker="start" value={from} onChange={setFrom} className="border-b border-white/[0.08]" />
-        <AddressInput label="Arrivée" placeholder="Adresse, gare, aéroport" marker="end" value={to} onChange={setTo} />
+        <AddressInput label="Départ" placeholder="Adresse, gare, aéroport" marker="start" value={from} onChange={setFrom} onFocus={peek ? onExpand : undefined} className="border-b border-white/[0.08]" />
+        <AddressInput label="Arrivée" placeholder="Adresse, gare, aéroport" marker="end" value={to} onChange={setTo} onFocus={peek ? onExpand : undefined} />
       </div>
 
       <div className={`grid-cols-2 gap-2.5 ${peek ? "hidden" : "grid"}`}>

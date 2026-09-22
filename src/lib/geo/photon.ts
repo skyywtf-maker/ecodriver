@@ -1,6 +1,6 @@
 import "server-only";
-import { BOOKING_RULES } from "@/config/pricing";
 import type { Place } from "./types";
+import { isServedRegion, SERVED_BBOX } from "./zone";
 
 /**
  * Photon — recherche de lieux sur les données OpenStreetMap.
@@ -44,9 +44,11 @@ export async function searchPlaces(q: string): Promise<Place[]> {
   url.searchParams.set("q", trimmed);
   url.searchParams.set("lang", "fr");
   url.searchParams.set("limit", "8");
-  // Oriente vers Strasbourg sans exclure le reste de la région.
+  // Oriente vers Strasbourg et borne à la zone desservie : sans emprise,
+  // Photon remontait des homonymes du monde entier.
   url.searchParams.set("lat", "48.5734");
   url.searchParams.set("lon", "7.7521");
+  url.searchParams.set("bbox", [SERVED_BBOX.west, SERVED_BBOX.south, SERVED_BBOX.east, SERVED_BBOX.north].join(","));
 
   const res = await fetch(url, {
     next: { revalidate: 3600 },
@@ -70,7 +72,8 @@ export async function searchPlaces(q: string): Promise<Place[]> {
         hint: hint || undefined,
         lat,
         lng,
-        inGrandEst: p.state === BOOKING_RULES.allowedRegion,
+        // Le champ garde son nom historique, mais vaut « dans la zone desservie ».
+        inGrandEst: isServedRegion(p.state),
       };
     });
 }

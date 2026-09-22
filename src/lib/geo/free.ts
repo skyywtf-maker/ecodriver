@@ -69,10 +69,8 @@ export async function searchPlaces(q: string): Promise<Place[]> {
     out.push(p);
   }
 
-  // Dès qu'un résultat est dans la région, on masque les autres : « petit
-  // bivouac » remontait sinon des adresses de Martinique. S'il n'y en a
-  // aucun, on montre les résultats lointains avec leur mention « Hors Grand
-  // Est » — mieux vaut expliquer le refus que n'afficher aucune réponse.
-  const inRegion = out.filter((p) => p.inGrandEst);
-  return (inRegion.length > 0 ? inRegion : out).slice(0, 8);
+  // Seuls les lieux de la zone desservie sont proposés. Les résultats
+  // lointains affichés en secours (« leonor » → une rue de Saint-Denis)
+  // déroutaient plus qu'ils n'aidaient : sans réponse, le champ le dit.
+  return out.filter((p) => p.inGrandEst).slice(0, 8);
 }

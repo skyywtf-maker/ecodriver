@@ -134,6 +134,12 @@ export const BOOKING_RULES = {
    * Stuttgart ou Baden-Baden font partie de l'offre.
    */
   allowedRegion: "Grand Est",
+  /**
+   * Zone desservie : le Grand Est, plus les Länder allemands des destinations
+   * proposées (Stuttgart, Karlsruhe, Baden-Baden ; Francfort). Hors de ces
+   * régions, aucun résultat n'est proposé à la saisie.
+   */
+  servedRegions: ["Grand Est", "Bade-Wurtemberg", "Hesse"],
 } as const;
 
 /**

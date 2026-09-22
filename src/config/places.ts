@@ -21,6 +21,28 @@ export type CuratedPlace = {
 };
 
 export const CURATED_PLACES: CuratedPlace[] = [
+  // Lieux de la carte d'accueil : tapés par leur nom, ils doivent sortir
+  // en tête, avec le même libellé que sur la carte.
+  {
+    label: "Cathédrale de Strasbourg",
+    keywords: ["cathedrale", "cathedrale strasbourg", "notre dame strasbourg", "munster"],
+    address: "Place de la Cathédrale 67000 Strasbourg",
+  },
+  {
+    label: "La Petite France, Strasbourg",
+    keywords: ["petite france", "petite-france", "ponts couverts"],
+    address: "Rue du Bain-aux-Plantes 67000 Strasbourg",
+  },
+  {
+    label: "Centre commercial Place des Halles, Strasbourg",
+    keywords: ["place des halles", "halles", "centre commercial halles"],
+    address: "Place des Halles 67000 Strasbourg",
+  },
+  {
+    label: "Rivétoile, Place Jeanne Helbling, Strasbourg",
+    keywords: ["rivetoile", "riv etoile", "rive etoile", "centre commercial rivetoile"],
+    address: "Place Jeanne Helbling 67100 Strasbourg",
+  },
   {
     label: "Aéroport de Strasbourg-Entzheim",
     keywords: ["aeroport strasbourg", "entzheim", "sxb", "airport strasbourg", "aeroport entzheim"],

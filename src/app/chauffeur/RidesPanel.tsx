@@ -29,11 +29,14 @@ export function RidesPanel({
   upcoming,
   history,
   initial,
+  demo = false,
 }: {
   pending: RideRow[];
   upcoming: RideRow[];
   history: RideRow[];
   initial: PanelTab;
+  /** Aperçu public : aucune action n'est envoyée, les fiches ne s'ouvrent pas. */
+  demo?: boolean;
 }) {
   const [tab, setTab] = useState<PanelTab>(initial);
   const lists: Record<PanelTab, RideRow[]> = { attente: pending, avenir: upcoming, historique: history };
@@ -82,7 +85,7 @@ export function RidesPanel({
         // Défilement interne : la carte garde sa hauteur, l'historique défile dedans.
         <ul className="mt-1 max-h-[46svh] overflow-y-auto overscroll-contain md:max-h-[520px]">
           {rows.map((r) => (
-            <Row key={r.id} r={r} />
+            <Row key={r.id} r={r} demo={demo} />
           ))}
         </ul>
       )}
@@ -90,10 +93,12 @@ export function RidesPanel({
   );
 }
 
-function Row({ r }: { r: RideRow }) {
+function Row({ r, demo }: { r: RideRow; demo: boolean }) {
+  // En aperçu, chaque action se contente d'expliquer qu'elle est désactivée.
+  const guard = (fn: () => Promise<void>) => (demo ? async () => window.alert("Aperçu : cette action est désactivée.") : fn);
   return (
     <li className="border-b border-white/[0.06] px-3 py-3 last:border-0">
-      <Link href={`/chauffeur/course/${r.id}`} className="block">
+      <Link href={demo ? "#courses" : `/chauffeur/course/${r.id}`} className="block">
         <div className="flex items-center justify-between gap-3">
           <p className="flex items-center gap-2 text-[12px] font-semibold text-label-strong">
             <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${dot(r)}`} aria-hidden />
@@ -116,20 +121,20 @@ function Row({ r }: { r: RideRow }) {
           <Act
             label="Refuser"
             tone="danger"
-            confirm="Refuser cette course ? Le client sera remboursé intégralement."
-            run={() => refuse(r.id)}
+            confirm={demo ? undefined : "Refuser cette course ? Le client sera remboursé intégralement."}
+            run={guard(() => refuse(r.id))}
           />
-          <Act label="Accepter" tone="primary" run={() => accept(r.id)} />
+          <Act label="Accepter" tone="primary" run={guard(() => accept(r.id))} />
         </div>
       )}
       {r.status === "CONFIRMED" && (
         <div className="mt-2.5">
           {!r.enRoute ? (
-            <Act label="Je suis en route" tone="ghost" run={() => onTheWay(r.id)} />
+            <Act label="Je suis en route" tone="ghost" run={guard(() => onTheWay(r.id))} />
           ) : !r.arrived ? (
-            <Act label="Je suis arrivé" tone="ghost" run={() => arrived(r.id)} />
+            <Act label="Je suis arrivé" tone="ghost" run={guard(() => arrived(r.id))} />
           ) : (
-            <Act label="Course terminée" tone="ghost" confirm="Confirmer que la course a été effectuée ?" run={() => complete(r.id)} />
+            <Act label="Course terminée" tone="ghost" confirm={demo ? undefined : "Confirmer que la course a été effectuée ?"} run={guard(() => complete(r.id))} />
           )}
         </div>
       )}

@@ -8,7 +8,7 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       // Espace chauffeur, suivi nominatif et retour de paiement : rien à indexer,
       // et le suivi contient des données personnelles.
-      disallow: ["/chauffeur", "/suivi", "/reserver/confirmation"],
+      disallow: ["/chauffeur", "/apercu-chauffeur", "/suivi", "/reserver/confirmation"],
     },
     sitemap: `${SITE.url}/sitemap.xml`,
   };

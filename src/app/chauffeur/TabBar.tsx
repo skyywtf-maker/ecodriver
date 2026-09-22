@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { logout, setAvailable } from "./actions";
 
 type Tab = "accueil" | "courses" | "parametres";
@@ -12,8 +12,12 @@ type Tab = "accueil" | "courses" | "parametres";
  * Tout l'espace chauffeur est à un pouce : accueil, courses, réglages. Au
  * centre, en accent, la disponibilité du jour — le geste le plus fréquent.
  */
-export function TabBar({ current, available }: { current: Tab; available: boolean }) {
+export function TabBar({ current, available: initial, demo = false }: { current: Tab; available: boolean; demo?: boolean }) {
   const [pending, start] = useTransition();
+  // En aperçu, l'interrupteur change d'état à l'écran sans rien enregistrer.
+  const [local, setLocal] = useState(initial);
+  const available = demo ? local : initial;
+  const home = demo ? "/apercu-chauffeur" : "/chauffeur/tableau-de-bord";
 
   return (
     <nav
@@ -22,15 +26,15 @@ export function TabBar({ current, available }: { current: Tab; available: boolea
       style={{ paddingBottom: "max(6px, env(safe-area-inset-bottom))" }}
     >
       <ul className="grid grid-cols-5 items-center">
-        <Item href="/chauffeur/tableau-de-bord" label="Accueil" on={current === "accueil"} icon={<IconHome />} />
-        <Item href="/chauffeur/tableau-de-bord?onglet=historique#courses" label="Courses" on={current === "courses"} icon={<IconList />} />
+        <Item href={home} label="Accueil" on={current === "accueil"} icon={<IconHome />} />
+        <Item href={`${home}?onglet=historique#courses`} label="Courses" on={current === "courses"} icon={<IconList />} />
         <li className="flex justify-center">
           <button
             type="button"
             role="switch"
             aria-checked={available}
             disabled={pending}
-            onClick={() => start(() => setAvailable(!available))}
+            onClick={() => (demo ? setLocal(!local) : start(() => setAvailable(!available)))}
             className={`flex h-12 w-12 flex-col items-center justify-center rounded-2xl text-[9px] font-bold uppercase tracking-[0.06em] transition-colors disabled:opacity-60 ${
               available ? "bg-[#30D158] text-ink" : "bg-accent text-white"
             }`}
@@ -39,9 +43,9 @@ export function TabBar({ current, available }: { current: Tab; available: boolea
             {available ? "Dispo" : "Absent"}
           </button>
         </li>
-        <Item href="/chauffeur/parametres" label="Réglages" on={current === "parametres"} icon={<IconGear />} />
+        <Item href={demo ? "#" : "/chauffeur/parametres"} label="Réglages" on={current === "parametres"} icon={<IconGear />} />
         <li>
-          <form action={logout}>
+          <form action={demo ? undefined : logout} onSubmit={demo ? (e) => e.preventDefault() : undefined}>
             <button className="flex w-full flex-col items-center gap-1 py-1.5 text-[10px] font-medium text-label transition-colors hover:text-white">
               <IconOut />
               Quitter

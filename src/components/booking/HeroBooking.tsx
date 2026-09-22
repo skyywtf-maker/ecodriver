@@ -6,6 +6,7 @@ import { RouteMap } from "@/components/RouteMap";
 import { TripForm, type QuoteState } from "./TripForm";
 import type { DraftPoint, TripDraft } from "@/lib/draft";
 import { useIsDesktop } from "@/lib/useIsDesktop";
+import { OPEN_BOOKING_EVENT } from "@/components/StickyBookBar";
 
 type Props = {
   /** Sur l'accueil, "Continuer" mène à /reserver. Dans /reserver, passe à l'étape suivante. */
@@ -34,6 +35,16 @@ export function HeroBooking({ onContinue, showHeadline = true }: Props) {
     else if (hasQuote) setCollapsed(true);
   }, [desktop, hasQuote]);
 
+  // La barre fixe du bas de page demande l'ouverture du formulaire.
+  useEffect(() => {
+    const open = () => {
+      setCollapsed(false);
+      setExpanded(true);
+    };
+    window.addEventListener(OPEN_BOOKING_EVENT, open);
+    return () => window.removeEventListener(OPEN_BOOKING_EVENT, open);
+  }, []);
+
   const sheetCollapsed = collapsed && !desktop;
   const sheetPeek = !desktop && !sheetCollapsed && !expanded;
 
@@ -58,17 +69,16 @@ export function HeroBooking({ onContinue, showHeadline = true }: Props) {
   );
 
   return (
-    <section className="relative h-[100svh] min-h-[760px] overflow-hidden">
+    <section id="accueil-reservation" className="relative h-[100svh] min-h-[760px] overflow-hidden">
       <RouteMap
         from={route.from}
         to={route.to}
         geometry={route.q?.geometry}
         padding={padding}
         onLandmark={(l) => {
+          // Comme sur Uber : le lieu passe en arrivée, mais la feuille reste
+          // basse pour que la carte reste visible et que le tracé s'y dessine.
           setPresetTo((prev) => ({ point: { label: l.label, lat: l.lat, lng: l.lng }, n: (prev?.n ?? 0) + 1 }));
-          // Le formulaire se déplie : il ne reste qu'à saisir le départ.
-          setCollapsed(false);
-          setExpanded(true);
         }}
       />
 

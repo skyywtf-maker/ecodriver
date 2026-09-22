@@ -33,10 +33,13 @@ const BASE = { lat: 48.5835, lng: 7.7465 };
 
 const isMobile = () => window.matchMedia("(max-width: 767px)").matches;
 
-/** Cadrage d'arrivée sur Strasbourg. */
+/**
+ * Cadrage d'arrivée : assez large pour lire « Strasbourg » sur téléphone,
+ * où la bande visible entre le titre et le formulaire est étroite.
+ */
 function targetZoom() {
-  if (hasMapId) return isMobile() ? 13.4 : 12.6;
-  return 13;
+  if (hasMapId) return isMobile() ? 12.3 : 12.8;
+  return isMobile() ? 12 : 13;
 }
 
 /**
@@ -96,13 +99,20 @@ export default function RouteMapGoogle({ from, to, geometry, padding, className 
         ];
 
         // Repères de la ville : pastille blanche et nom, en verre sombre.
+        // Sur téléphone, à ce zoom, des étiquettes se chevaucheraient : les
+        // repères y sont des vignettes seules, le nom reste lu par l'aria-label.
+        const compact = isMobile();
         landmarks.current = MAP_LANDMARKS.map((l) => {
-          const node = landmark(l, () => onLandmarkRef.current?.(l));
+          const node = compact ? landmarkCompact(l, () => onLandmarkRef.current?.(l)) : landmark(l, () => onLandmarkRef.current?.(l));
           // Les clics sur le repère ne doivent pas déplacer la carte.
           google.maps.OverlayView.preventMapHitsAndGesturesFrom(node);
           // Accroche sur la pastille (ou la vignette), du côté où elle se trouve.
           const inset = l.image ? 19 : 10;
-          const transform = l.side === "left" ? `translate(calc(-100% + ${inset}px), -50%)` : `translate(-${inset}px, -50%)`;
+          const transform = compact
+            ? "translate(-50%, -50%)"
+            : l.side === "left"
+              ? `translate(calc(-100% + ${inset}px), -50%)`
+              : `translate(-${inset}px, -50%)`;
           return createDot(m, { lat: l.lat, lng: l.lng }, node, transform);
         });
 
@@ -162,8 +172,12 @@ export default function RouteMapGoogle({ from, to, geometry, padding, className 
         if ((m.getZoom() ?? 0) > 14) m.setZoom(14);
       });
     } else if (coords.length === 1) {
-      m.panTo(coords[0]!);
+      // Un seul point : on le centre dans la place laissée par le formulaire,
+      // pas au milieu de l'écran, où la feuille le recouvrirait.
       m.setZoom(14);
+      m.panTo(coords[0]!);
+      const p = padding ?? { top: 0, bottom: 0, left: 0, right: 0 };
+      m.panBy((p.right - p.left) / 2, (p.bottom - p.top) / 2);
     }
   }, [ready, from, to, geometry, padding]);
 
@@ -200,6 +214,32 @@ export default function RouteMapGoogle({ from, to, geometry, padding, className 
       {failed && <div className={`absolute inset-0 bg-[#0B0C0E] ${className}`} aria-hidden />}
     </>
   );
+}
+
+function landmarkCompact(l: Landmark, onPick: () => void) {
+  const d = document.createElement("button");
+  d.type = "button";
+  d.title = l.short;
+  d.setAttribute("aria-label", `Aller à : ${l.label}`);
+  d.style.cssText =
+    "display:block;padding:2px;border-radius:9px;background:#fff;cursor:pointer;box-shadow:0 0 0 4px rgba(10,11,13,.55),0 6px 16px rgba(0,0,0,.45)";
+  if (l.image) {
+    const img = document.createElement("img");
+    img.src = l.image;
+    img.alt = "";
+    img.decoding = "async";
+    img.style.cssText = "width:28px;height:28px;border-radius:7px;object-fit:cover;display:block";
+    d.append(img);
+  } else {
+    d.style.cssText += ";width:12px;height:12px;border-radius:50%";
+  }
+  // Au toucher, le repère passe devant ses voisins.
+  d.addEventListener("pointerdown", () => (d.style.zIndex = "2"));
+  d.addEventListener("click", (e) => {
+    e.stopPropagation();
+    onPick();
+  });
+  return d;
 }
 
 function landmark(l: Landmark, onPick: () => void) {

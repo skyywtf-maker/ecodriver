@@ -239,8 +239,13 @@ export const TOURIST_SPOTS = [
  * en arrivée dans le formulaire.
  *
  * Coordonnées de la Base Adresse Nationale (voir TOURIST_SPOTS) ; le
- * Parlement européen vient d'OpenStreetMap (Photon, bâtiment Louise Weiss),
- * la BAN ne connaissant que l'allée du Printemps. Aucune valeur devinée.
+ * Parlement européen, la Place des Halles et Rivétoile viennent
+ * d'OpenStreetMap (Photon / Nominatim), la BAN ne connaissant pas les points
+ * d'intérêt. Aucune valeur devinée.
+ *
+ * ⚠️ Vignettes de public/tourisme/ : photos fournies par le client, d'origine
+ * non vérifiée (probablement trouvées en ligne). À remplacer par des images
+ * dont les droits sont acquis avant tout usage durable.
  *
  * `image` : vignette facultative. Tant que le fichier n'existe pas, le
  * repère s'affiche sans vignette plutôt qu'avec une image cassée.
@@ -258,9 +263,25 @@ export type Landmark = {
 const spot = (name: (typeof TOURIST_SPOTS)[number]["name"]) => TOURIST_SPOTS.find((t) => t.name === name)!;
 
 export const MAP_LANDMARKS: Landmark[] = [
-  { short: "Cathédrale", label: "Cathédrale de Strasbourg", ...pick(spot("Cathédrale de Strasbourg")), image: null, side: "right" },
-  { short: "Petite France", label: "La Petite France, Strasbourg", ...pick(spot("La Petite France")), image: null, side: "left" },
-  { short: "Gare", label: "Gare de Strasbourg", ...pick(spot("Gare de Strasbourg")), image: null, side: "left" },
+  { short: "Cathédrale", label: "Cathédrale de Strasbourg", ...pick(spot("Cathédrale de Strasbourg")), image: "/tourisme/cathedrale.webp", side: "right" },
+  { short: "Petite France", label: "La Petite France, Strasbourg", ...pick(spot("La Petite France")), image: "/tourisme/petite-france.webp", side: "left" },
+  { short: "Gare", label: "Gare de Strasbourg", ...pick(spot("Gare de Strasbourg")), image: "/tourisme/gare.webp", side: "left" },
+  {
+    short: "Place des Halles",
+    label: "Centre commercial Place des Halles, Strasbourg",
+    lng: 7.741472,
+    lat: 48.5866982,
+    image: "/tourisme/place-des-halles.webp",
+    side: "right",
+  },
+  {
+    short: "Rivétoile",
+    label: "Rivétoile, Place Jeanne Helbling, Strasbourg",
+    lng: 7.762224,
+    lat: 48.5731114,
+    image: "/tourisme/rivetoile.webp",
+    side: "right",
+  },
   {
     short: "Parlement européen",
     label: "Parlement européen, Strasbourg",

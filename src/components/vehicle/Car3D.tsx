@@ -5,7 +5,7 @@ import { Suspense, lazy, useCallback, useEffect, useRef, useState } from "react"
 /** three.js et le modèle ne sont téléchargés qu'à l'approche de la section. */
 const CarScene = lazy(() => import("./CarScene"));
 
-export function Car3D({ src }: { src: string }) {
+export function Car3D({ src, yaw = 0 }: { src: string; yaw?: number }) {
   const holder = useRef<HTMLDivElement>(null);
   const progress = useRef(0);
   const [visible, setVisible] = useState(false);
@@ -94,6 +94,7 @@ export function Car3D({ src }: { src: string }) {
         <Suspense fallback={null}>
           <CarScene
             src={src}
+            yaw={yaw}
             progress={progress}
             scrollDriven={scrollDriven}
             onReady={onReady}
@@ -109,7 +110,7 @@ export function Car3D({ src }: { src: string }) {
 
       {ready && (
         <span className="pointer-events-none absolute bottom-5 left-1/2 -translate-x-1/2 whitespace-nowrap text-[12px] font-medium text-label">
-          Elle tourne au défilement — glissez pour explorer
+          Modèle 3D d&apos;illustration, non contractuel
         </span>
       )}
     </div>

@@ -55,7 +55,7 @@ export function VehicleShowcase() {
 
       <div className="mt-3 grid gap-3 md:grid-cols-12">
         <div className="md:col-span-7">
-          <Car3D src={active.model3d ?? ""} />
+          <Car3D src={active.model3d ?? ""} yaw={active.model3dYaw} />
         </div>
 
         <div className="glass flex flex-col gap-4 rounded-3xl p-5 md:col-span-5 md:justify-center md:p-7">

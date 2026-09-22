@@ -33,8 +33,12 @@ export type Vehicle = {
   luggage: number;
   /** Visuel dédié, à déposer dans public/vehicules/. */
   image: string;
-  /** Modèle 3D facultatif ; la photo sert de repli. */
+  /** Modèle 3D facultatif ; la photo sert de repli. Illustration de la
+      catégorie, pas le véhicule exact : le site l'indique sous la vue. */
   model3d?: string;
+  /** Correction d'orientation du fichier, en degrés, pour que tous les
+      modèles partent du même trois quarts avant. */
+  model3dYaw?: number;
   tariff: VehicleTariff;
   /** Phrase affichée sous le nom dans le sélecteur. */
   priceHint: string;
@@ -46,12 +50,13 @@ export const VEHICLES: Vehicle[] = [
   {
     id: "BERLINE",
     name: "Berline confort",
-    model: "Mercedes Classe E",
+    model: "Toyota Corolla",
     tagline: "Pour les trajets du quotidien et les transferts aéroport.",
     passengers: 4,
     luggage: 3,
     image: "/vehicules/berline.jpg",
-    model3d: "/vehicule/mercedes-e-class.glb",
+    model3d: "/vehicule/toyota-corolla-e170.glb",
+    model3dYaw: 0,
     priceHint: "15 € jusqu'à 5 km, puis au kilomètre",
     from: "dès 15 €",
     tariff: {
@@ -71,7 +76,8 @@ export const VEHICLES: Vehicle[] = [
     passengers: 4,
     luggage: 5,
     image: "/vehicules/touring.jpg",
-    model3d: "/vehicule/toyota-corolla.glb",
+    model3d: "/vehicule/skoda-octavia-combi.glb",
+    model3dYaw: 0,
     priceHint: "15 € jusqu'à 5 km, puis au kilomètre",
     from: "dès 15 €",
     // Même grille que la berline pour l'instant, mais dans une variable
@@ -93,7 +99,8 @@ export const VEHICLES: Vehicle[] = [
     passengers: 8,
     luggage: 8,
     image: "/vehicules/van.jpg",
-    model3d: "/vehicule/mercedes-v-class.glb",
+    model3d: "/vehicule/toyota-proace-verso.glb",
+    model3dYaw: 0,
     priceHint: "60 € par heure, mise à disposition",
     from: "60 € / heure",
     tariff: { mode: "hourly", perHour: 60, minimumHours: 2 },

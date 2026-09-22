@@ -25,6 +25,8 @@ const SCROLL_TURN = Math.PI * 1.1;
 type Props = {
   /** Fichier du modèle, propre à la catégorie affichée. */
   src: string;
+  /** Correction d'orientation propre au fichier, en degrés. */
+  yaw?: number;
   /** Avancée du défilement dans la section, de 0 à 1. Un ref, pour ne pas
       redessiner React à chaque pixel de scroll. */
   progress: RefObject<number>;
@@ -32,7 +34,7 @@ type Props = {
   onReady: () => void;
 };
 
-function Car({ src, progress, scrollDriven, onReady }: Props) {
+function Car({ src, yaw = 0, progress, scrollDriven, onReady }: Props) {
   // useDraco à false : le modèle est compressé en meshopt, inutile d'aller
   // chercher un décodeur Draco sur un CDN tiers.
   const { scene } = useGLTF(src, false);
@@ -41,7 +43,7 @@ function Car({ src, progress, scrollDriven, onReady }: Props) {
   // Le fichier est exporté dans ses propres unités (~111 par mètre) et n'est
   // centré sur rien. On le ramène à l'échelle métrique, centré sur l'origine
   // et posé sur le sol : la caméra et l'ombre portée deviennent prévisibles.
-  const { scale, offset } = useMemo(() => {
+  const { scale, offset, baseYaw } = useMemo(() => {
     // Mesure sur un clone détaché, et non sur `scene` : setFromObject mesure
     // en espace monde, or la scène est montée dans les groupes ci-dessous.
     // La mesurer en place reviendrait à mesurer le résultat de son propre
@@ -52,10 +54,21 @@ function Car({ src, progress, scrollDriven, onReady }: Props) {
     const size = box.getSize(new Vector3());
     const center = box.getCenter(new Vector3());
     const s = CAR_LENGTH_M / Math.max(size.x, size.y, size.z);
-    return { scale: s, offset: [-center.x * s, -box.min.y * s, -center.z * s] as [number, number, number] };
-  }, [scene]);
+    // Chaque fichier est exporté dans son propre repère : l'un en longueur
+    // sur X, l'autre sur Z. On aligne d'abord la longueur sur Z, puis la
+    // correction du fichier retourne l'avant vers la caméra. Sans ça, les
+    // trois véhicules partaient chacun d'un angle différent.
+    const baseYaw = (size.x > size.z ? Math.PI / 2 : 0) + (yaw * Math.PI) / 180;
+    return {
+      scale: s,
+      baseYaw,
+      offset: [-center.x * s, -box.min.y * s, -center.z * s] as [number, number, number],
+    };
+  }, [scene, yaw]);
 
-  useEffect(() => onReady(), [onReady]);
+  // Dépend aussi de la scène : changer d'onglet remplace le fichier sans
+  // démonter le composant, et le bandeau de chargement restait affiché.
+  useEffect(() => onReady(), [onReady, scene]);
 
   // La voiture tourne sur elle-même au fil du défilement. On lisse vers la
   // cible plutôt que de la suivre au pixel : le mouvement reste doux même
@@ -69,12 +82,13 @@ function Car({ src, progress, scrollDriven, onReady }: Props) {
 
   return (
     <group ref={spin}>
-      <group position={offset}>
-        <group scale={scale}>
-          <primitive object={scene} />
+      <group rotation-y={baseYaw}>
+        <group position={offset}>
+          <group scale={scale}>
+            <primitive object={scene} />
+          </group>
         </group>
       </group>
-
     </group>
   );
 }

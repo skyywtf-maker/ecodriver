@@ -100,8 +100,10 @@ export default function RouteMapGoogle({ from, to, geometry, padding, className 
           const node = landmark(l, () => onLandmarkRef.current?.(l));
           // Les clics sur le repère ne doivent pas déplacer la carte.
           google.maps.OverlayView.preventMapHitsAndGesturesFrom(node);
-          // Accroche sur le bord gauche de l'étiquette, là où est la pastille.
-          return createDot(m, { lat: l.lat, lng: l.lng }, node, l.image ? "translate(-19px, -50%)" : "translate(-10px, -50%)");
+          // Accroche sur la pastille (ou la vignette), du côté où elle se trouve.
+          const inset = l.image ? 19 : 10;
+          const transform = l.side === "left" ? `translate(calc(-100% + ${inset}px), -50%)` : `translate(-${inset}px, -50%)`;
+          return createDot(m, { lat: l.lat, lng: l.lng }, node, transform);
         });
 
         map.current = m;
@@ -205,7 +207,7 @@ function landmark(l: Landmark, onPick: () => void) {
   d.type = "button";
   d.setAttribute("aria-label", `Aller à : ${l.label}`);
   d.style.cssText =
-    "display:flex;align-items:center;gap:7px;padding:4px 10px 4px 4px;border-radius:8px;background:rgba(10,11,13,.86);border:1px solid rgba(255,255,255,.16);color:#fff;font:600 11px/1 var(--font-montserrat),system-ui,sans-serif;white-space:nowrap;letter-spacing:-.01em;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.4);transition:border-color .2s,transform .2s";
+    `display:flex;flex-direction:${l.side === "left" ? "row-reverse" : "row"};align-items:center;gap:7px;padding:${l.side === "left" ? "4px 4px 4px 10px" : "4px 10px 4px 4px"};border-radius:8px;background:rgba(10,11,13,.86);border:1px solid rgba(255,255,255,.16);color:#fff;font:600 11px/1 var(--font-montserrat),system-ui,sans-serif;white-space:nowrap;letter-spacing:-.01em;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.4);transition:border-color .2s`;
   if (l.image) {
     const img = document.createElement("img");
     img.src = l.image;
@@ -215,11 +217,11 @@ function landmark(l: Landmark, onPick: () => void) {
     d.append(img);
   } else {
     const pin = document.createElement("span");
-    pin.style.cssText = "width:7px;height:7px;margin:0 2px 0 3px;border-radius:50%;background:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.18)";
+    pin.style.cssText = "width:7px;height:7px;margin:0 3px;border-radius:50%;background:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.18)";
     d.append(pin);
   }
   const text = document.createElement("span");
-  text.style.cssText = "display:flex;flex-direction:column;gap:3px;text-align:left";
+  text.style.cssText = `display:flex;flex-direction:column;gap:3px;text-align:${l.side === "left" ? "right" : "left"}`;
   const name = document.createElement("span");
   name.textContent = l.short;
   const hint = document.createElement("span");

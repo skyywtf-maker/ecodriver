@@ -245,26 +245,36 @@ export const TOURIST_SPOTS = [
  * `image` : vignette facultative. Tant que le fichier n'existe pas, le
  * repère s'affiche sans vignette plutôt qu'avec une image cassée.
  */
-export type Landmark = { short: string; label: string; lng: number; lat: number; image: string | null };
+export type Landmark = {
+  short: string;
+  label: string;
+  lng: number;
+  lat: number;
+  image: string | null;
+  /** Côté où s'étend l'étiquette, pour que les repères voisins ne se chevauchent pas. */
+  side: "left" | "right";
+};
 
 const spot = (name: (typeof TOURIST_SPOTS)[number]["name"]) => TOURIST_SPOTS.find((t) => t.name === name)!;
 
 export const MAP_LANDMARKS: Landmark[] = [
-  { short: "Cathédrale", label: "Cathédrale de Strasbourg", ...pick(spot("Cathédrale de Strasbourg")), image: null },
-  { short: "Petite France", label: "La Petite France, Strasbourg", ...pick(spot("La Petite France")), image: null },
-  { short: "Gare", label: "Gare de Strasbourg", ...pick(spot("Gare de Strasbourg")), image: null },
+  { short: "Cathédrale", label: "Cathédrale de Strasbourg", ...pick(spot("Cathédrale de Strasbourg")), image: null, side: "right" },
+  { short: "Petite France", label: "La Petite France, Strasbourg", ...pick(spot("La Petite France")), image: null, side: "left" },
+  { short: "Gare", label: "Gare de Strasbourg", ...pick(spot("Gare de Strasbourg")), image: null, side: "left" },
   {
     short: "Parlement européen",
     label: "Parlement européen, Strasbourg",
     lng: 7.7692853,
     lat: 48.597022,
     image: "/services/strasbourg-institutions.webp",
+    side: "left",
   },
   {
     short: "Aéroport",
     label: "Aéroport de Strasbourg-Entzheim",
     ...pick(spot("Aéroport d'Entzheim")),
     image: "/services/transferts-aeroport.webp",
+    side: "right",
   },
 ];
 

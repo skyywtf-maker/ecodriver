@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
 import { logout } from "./actions";
+import { devBypass } from "@/lib/auth";
 
 /**
  * Barre commune aux pages authentifiées.
@@ -15,6 +16,12 @@ export function DriverNav({ current }: { current: "bord" | "parametres" }) {
     }`;
 
   return (
+    <>
+    {devBypass && (
+      <p className="mb-3 rounded-2xl border border-[#FF9F0A]/40 bg-[#FF9F0A]/10 px-4 py-2 text-[12px] font-semibold text-[#FFB340]">
+        Mode développement local : espace ouvert sans mot de passe. Impossible en production.
+      </p>
+    )}
     <header className="glass mb-8 flex flex-wrap items-center justify-between gap-4 rounded-4xl px-5 py-3.5 md:px-6">
       <div className="flex items-center gap-5">
         <Logo className="text-xl" />
@@ -33,5 +40,6 @@ export function DriverNav({ current }: { current: "bord" | "parametres" }) {
         </button>
       </form>
     </header>
+    </>
   );
 }

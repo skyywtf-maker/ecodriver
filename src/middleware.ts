@@ -7,6 +7,10 @@ const MAX_AGE = 60 * 60 * 2;
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
+  // Accès libre en développement local seulement : voir devBypass dans src/lib/auth.ts.
+  if (process.env.NODE_ENV === "development" && process.env.DRIVER_DEV_BYPASS === "1") {
+    return NextResponse.next();
+  }
   // Seules la connexion et la réinitialisation sont accessibles sans session.
   if (pathname.startsWith("/chauffeur/connexion") || pathname.startsWith("/chauffeur/mot-de-passe-oublie")) {
     return NextResponse.next();

@@ -8,6 +8,16 @@ import { db } from "./db";
 import { getDriver } from "./driver";
 
 export const SESSION_COOKIE = "ed_session";
+
+/**
+ * Accès libre à l'espace chauffeur, pour le développement LOCAL uniquement.
+ *
+ * Deux verrous : le serveur de développement (`next dev` ; un build de
+ * production, donc Vercel, a toujours NODE_ENV=production), et la variable
+ * DRIVER_DEV_BYPASS=1, à poser dans .env.local — fichier jamais versionné.
+ * Les mêmes conditions sont répétées dans src/middleware.ts.
+ */
+export const devBypass = process.env.NODE_ENV === "development" && process.env.DRIVER_DEV_BYPASS === "1";
 /** Déconnexion après 2 h, prolongée à chaque page consultée par le middleware. */
 const MAX_AGE = 60 * 60 * 2;
 /** Durée de validité d'un lien de réinitialisation. */
@@ -67,6 +77,7 @@ export async function destroySession() {
 }
 
 export async function isDriver() {
+  if (devBypass) return true;
   const token = (await cookies()).get(SESSION_COOKIE)?.value;
   if (!token) return false;
   try {

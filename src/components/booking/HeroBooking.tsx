@@ -116,15 +116,22 @@ export function HeroBooking({ onContinue, showHeadline = true }: Props) {
         {/* Destinations populaires, sur téléphone : posées juste au-dessus de la
             feuille, à la place des vignettes qui s'entassaient sur la carte.
             Fond opaque : la feuille en verre ferait sinon racine de fond. */}
-        {google && sheetPeek && !route.to && (
+        {/* Elle reste visible après un choix, pour corriger d'un geste ; elle
+            s'efface quand le trajet complet est tracé. */}
+        {google && sheetPeek && !hasQuote && (
           <div className="absolute inset-x-0 bottom-full mb-2 md:hidden">
             <ul aria-label="Destinations populaires" className="rail gap-2 px-1">
-              {MAP_LANDMARKS.map((l) => (
+              {MAP_LANDMARKS.map((l) => {
+                const chosen = route.to?.label === l.label;
+                return (
                 <li key={l.label}>
                   <button
                     type="button"
                     onClick={() => pickLandmark(l)}
-                    className="flex h-11 items-center gap-2 rounded-xl border border-white/[0.14] bg-[#121317] py-1 pl-1 pr-3 text-[12px] font-semibold shadow-[0_8px_24px_rgba(0,0,0,0.45)]"
+                    aria-pressed={chosen}
+                    className={`flex h-12 items-center gap-2 rounded-xl border bg-[#121317] py-1 pl-1 pr-3 text-left shadow-[0_8px_24px_rgba(0,0,0,0.45)] transition-colors ${
+                      chosen ? "border-accent" : "border-white/[0.14]"
+                    }`}
                   >
                     {l.image ? (
                       // eslint-disable-next-line @next/next/no-img-element
@@ -132,10 +139,14 @@ export function HeroBooking({ onContinue, showHeadline = true }: Props) {
                     ) : (
                       <span className="ml-2 h-2 w-2 rounded-full bg-white" />
                     )}
-                    {l.short}
+                    <span className="flex flex-col gap-0.5">
+                      <span className="text-[12px] font-semibold leading-none">{l.short}</span>
+                      <span className={`text-[10px] font-medium leading-none ${chosen ? "text-accent" : "text-label"}`}>{l.kind}</span>
+                    </span>
                   </button>
                 </li>
-              ))}
+                );
+              })}
             </ul>
           </div>
         )}

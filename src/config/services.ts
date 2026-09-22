@@ -252,6 +252,8 @@ export const TOURIST_SPOTS = [
  */
 export type Landmark = {
   short: string;
+  /** Ce qu'est le lieu, en deux mots : le visiteur qui ne connaît pas Strasbourg comprend. */
+  kind: string;
   label: string;
   lng: number;
   lat: number;
@@ -263,11 +265,12 @@ export type Landmark = {
 const spot = (name: (typeof TOURIST_SPOTS)[number]["name"]) => TOURIST_SPOTS.find((t) => t.name === name)!;
 
 export const MAP_LANDMARKS: Landmark[] = [
-  { short: "Cathédrale", label: "Cathédrale de Strasbourg", ...pick(spot("Cathédrale de Strasbourg")), image: "/tourisme/cathedrale.webp", side: "right" },
-  { short: "Petite France", label: "La Petite France, Strasbourg", ...pick(spot("La Petite France")), image: "/tourisme/petite-france.webp", side: "left" },
-  { short: "Gare", label: "Gare de Strasbourg", ...pick(spot("Gare de Strasbourg")), image: "/tourisme/gare.webp", side: "left" },
+  { short: "Cathédrale", kind: "Monument", label: "Cathédrale de Strasbourg", ...pick(spot("Cathédrale de Strasbourg")), image: "/tourisme/cathedrale.webp", side: "right" },
+  { short: "Petite France", kind: "Quartier historique", label: "La Petite France, Strasbourg", ...pick(spot("La Petite France")), image: "/tourisme/petite-france.webp", side: "left" },
+  { short: "Gare", kind: "Gare centrale", label: "Gare de Strasbourg", ...pick(spot("Gare de Strasbourg")), image: "/tourisme/gare.webp", side: "left" },
   {
     short: "Place des Halles",
+    kind: "Centre commercial",
     label: "Centre commercial Place des Halles, Strasbourg",
     lng: 7.741472,
     lat: 48.5866982,
@@ -276,6 +279,7 @@ export const MAP_LANDMARKS: Landmark[] = [
   },
   {
     short: "Rivétoile",
+    kind: "Centre commercial",
     label: "Rivétoile, Place Jeanne Helbling, Strasbourg",
     lng: 7.762224,
     lat: 48.5731114,
@@ -284,6 +288,7 @@ export const MAP_LANDMARKS: Landmark[] = [
   },
   {
     short: "Parlement européen",
+    kind: "Institutions",
     label: "Parlement européen, Strasbourg",
     lng: 7.7692853,
     lat: 48.597022,
@@ -292,6 +297,7 @@ export const MAP_LANDMARKS: Landmark[] = [
   },
   {
     short: "Aéroport",
+    kind: "Entzheim",
     label: "Aéroport de Strasbourg-Entzheim",
     ...pick(spot("Aéroport d'Entzheim")),
     image: "/services/transferts-aeroport.webp",

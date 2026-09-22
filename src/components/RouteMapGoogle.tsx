@@ -162,8 +162,9 @@ export default function RouteMapGoogle({ from, to, geometry, padding, className 
     const coords = path.length > 1 ? path : pts.map((p) => ({ lat: p.lat, lng: p.lng }));
     hasRoute.current = coords.length > 0;
     if (coords.length > 0) stopAnim.current();
-    // Les repères s'effacent devant le trajet du client, et reviennent après.
-    landmarks.current.forEach((d) => d.setMap(coords.length > 0 ? null : m));
+    // Les repères restent tant que seule l'arrivée est choisie (pour en
+    // changer d'un geste) et s'effacent devant le trajet complet.
+    landmarks.current.forEach((d) => d.setMap(coords.length >= 2 ? null : m));
 
     if (coords.length >= 2) {
       const b = new google.maps.LatLngBounds();
@@ -257,8 +258,8 @@ function landmark(l: Landmark, onPick: () => void) {
   const name = document.createElement("span");
   name.textContent = l.short;
   const hint = document.createElement("span");
-  hint.textContent = "Y aller";
-  hint.style.cssText = "font-size:10px;font-weight:600;color:#0A84FF";
+  hint.textContent = `${l.kind} · Y aller`;
+  hint.style.cssText = "font-size:10px;font-weight:600;color:rgba(235,235,245,.6)";
   text.append(name, hint);
   d.append(text);
   d.addEventListener("mouseenter", () => (d.style.borderColor = "rgba(10,132,255,.8)"));

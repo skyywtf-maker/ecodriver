@@ -117,7 +117,7 @@ export function TripForm({ onQuote, onContinue, collapsed = false, peek = false,
   }
 
   return (
-    <form onSubmit={submit} className="flex flex-col gap-5">
+    <form onSubmit={submit} className={`flex flex-col ${peek ? "gap-3" : "gap-5"}`}>
       {peek && (
         <p className="px-1 text-[13px] font-medium text-label">Où allez-vous ?</p>
       )}
@@ -176,11 +176,9 @@ export function TripForm({ onQuote, onContinue, collapsed = false, peek = false,
         </>
       )}
 
-      {peek && !error && (
-        <button type="button" onClick={onExpand} className="btn-ghost w-full text-[14px]">
-          Date, heure, passagers
-        </button>
-      )}
+      {/* Réduite, la feuille ne montre que les deux adresses : la carte garde
+          la place. Date, passagers et « Continuer » viennent en la dépliant,
+          ou d'eux-mêmes une fois le prix calculé. */}
 
       {error ? (
         <p role="alert" className="rounded-2xl bg-[#FF453A]/12 px-4 py-3 text-sm font-medium text-[#FF6961]">
@@ -204,9 +202,11 @@ export function TripForm({ onQuote, onContinue, collapsed = false, peek = false,
         </div>
       )}
 
-      <button type="submit" disabled={!canContinue} className="btn-primary w-full">
-        Continuer
-      </button>
+      {(!peek || quote) && (
+        <button type="submit" disabled={!canContinue} className="btn-primary w-full">
+          Continuer
+        </button>
+      )}
       {!collapsed && !peek && (
         <p className="text-center text-xs text-white/50">
           Réservation au moins {BOOKING_RULES.minLeadMinutes} min à l&apos;avance

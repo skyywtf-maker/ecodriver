@@ -38,8 +38,8 @@ const isMobile = () => window.matchMedia("(max-width: 767px)").matches;
  * où la bande visible entre le titre et le formulaire est étroite.
  */
 function targetZoom() {
-  if (hasMapId) return isMobile() ? 12.3 : 12.8;
-  return isMobile() ? 12 : 13;
+  if (hasMapId) return 12.8;
+  return 13;
 }
 
 /**
@@ -51,8 +51,9 @@ function targetZoom() {
 function viewCenter(zoom: number, node: HTMLElement): google.maps.LatLngLiteral {
   const metersPerPx = (156543.03 * Math.cos((BASE.lat * Math.PI) / 180)) / 2 ** zoom;
   if (isMobile()) {
-    // L'hypercentre tombe vers 38 % de la hauteur : entre le titre et le formulaire.
-    const px = node.clientHeight * 0.12;
+    // L'hypercentre tombe vers 55 % de la hauteur : sous le titre, au-dessus
+    // du formulaire réduit, avec le Parlement en haut et Rivétoile en bas.
+    const px = node.clientHeight * -0.05;
     return { lat: BASE.lat - (px * metersPerPx) / 111320, lng: BASE.lng };
   }
   const px = 240;
@@ -99,23 +100,23 @@ export default function RouteMapGoogle({ from, to, geometry, padding, className 
         ];
 
         // Repères de la ville : pastille blanche et nom, en verre sombre.
-        // Sur téléphone, à ce zoom, les vignettes s'entassaient sur le nom de
-        // la ville : la carte n'y porte que des points, les photos et les noms
-        // sont dans la rangée « Destinations populaires » au-dessus du formulaire.
+        // Sur téléphone, étiquettes resserrées : vignette et nom seulement.
         const compact = isMobile();
-        landmarks.current = MAP_LANDMARKS.map((l) => {
-          const node = compact ? landmarkCompact(l, () => onLandmarkRef.current?.(l)) : landmark(l, () => onLandmarkRef.current?.(l));
+        landmarks.current = [];
+        if (compact) {
+          // Les noms de communes de Google sont masqués (voir hideStreetLabels) :
+          // un seul nom, à nous, placé sous la Petite France, loin des repères.
+          landmarks.current.push(createDot(m, { lat: 48.5748, lng: 7.7385 }, cityLabel("Strasbourg")));
+        }
+        landmarks.current.push(...MAP_LANDMARKS.map((l) => {
+          const node = landmark(l, () => onLandmarkRef.current?.(l), compact);
           // Les clics sur le repère ne doivent pas déplacer la carte.
           google.maps.OverlayView.preventMapHitsAndGesturesFrom(node);
           // Accroche sur la pastille (ou la vignette), du côté où elle se trouve.
-          const inset = l.image ? 19 : 10;
-          const transform = compact
-            ? "translate(-50%, -50%)"
-            : l.side === "left"
-              ? `translate(calc(-100% + ${inset}px), -50%)`
-              : `translate(-${inset}px, -50%)`;
+          const inset = l.image ? (compact ? 15 : 19) : 10;
+          const transform = l.side === "left" ? `translate(calc(-100% + ${inset}px), -50%)` : `translate(-${inset}px, -50%)`;
           return createDot(m, { lat: l.lat, lng: l.lng }, node, transform);
-        });
+        }));
 
         map.current = m;
         google.maps.event.addListenerOnce(m, "tilesloaded", () => {
@@ -225,35 +226,27 @@ export default function RouteMapGoogle({ from, to, geometry, padding, className 
   );
 }
 
-function landmarkCompact(l: Landmark, onPick: () => void) {
-  const d = document.createElement("button");
-  d.type = "button";
-  d.title = l.short;
-  d.setAttribute("aria-label", `Aller à : ${l.label}`);
-  // Zone de toucher de 28 px autour d'un point de 9 px.
-  d.style.cssText = "display:flex;align-items:center;justify-content:center;width:28px;height:28px;padding:0;border:0;background:transparent;cursor:pointer";
-  const dotEl = document.createElement("span");
-  dotEl.style.cssText = "width:9px;height:9px;border-radius:50%;background:#fff;box-shadow:0 0 0 3px rgba(10,11,13,.7),0 0 0 6px rgba(255,255,255,.14)";
-  d.append(dotEl);
-  d.addEventListener("click", (e) => {
-    e.stopPropagation();
-    onPick();
-  });
+function cityLabel(name: string) {
+  const d = document.createElement("div");
+  d.textContent = name;
+  d.style.cssText =
+    "font:700 13px/1 var(--font-poppins),system-ui,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.55);white-space:nowrap;pointer-events:none;text-shadow:0 1px 8px rgba(0,0,0,.8)";
   return d;
 }
 
-function landmark(l: Landmark, onPick: () => void) {
+/** Étiquette de repère ; `compact` (téléphone) : vignette et nom seulement. */
+function landmark(l: Landmark, onPick: () => void, compact = false) {
   const d = document.createElement("button");
   d.type = "button";
   d.setAttribute("aria-label", `Aller à : ${l.label}`);
   d.style.cssText =
-    `display:flex;flex-direction:${l.side === "left" ? "row-reverse" : "row"};align-items:center;gap:7px;padding:${l.side === "left" ? "4px 4px 4px 10px" : "4px 10px 4px 4px"};border-radius:8px;background:rgba(10,11,13,.86);border:1px solid rgba(255,255,255,.16);color:#fff;font:600 11px/1 var(--font-montserrat),system-ui,sans-serif;white-space:nowrap;letter-spacing:-.01em;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.4);transition:border-color .2s`;
+    `display:flex;flex-direction:${l.side === "left" ? "row-reverse" : "row"};align-items:center;gap:${compact ? 6 : 7}px;padding:${compact ? (l.side === "left" ? "3px 3px 3px 8px" : "3px 8px 3px 3px") : l.side === "left" ? "4px 4px 4px 10px" : "4px 10px 4px 4px"};border-radius:8px;background:rgba(10,11,13,.86);border:1px solid rgba(255,255,255,.16);color:#fff;font:600 ${compact ? 10.5 : 11}px/1 var(--font-montserrat),system-ui,sans-serif;white-space:nowrap;letter-spacing:-.01em;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.4);transition:border-color .2s`;
   if (l.image) {
     const img = document.createElement("img");
     img.src = l.image;
     img.alt = "";
     img.decoding = "async";
-    img.style.cssText = "width:30px;height:30px;border-radius:6px;object-fit:cover;display:block";
+    img.style.cssText = `width:${compact ? 24 : 30}px;height:${compact ? 24 : 30}px;border-radius:5px;object-fit:cover;display:block`;
     d.append(img);
   } else {
     const pin = document.createElement("span");
@@ -267,7 +260,8 @@ function landmark(l: Landmark, onPick: () => void) {
   const hint = document.createElement("span");
   hint.textContent = `${l.kind} · Y aller`;
   hint.style.cssText = "font-size:10px;font-weight:600;color:rgba(235,235,245,.6)";
-  text.append(name, hint);
+  text.append(name);
+  if (!compact) text.append(hint);
   d.append(text);
   d.addEventListener("mouseenter", () => (d.style.borderColor = "rgba(10,132,255,.8)"));
   d.addEventListener("mouseleave", () => (d.style.borderColor = "rgba(255,255,255,.16)"));

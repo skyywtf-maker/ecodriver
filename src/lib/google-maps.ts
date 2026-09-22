@@ -97,8 +97,8 @@ export function baseOptions(extra: google.maps.MapOptions = {}): google.maps.Map
 }
 
 /**
- * Masque les noms de rues en ne gardant que les communes, sur petit écran :
- * la carte y sert de décor derrière du texte blanc. Sans effet avec un Map ID
+ * Masque les noms de rues et de communes, sur petit écran : la carte y sert
+ * de décor derrière du texte blanc, les repères suffisent à situer. Sans effet avec un Map ID
  * (le style se règle alors dans la console Google).
  */
 export function hideStreetLabels(map: google.maps.Map) {
@@ -108,6 +108,9 @@ export function hideStreetLabels(map: google.maps.Map) {
       ...DARK_STYLE,
       { featureType: "road", elementType: "labels", stylers: [{ visibility: "off" }] },
       { featureType: "administrative.neighborhood", elementType: "labels", stylers: [{ visibility: "off" }] },
+      // Les communes voisines (Schiltigheim, Bischheim…) passaient sous le
+      // titre : aucune n'est affichée, la carte pose son propre « Strasbourg ».
+      { featureType: "administrative.locality", elementType: "labels", stylers: [{ visibility: "off" }] },
     ],
   });
 }

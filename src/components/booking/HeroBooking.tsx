@@ -7,6 +7,8 @@ import { TripForm, type QuoteState } from "./TripForm";
 import type { DraftPoint, TripDraft } from "@/lib/draft";
 import { useIsDesktop } from "@/lib/useIsDesktop";
 import { OPEN_BOOKING_EVENT } from "@/components/StickyBookBar";
+import { MAP_LANDMARKS, type Landmark } from "@/config/services";
+import { useGoogleMaps } from "@/lib/google-maps";
 
 type Props = {
   /** Sur l'accueil, "Continuer" mène à /reserver. Dans /reserver, passe à l'étape suivante. */
@@ -29,6 +31,13 @@ export function HeroBooking({ onContinue, showHeadline = true }: Props) {
   const [expanded, setExpanded] = useState(false);
   const hasQuote = Boolean(route.q);
   const [presetTo, setPresetTo] = useState<{ point: DraftPoint; n: number } | null>(null);
+  const google = useGoogleMaps();
+
+  // Comme sur Uber : le lieu passe en arrivée, mais la feuille reste basse
+  // pour que la carte reste visible et que le tracé s'y dessine.
+  function pickLandmark(l: Landmark) {
+    setPresetTo((prev) => ({ point: { label: l.label, lat: l.lat, lng: l.lng }, n: (prev?.n ?? 0) + 1 }));
+  }
 
   useEffect(() => {
     if (desktop) setCollapsed(false);
@@ -75,11 +84,7 @@ export function HeroBooking({ onContinue, showHeadline = true }: Props) {
         to={route.to}
         geometry={route.q?.geometry}
         padding={padding}
-        onLandmark={(l) => {
-          // Comme sur Uber : le lieu passe en arrivée, mais la feuille reste
-          // basse pour que la carte reste visible et que le tracé s'y dessine.
-          setPresetTo((prev) => ({ point: { label: l.label, lat: l.lat, lng: l.lng }, n: (prev?.n ?? 0) + 1 }));
-        }}
+        onLandmark={pickLandmark}
       />
 
       <div className="glass absolute inset-x-2 bottom-2 z-20 rounded-5xl p-5 shadow-[0_30px_80px_rgba(0,0,0,0.45)] transition-[padding] duration-300 md:inset-x-auto md:bottom-auto md:left-16 md:top-[120px] md:w-[440px] md:p-7">
@@ -107,6 +112,33 @@ export function HeroBooking({ onContinue, showHeadline = true }: Props) {
         >
           <span className="h-1 w-10 rounded-full bg-white/25" />
         </button>
+
+        {/* Destinations populaires, sur téléphone : posées juste au-dessus de la
+            feuille, à la place des vignettes qui s'entassaient sur la carte.
+            Fond opaque : la feuille en verre ferait sinon racine de fond. */}
+        {google && sheetPeek && !route.to && (
+          <div className="absolute inset-x-0 bottom-full mb-2 md:hidden">
+            <ul aria-label="Destinations populaires" className="rail gap-2 px-1">
+              {MAP_LANDMARKS.map((l) => (
+                <li key={l.label}>
+                  <button
+                    type="button"
+                    onClick={() => pickLandmark(l)}
+                    className="flex h-11 items-center gap-2 rounded-xl border border-white/[0.14] bg-[#121317] py-1 pl-1 pr-3 text-[12px] font-semibold shadow-[0_8px_24px_rgba(0,0,0,0.45)]"
+                  >
+                    {l.image ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={l.image} alt="" width={36} height={36} className="h-9 w-9 rounded-lg object-cover" />
+                    ) : (
+                      <span className="ml-2 h-2 w-2 rounded-full bg-white" />
+                    )}
+                    {l.short}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         <TripForm
           presetTo={presetTo}

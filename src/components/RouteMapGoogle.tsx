@@ -99,8 +99,9 @@ export default function RouteMapGoogle({ from, to, geometry, padding, className 
         ];
 
         // Repères de la ville : pastille blanche et nom, en verre sombre.
-        // Sur téléphone, à ce zoom, des étiquettes se chevaucheraient : les
-        // repères y sont des vignettes seules, le nom reste lu par l'aria-label.
+        // Sur téléphone, à ce zoom, les vignettes s'entassaient sur le nom de
+        // la ville : la carte n'y porte que des points, les photos et les noms
+        // sont dans la rangée « Destinations populaires » au-dessus du formulaire.
         const compact = isMobile();
         landmarks.current = MAP_LANDMARKS.map((l) => {
           const node = compact ? landmarkCompact(l, () => onLandmarkRef.current?.(l)) : landmark(l, () => onLandmarkRef.current?.(l));
@@ -221,20 +222,11 @@ function landmarkCompact(l: Landmark, onPick: () => void) {
   d.type = "button";
   d.title = l.short;
   d.setAttribute("aria-label", `Aller à : ${l.label}`);
-  d.style.cssText =
-    "display:block;padding:2px;border-radius:9px;background:#fff;cursor:pointer;box-shadow:0 0 0 4px rgba(10,11,13,.55),0 6px 16px rgba(0,0,0,.45)";
-  if (l.image) {
-    const img = document.createElement("img");
-    img.src = l.image;
-    img.alt = "";
-    img.decoding = "async";
-    img.style.cssText = "width:28px;height:28px;border-radius:7px;object-fit:cover;display:block";
-    d.append(img);
-  } else {
-    d.style.cssText += ";width:12px;height:12px;border-radius:50%";
-  }
-  // Au toucher, le repère passe devant ses voisins.
-  d.addEventListener("pointerdown", () => (d.style.zIndex = "2"));
+  // Zone de toucher de 28 px autour d'un point de 9 px.
+  d.style.cssText = "display:flex;align-items:center;justify-content:center;width:28px;height:28px;padding:0;border:0;background:transparent;cursor:pointer";
+  const dotEl = document.createElement("span");
+  dotEl.style.cssText = "width:9px;height:9px;border-radius:50%;background:#fff;box-shadow:0 0 0 3px rgba(10,11,13,.7),0 0 0 6px rgba(255,255,255,.14)";
+  d.append(dotEl);
   d.addEventListener("click", (e) => {
     e.stopPropagation();
     onPick();

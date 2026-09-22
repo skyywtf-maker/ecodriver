@@ -18,6 +18,8 @@ export type Service = {
   sections: { h2: string; body: string[] }[];
   /** Visuel de tête. Null quand aucun n'est fourni : le bloc est alors omis. */
   image: string | null;
+  /** Point de cadrage quand le visuel est recadré (object-position). Centré par défaut. */
+  imagePosition?: string;
   /** Objet pré-rempli du formulaire de devis. */
   subject: string;
 };
@@ -150,7 +152,9 @@ export const SERVICES: Service[] = [
         ],
       },
     ],
-    image: null,
+    image: "/services/evenementiel.webp",
+    // Les mariés sont à gauche : un recadrage centré les coupait sur la carte.
+    imagePosition: "15% center",
     subject: "Demande de devis — événementiel",
   },
   {
@@ -183,7 +187,7 @@ export const SERVICES: Service[] = [
         ],
       },
     ],
-    image: null,
+    image: "/services/professionnels.webp",
     subject: "Demande de partenariat — professionnels",
   },
 ];

@@ -36,6 +36,7 @@ export function ServicesSection() {
                 alt=""
                 fill
                 sizes="(min-width: 1024px) 30vw, (min-width: 640px) 44vw, 78vw"
+                style={{ objectPosition: s.imagePosition }}
                 className="object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.05]"
               />
             ) : (

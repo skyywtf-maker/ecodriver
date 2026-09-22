@@ -62,7 +62,7 @@ export default async function ServicePage({ params }: { params: Promise<{ servic
 
         {s.image && (
           <div className="relative mt-10 aspect-[16/9] overflow-hidden rounded-4xl border border-white/[0.08] bg-graphite">
-            <Image src={s.image} alt="" fill priority sizes="(min-width: 900px) 900px, 100vw" className="object-cover" />
+            <Image src={s.image} alt="" fill priority sizes="(min-width: 900px) 900px, 100vw" className="object-cover" style={{ objectPosition: s.imagePosition }} />
           </div>
         )}
 

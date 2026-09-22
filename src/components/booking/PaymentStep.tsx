@@ -19,7 +19,7 @@ const appearance: Appearance = {
     colorTextSecondary: "rgba(235,235,245,0.6)",
     colorDanger: "#FF6961",
     fontFamily: "Montserrat, system-ui, sans-serif",
-    borderRadius: "14px",
+    borderRadius: "10px",
     spacingUnit: "4px",
   },
   rules: {

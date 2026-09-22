@@ -16,7 +16,8 @@ const config: Config = {
         sans: ["var(--font-montserrat)", "system-ui", "sans-serif"],
         serif: ["var(--font-playfair)", "Georgia", "serif"],
       },
-      borderRadius: { "4xl": "28px", "5xl": "32px" },
+      // Angles resserrés : les grands arrondis faisaient « application grand public ».
+      borderRadius: { xl: "8px", "2xl": "10px", "3xl": "12px", "4xl": "14px", "5xl": "16px" },
     },
   },
   plugins: [],

@@ -68,7 +68,7 @@ export default async function ServicePage({ params }: { params: Promise<{ servic
 
         <ul className="mt-12 grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
           {s.points.map((p, i) => (
-            <Reveal as="li" key={p.k} delay={i * 60} className="tile flex flex-col gap-1.5 rounded-[22px] px-5 py-[18px]">
+            <Reveal as="li" key={p.k} delay={i * 60} className="tile flex flex-col gap-1.5 rounded-3xl px-5 py-[18px]">
               <span className="text-[11px] font-medium text-label">{p.k}</span>
               <span className="font-display text-[15px] font-semibold tracking-[-0.02em]">{p.v}</span>
             </Reveal>
@@ -129,7 +129,7 @@ export default async function ServicePage({ params }: { params: Promise<{ servic
                 <li key={o.slug}>
                   <Link
                     href={`/services/${o.slug}`}
-                    className="tile flex h-full flex-col gap-1 rounded-[20px] px-5 py-4 transition-colors hover:bg-white/[0.08]"
+                    className="tile flex h-full flex-col gap-1 rounded-3xl px-5 py-4 transition-colors hover:bg-white/[0.08]"
                   >
                     <span className="font-display text-[15px] font-semibold tracking-[-0.015em]">{o.label}</span>
                     <span className="text-[12px] text-label">{o.eyebrow}</span>
@@ -139,7 +139,7 @@ export default async function ServicePage({ params }: { params: Promise<{ servic
               <li>
                 <Link
                   href="/"
-                  className="tile flex h-full flex-col gap-1 rounded-[20px] px-5 py-4 transition-colors hover:bg-white/[0.08]"
+                  className="tile flex h-full flex-col gap-1 rounded-3xl px-5 py-4 transition-colors hover:bg-white/[0.08]"
                 >
                   <span className="font-display text-[15px] font-semibold tracking-[-0.015em]">Trajet simple</span>
                   <span className="text-[12px] text-label">Prix immédiat, réservation en ligne</span>

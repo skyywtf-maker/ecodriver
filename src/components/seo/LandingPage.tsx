@@ -49,7 +49,7 @@ export function LandingPage({ page }: { page: Landing }) {
 
         <ul className="mt-14 grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
           {page.highlights.map((h) => (
-            <li key={h.k} className="tile flex flex-col gap-1.5 rounded-[22px] px-5 py-[18px]">
+            <li key={h.k} className="tile flex flex-col gap-1.5 rounded-3xl px-5 py-[18px]">
               <span className="text-[11px] font-medium text-label">{h.k}</span>
               <span className="font-display text-[17px] font-semibold tracking-[-0.02em]">{h.v}</span>
             </li>
@@ -88,7 +88,7 @@ export function LandingPage({ page }: { page: Landing }) {
               <li key={l.path}>
                 <Link
                   href={l.path}
-                  className="tile flex h-full items-center rounded-[20px] px-5 py-4 font-display text-[15px] font-semibold tracking-[-0.015em] transition-colors hover:bg-white/[0.08]"
+                  className="tile flex h-full items-center rounded-3xl px-5 py-4 font-display text-[15px] font-semibold tracking-[-0.015em] transition-colors hover:bg-white/[0.08]"
                 >
                   {l.shortLabel}
                 </Link>

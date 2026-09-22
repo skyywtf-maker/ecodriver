@@ -18,7 +18,8 @@ Direction « Apple / verre dépoli » sur carte sombre plein écran.
 - Couleurs : fond `#0A0B0D`, texte blanc, texte secondaire `rgba(235,235,245,0.6)`, un seul accent bleu `#0A84FF` (itinéraire, focus, marqueur d'arrivée). Pas de beige ni de doré.
 - Verre : classes `.glass` / `.glass-soft` dans `globals.css` (blur 36px, saturate 180 %, bordure blanche 14 %).
 - Typo : Poppins 700/800 pour les titres, Montserrat pour le texte et l'interface, Playfair Display italique pour un seul mot d'accent par titre (classe `.serif-accent`). Pas d'autre police.
-- Boutons principaux blancs à texte noir (`.btn-primary`), rayons 16 à 32 px, champs `.field`.
+- Boutons principaux blancs à texte noir (`.btn-primary`), champs `.field`. Rayons resserrés à la demande du client : 8 à 16 px (`xl` → `5xl` dans `tailwind.config.ts`), plus de grands arrondis.
+- Contenus répétés (prestations, avis) en slider horizontal (`src/components/Slider.tsx`) plutôt qu'empilés : le client veut peu de défilement.
 - La première chose visible sur l'accueil est la carte avec la réservation. Peu de texte.
 
 ## Écarts assumés par rapport au cahier des charges initial

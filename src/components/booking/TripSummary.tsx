@@ -31,7 +31,7 @@ export function TripSummary({ draft, detailed = false }: { draft: TripDraft; det
           ["Distance", `${draft.quote.distanceKm.toLocaleString("fr-FR")} km`],
           ["Passagers · bagages", `${draft.passengers} · ${draft.luggage}`],
         ].map(([k, v]) => (
-          <div key={k} className="flex flex-col gap-0.5 rounded-[14px] bg-white/[0.06] px-4 py-3.5">
+          <div key={k} className="flex flex-col gap-0.5 rounded-2xl bg-white/[0.06] px-4 py-3.5">
             <dt className="text-[11px] font-medium text-label">{k}</dt>
             <dd className="text-[15px] font-semibold">{v}</dd>
           </div>

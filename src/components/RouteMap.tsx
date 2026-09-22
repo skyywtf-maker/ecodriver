@@ -19,6 +19,7 @@ const loading = () => <div className="absolute inset-0 bg-[#0B0C0E]" aria-hidden
 const MapLibreRouteMap = dynamic(() => import("./RouteMapInner"), { ssr: false, loading });
 const GoogleRouteMap = dynamic(() => import("./RouteMapGoogle"), { ssr: false, loading });
 
-export function RouteMap(props: ComponentProps<typeof MapLibreRouteMap>) {
-  return useGoogleMaps() ? <GoogleRouteMap {...props} /> : <MapLibreRouteMap {...props} />;
+/** Les repères cliquables (`onLandmark`) n'existent que sur la version Google. */
+export function RouteMap({ onLandmark, ...props }: ComponentProps<typeof GoogleRouteMap>) {
+  return useGoogleMaps() ? <GoogleRouteMap {...props} onLandmark={onLandmark} /> : <MapLibreRouteMap {...props} />;
 }

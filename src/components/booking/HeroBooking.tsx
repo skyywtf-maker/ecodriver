@@ -27,6 +27,7 @@ export function HeroBooking({ onContinue, showHeadline = true }: Props) {
   // plus, alors qu'elle est ce qui rend le service lisible.
   const [expanded, setExpanded] = useState(false);
   const hasQuote = Boolean(route.q);
+  const [presetTo, setPresetTo] = useState<{ point: DraftPoint; n: number } | null>(null);
 
   useEffect(() => {
     if (desktop) setCollapsed(false);
@@ -58,7 +59,18 @@ export function HeroBooking({ onContinue, showHeadline = true }: Props) {
 
   return (
     <section className="relative h-[100svh] min-h-[760px] overflow-hidden">
-      <RouteMap from={route.from} to={route.to} geometry={route.q?.geometry} padding={padding} />
+      <RouteMap
+        from={route.from}
+        to={route.to}
+        geometry={route.q?.geometry}
+        padding={padding}
+        onLandmark={(l) => {
+          setPresetTo((prev) => ({ point: { label: l.label, lat: l.lat, lng: l.lng }, n: (prev?.n ?? 0) + 1 }));
+          // Le formulaire se déplie : il ne reste qu'à saisir le départ.
+          setCollapsed(false);
+          setExpanded(true);
+        }}
+      />
 
       <div className="glass absolute inset-x-2 bottom-2 z-20 rounded-5xl p-5 shadow-[0_30px_80px_rgba(0,0,0,0.45)] transition-[padding] duration-300 md:inset-x-auto md:bottom-auto md:left-16 md:top-[120px] md:w-[440px] md:p-7">
         {/* Poignée : indique que la feuille se manipule, comme sur mobile. */}
@@ -87,6 +99,7 @@ export function HeroBooking({ onContinue, showHeadline = true }: Props) {
         </button>
 
         <TripForm
+          presetTo={presetTo}
           collapsed={sheetCollapsed}
           peek={sheetPeek}
           onExpand={() => {

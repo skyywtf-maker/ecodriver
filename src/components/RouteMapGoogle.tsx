@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { SITE } from "@/config/site";
-import { MAP_LANDMARKS } from "@/config/services";
+import { MAP_LANDMARKS, type Landmark } from "@/config/services";
 import { animateZoom, baseOptions, createDot, hasMapId, hideStreetLabels, loadMaps, reducedMotion } from "@/lib/google-maps";
 
 type Pt = { lat: number; lng: number; label?: string };
@@ -13,6 +12,8 @@ type Props = {
   geometry?: [number, number][] | null;
   padding?: { top: number; bottom: number; left: number; right: number };
   className?: string;
+  /** Clic sur un repère de la ville : le formulaire le met en arrivée. */
+  onLandmark?: (l: Landmark) => void;
 };
 
 const ACCENT = "#0A84FF";
@@ -23,7 +24,12 @@ const ACCENT = "#0A84FF";
  * énormes et flous.
  */
 const INTRO_ZOOM = 6;
-const BASE = { lat: SITE.base.lat, lng: SITE.base.lng };
+/*
+ * Point visé : l'hypercentre (cathédrale, Petite France, gare), et non le
+ * centre administratif de la commune, plus au sud, qui laissait les repères
+ * collés au titre.
+ */
+const BASE = { lat: 48.5835, lng: 7.7465 };
 
 const isMobile = () => window.matchMedia("(max-width: 767px)").matches;
 
@@ -42,7 +48,8 @@ function targetZoom() {
 function viewCenter(zoom: number, node: HTMLElement): google.maps.LatLngLiteral {
   const metersPerPx = (156543.03 * Math.cos((BASE.lat * Math.PI) / 180)) / 2 ** zoom;
   if (isMobile()) {
-    const px = node.clientHeight * 0.2;
+    // L'hypercentre tombe vers 38 % de la hauteur : entre le titre et le formulaire.
+    const px = node.clientHeight * 0.12;
     return { lat: BASE.lat - (px * metersPerPx) / 111320, lng: BASE.lng };
   }
   const px = 240;
@@ -57,7 +64,7 @@ function viewCenter(zoom: number, node: HTMLElement): google.maps.LatLngLiteral 
  * trajet. Un doigt fait défiler la page, deux doigts manipulent la carte
  * (gestureHandling « cooperative »).
  */
-export default function RouteMapGoogle({ from, to, geometry, padding, className = "" }: Props) {
+export default function RouteMapGoogle({ from, to, geometry, padding, className = "", onLandmark }: Props) {
   const el = useRef<HTMLDivElement>(null);
   const map = useRef<google.maps.Map | null>(null);
   const lines = useRef<google.maps.Polyline[]>([]);
@@ -65,6 +72,9 @@ export default function RouteMapGoogle({ from, to, geometry, padding, className 
   const landmarks = useRef<{ setMap: (m: google.maps.Map | null) => void }[]>([]);
   const stopAnim = useRef<() => void>(() => {});
   const hasRoute = useRef(false);
+  // Le gestionnaire change à chaque rendu du parent : on lit toujours le dernier.
+  const onLandmarkRef = useRef(onLandmark);
+  onLandmarkRef.current = onLandmark;
   const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState(false);
 
@@ -86,10 +96,13 @@ export default function RouteMapGoogle({ from, to, geometry, padding, className 
         ];
 
         // Repères de la ville : pastille blanche et nom, en verre sombre.
-        landmarks.current = MAP_LANDMARKS.map((l) =>
-          // Accroche sur la pastille blanche, à gauche de l'étiquette.
-          createDot(m, { lat: l.lat, lng: l.lng }, landmark(l.name), "translate(-10px, -50%)")
-        );
+        landmarks.current = MAP_LANDMARKS.map((l) => {
+          const node = landmark(l, () => onLandmarkRef.current?.(l));
+          // Les clics sur le repère ne doivent pas déplacer la carte.
+          google.maps.OverlayView.preventMapHitsAndGesturesFrom(node);
+          // Accroche sur le bord gauche de l'étiquette, là où est la pastille.
+          return createDot(m, { lat: l.lat, lng: l.lng }, node, l.image ? "translate(-19px, -50%)" : "translate(-10px, -50%)");
+        });
 
         map.current = m;
         google.maps.event.addListenerOnce(m, "tilesloaded", () => {
@@ -187,13 +200,39 @@ export default function RouteMapGoogle({ from, to, geometry, padding, className 
   );
 }
 
-function landmark(name: string) {
-  const d = document.createElement("div");
+function landmark(l: Landmark, onPick: () => void) {
+  const d = document.createElement("button");
+  d.type = "button";
+  d.setAttribute("aria-label", `Aller à : ${l.label}`);
   d.style.cssText =
-    "display:flex;align-items:center;gap:6px;padding:4px 9px 4px 6px;border-radius:8px;background:rgba(10,11,13,.82);border:1px solid rgba(255,255,255,.16);color:#fff;font:600 11px/1 var(--font-montserrat),system-ui,sans-serif;white-space:nowrap;letter-spacing:-.01em;pointer-events:none;box-shadow:0 6px 18px rgba(0,0,0,.35)";
-  const pin = document.createElement("span");
-  pin.style.cssText = "width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.18)";
-  d.append(pin, document.createTextNode(name));
+    "display:flex;align-items:center;gap:7px;padding:4px 10px 4px 4px;border-radius:8px;background:rgba(10,11,13,.86);border:1px solid rgba(255,255,255,.16);color:#fff;font:600 11px/1 var(--font-montserrat),system-ui,sans-serif;white-space:nowrap;letter-spacing:-.01em;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.4);transition:border-color .2s,transform .2s";
+  if (l.image) {
+    const img = document.createElement("img");
+    img.src = l.image;
+    img.alt = "";
+    img.decoding = "async";
+    img.style.cssText = "width:30px;height:30px;border-radius:6px;object-fit:cover;display:block";
+    d.append(img);
+  } else {
+    const pin = document.createElement("span");
+    pin.style.cssText = "width:7px;height:7px;margin:0 2px 0 3px;border-radius:50%;background:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.18)";
+    d.append(pin);
+  }
+  const text = document.createElement("span");
+  text.style.cssText = "display:flex;flex-direction:column;gap:3px;text-align:left";
+  const name = document.createElement("span");
+  name.textContent = l.short;
+  const hint = document.createElement("span");
+  hint.textContent = "Y aller";
+  hint.style.cssText = "font-size:10px;font-weight:600;color:#0A84FF";
+  text.append(name, hint);
+  d.append(text);
+  d.addEventListener("mouseenter", () => (d.style.borderColor = "rgba(10,132,255,.8)"));
+  d.addEventListener("mouseleave", () => (d.style.borderColor = "rgba(255,255,255,.16)"));
+  d.addEventListener("click", (e) => {
+    e.stopPropagation();
+    onPick();
+  });
   return d;
 }
 

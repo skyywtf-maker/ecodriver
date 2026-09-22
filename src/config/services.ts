@@ -235,17 +235,39 @@ export const TOURIST_SPOTS = [
 ] as const;
 
 /**
- * Repères affichés sur la carte d'accueil (Google Maps).
+ * Repères affichés sur la carte d'accueil (Google Maps). Un clic met le lieu
+ * en arrivée dans le formulaire.
  *
- * Mêmes coordonnées que ci-dessus (Base Adresse Nationale) ; le Parlement
- * européen vient d'OpenStreetMap (Photon, bâtiment Louise Weiss), la BAN ne
- * connaissant que l'allée du Printemps. Aucune valeur devinée.
+ * Coordonnées de la Base Adresse Nationale (voir TOURIST_SPOTS) ; le
+ * Parlement européen vient d'OpenStreetMap (Photon, bâtiment Louise Weiss),
+ * la BAN ne connaissant que l'allée du Printemps. Aucune valeur devinée.
+ *
+ * `image` : vignette facultative. Tant que le fichier n'existe pas, le
+ * repère s'affiche sans vignette plutôt qu'avec une image cassée.
  */
-export const MAP_LANDMARKS: { name: string; lng: number; lat: number }[] = [
-  ...TOURIST_SPOTS.map(({ name, lng, lat }) => ({
-    name: name.replace("Cathédrale de Strasbourg", "Cathédrale").replace("Gare de Strasbourg", "Gare").replace("Aéroport d'Entzheim", "Aéroport"),
-    lng,
-    lat,
-  })),
-  { name: "Parlement européen", lng: 7.7692853, lat: 48.597022 },
+export type Landmark = { short: string; label: string; lng: number; lat: number; image: string | null };
+
+const spot = (name: (typeof TOURIST_SPOTS)[number]["name"]) => TOURIST_SPOTS.find((t) => t.name === name)!;
+
+export const MAP_LANDMARKS: Landmark[] = [
+  { short: "Cathédrale", label: "Cathédrale de Strasbourg", ...pick(spot("Cathédrale de Strasbourg")), image: null },
+  { short: "Petite France", label: "La Petite France, Strasbourg", ...pick(spot("La Petite France")), image: null },
+  { short: "Gare", label: "Gare de Strasbourg", ...pick(spot("Gare de Strasbourg")), image: null },
+  {
+    short: "Parlement européen",
+    label: "Parlement européen, Strasbourg",
+    lng: 7.7692853,
+    lat: 48.597022,
+    image: "/services/strasbourg-institutions.webp",
+  },
+  {
+    short: "Aéroport",
+    label: "Aéroport de Strasbourg-Entzheim",
+    ...pick(spot("Aéroport d'Entzheim")),
+    image: "/services/transferts-aeroport.webp",
+  },
 ];
+
+function pick(t: { lng: number; lat: number }) {
+  return { lng: t.lng, lat: t.lat };
+}

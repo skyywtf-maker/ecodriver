@@ -18,6 +18,8 @@ type Props = {
   /** Premier écran sur téléphone : seulement les adresses, pour voir la carte. */
   peek?: boolean;
   onExpand?: () => void;
+  /** Arrivée imposée de l'extérieur (clic sur un repère de la carte). `n` change à chaque clic. */
+  presetTo?: { point: DraftPoint; n: number } | null;
 };
 
 function defaultWhen() {
@@ -27,7 +29,7 @@ function defaultWhen() {
   return { date: `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`, time: `${pad(d.getHours())}:${pad(d.getMinutes())}` };
 }
 
-export function TripForm({ onQuote, onContinue, collapsed = false, peek = false, onExpand }: Props) {
+export function TripForm({ onQuote, onContinue, collapsed = false, peek = false, onExpand, presetTo }: Props) {
   const [from, setFrom] = useState<(DraftPoint & { inGrandEst?: boolean }) | null>(null);
   const [to, setTo] = useState<(DraftPoint & { inGrandEst?: boolean }) | null>(null);
   const [date, setDate] = useState("");
@@ -38,6 +40,12 @@ export function TripForm({ onQuote, onContinue, collapsed = false, peek = false,
   const [quote, setQuote] = useState<QuoteState>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  // Repère cliqué sur la carte : il devient l'arrivée. Le prix se recalcule
+  // comme pour une saisie, dès qu'un départ est renseigné.
+  useEffect(() => {
+    if (presetTo) setTo({ ...presetTo.point, inGrandEst: true });
+  }, [presetTo]);
 
   // Reprise d'un brouillon (retour arrière depuis l'étape 2)
   useEffect(() => {

@@ -99,7 +99,7 @@ export const VEHICLES: Vehicle[] = [
     passengers: 8,
     luggage: 8,
     image: "/vehicules/van.jpg",
-    model3d: "/vehicule/toyota-proace-verso.glb",
+    model3d: "/vehicule/mercedes-classe-v.glb",
     model3dYaw: 0,
     priceHint: "60 € par heure, mise à disposition",
     from: "60 € / heure",

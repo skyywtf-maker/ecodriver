@@ -82,10 +82,19 @@ export function computePrice(
 
   if (vehicle.tariff.mode === "hourly") {
     // Mise à disposition : on facture le temps, arrondi à l'heure supérieure,
-    // avec une durée minimale. Aucun kilomètre n'entre dans le calcul.
-    const { perHour, minimumHours } = vehicle.tariff;
+    // avec une durée minimale. Les premiers kilomètres sont compris dans les
+    // heures ; au-delà, chaque kilomètre s'ajoute.
+    const { perHour, minimumHours, includedKm, perExtraKm } = vehicle.tariff;
     billedHours = Math.max(minimumHours, Math.ceil(durationMin / 60));
     lines = [{ label: `${billedHours} h × ${perHour.toLocaleString("fr-FR")} €`, amount: billedHours * perHour }];
+
+    const extraKm = round(Math.max(0, distanceKm - includedKm));
+    if (extraKm > 0) {
+      lines.push({
+        label: `${extraKm.toLocaleString("fr-FR")} km au-delà de ${includedKm} km × ${perExtraKm.toLocaleString("fr-FR")} €`,
+        amount: round(extraKm * perExtraKm),
+      });
+    }
   } else {
     lines = distanceLines(vehicle, distanceKm);
   }

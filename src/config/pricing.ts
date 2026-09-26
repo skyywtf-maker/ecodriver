@@ -20,8 +20,12 @@ export type DistanceTier = { upToKm: number | null; flat?: number; perKm?: numbe
 
 export type VehicleTariff =
   | { mode: "distance"; tiers: DistanceTier[] }
-  /** Mise à disposition : facturée au temps, sans calcul kilométrique. */
-  | { mode: "hourly"; perHour: number; minimumHours: number };
+  /**
+   * Mise à disposition : facturée au temps. Les `includedKm` premiers
+   * kilomètres sont compris dans les heures ; au-delà, `perExtraKm`
+   * s'ajoute au prix horaire.
+   */
+  | { mode: "hourly"; perHour: number; minimumHours: number; includedKm: number; perExtraKm: number };
 
 export type Vehicle = {
   id: VehicleId;
@@ -57,13 +61,13 @@ export const VEHICLES: Vehicle[] = [
     image: "/vehicules/berline.jpg",
     model3d: "/vehicule/toyota-corolla-e170.glb",
     model3dYaw: 0,
-    priceHint: "15 € jusqu'à 5 km, puis au kilomètre",
+    priceHint: "15 € jusqu'à 5 km, puis 2,30 €/km",
     from: "dès 15 €",
+    // Tarifs dictés par le chauffeur le 25 septembre 2026.
     tariff: {
       mode: "distance",
       tiers: [
         { upToKm: 5, flat: 15 },
-        { upToKm: 15, perKm: 2 },
         { upToKm: null, perKm: 2.3 },
       ],
     },
@@ -101,9 +105,9 @@ export const VEHICLES: Vehicle[] = [
     image: "/vehicules/van.jpg",
     model3d: "/vehicule/mercedes-classe-v.glb",
     model3dYaw: 0,
-    priceHint: "60 € par heure, mise à disposition",
+    priceHint: "60 € par heure, 25 km compris, puis 2,50 €/km",
     from: "60 € / heure",
-    tariff: { mode: "hourly", perHour: 60, minimumHours: 2 },
+    tariff: { mode: "hourly", perHour: 60, minimumHours: 2, includedKm: 25, perExtraKm: 2.5 },
   },
 ];
 

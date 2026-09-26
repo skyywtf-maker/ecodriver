@@ -54,13 +54,13 @@ export const VEHICLES: Vehicle[] = [
   {
     id: "CITADINE",
     name: "Classique citadine",
-    // Aucun modèle arrêté : la catégorie est décrite par ce qu'elle est, sans
-    // annoncer une marque que le chauffeur n'a pas encore choisie.
-    model: "Citadine",
-    tagline: "Pour les trajets courts en ville, à deux ou à quatre.",
+    model: "Kia Niro",
+    tagline: "Pour les trajets du quotidien, en ville comme autour.",
     passengers: 4,
-    luggage: 2,
+    luggage: 3,
     image: "/vehicules/citadine.jpg",
+    model3d: "/vehicule/kia-niro.glb",
+    model3dYaw: 0,
     priceHint: "15 € jusqu'à 5 km, puis 2 €/km",
     from: "dès 15 €",
     // Tarifs dictés par le chauffeur le 25 septembre 2026.

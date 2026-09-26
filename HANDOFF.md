@@ -69,9 +69,7 @@ Renseigner `MAPBOX_TOKEN` bascule tout le module.
 
 Dictés par le chauffeur le 25 septembre 2026, dans `src/config/pricing.ts` :
 
-- **Classique citadine** : 15 € jusqu'à 5 km, puis 2 €/km. Catégorie créée
-  sans modèle arrêté — ni marque ni visuel 3D tant que le chauffeur n'a pas
-  choisi le véhicule.
+- **Classique citadine** (Kia Niro) : 15 € jusqu'à 5 km, puis 2 €/km.
 - **Berline confort** (Toyota Corolla) : 15 € jusqu'à 5 km, puis 2,30 €/km.
 - **Voiture touring** : ⚠️ toujours sur l'ancienne grille (15 € jusqu'à 5 km,
   2 €/km jusqu'à 15 km, puis 2,30 €/km). À trancher avec le chauffeur.

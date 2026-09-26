@@ -28,7 +28,7 @@ export function VehicleShowcase() {
       </div>
 
       {/* Onglets : trois colonnes égales, toujours visibles d'un coup d'œil. */}
-      <div role="tablist" aria-label="Catégories de véhicule" className="mt-7 grid grid-cols-3 gap-2">
+      <div role="tablist" aria-label="Catégories de véhicule" className="mt-7 grid grid-cols-2 gap-2 md:grid-cols-4">
         {VEHICLES.map((v) => {
           const on = v.id === selected;
           return (
@@ -55,7 +55,15 @@ export function VehicleShowcase() {
 
       <div className="mt-3 grid gap-3 md:grid-cols-12">
         <div className="md:col-span-7">
-          <Car3D src={active.model3d ?? ""} yaw={active.model3dYaw} />
+          {active.model3d ? (
+            <Car3D src={active.model3d} yaw={active.model3dYaw} />
+          ) : (
+            // Pas de modèle 3D pour cette catégorie : on le dit, plutôt que
+            // d'afficher le véhicule d'une autre.
+            <div className="flex h-[150px] items-center justify-center rounded-3xl border border-white/[0.08] bg-graphite text-[13px] text-label md:h-[520px]">
+              Visuel à venir
+            </div>
+          )}
         </div>
 
         <div className="glass flex flex-col gap-4 rounded-3xl p-5 md:col-span-5 md:justify-center md:p-7">

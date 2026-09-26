@@ -6,7 +6,7 @@
  */
 
 /** Identifiants des catégories, utilisés en base et dans les URL. */
-export const VEHICLE_IDS = ["BERLINE", "TOURING", "VAN"] as const;
+export const VEHICLE_IDS = ["CITADINE", "BERLINE", "TOURING", "VAN"] as const;
 export type VehicleId = (typeof VEHICLE_IDS)[number];
 
 /**
@@ -51,6 +51,27 @@ export type Vehicle = {
 };
 
 export const VEHICLES: Vehicle[] = [
+  {
+    id: "CITADINE",
+    name: "Classique citadine",
+    // Aucun modèle arrêté : la catégorie est décrite par ce qu'elle est, sans
+    // annoncer une marque que le chauffeur n'a pas encore choisie.
+    model: "Citadine",
+    tagline: "Pour les trajets courts en ville, à deux ou à quatre.",
+    passengers: 4,
+    luggage: 2,
+    image: "/vehicules/citadine.jpg",
+    priceHint: "15 € jusqu'à 5 km, puis 2 €/km",
+    from: "dès 15 €",
+    // Tarifs dictés par le chauffeur le 25 septembre 2026.
+    tariff: {
+      mode: "distance",
+      tiers: [
+        { upToKm: 5, flat: 15 },
+        { upToKm: null, perKm: 2 },
+      ],
+    },
+  },
   {
     id: "BERLINE",
     name: "Berline confort",
@@ -115,7 +136,7 @@ export function vehicleById(id: string): Vehicle | undefined {
   return VEHICLES.find((v) => v.id === id);
 }
 
-export const DEFAULT_VEHICLE: VehicleId = "BERLINE";
+export const DEFAULT_VEHICLE: VehicleId = "CITADINE";
 
 export const PRICING = {
   currency: "eur",

@@ -67,14 +67,17 @@ Renseigner `MAPBOX_TOKEN` bascule tout le module.
 
 ### Tarifs
 
-- **Berline confort** (Mercedes Classe E) et **Voiture touring** (Toyota Corolla
-  Touring) : 15 € forfaitaires jusqu'à 5 km, puis 2 €/km jusqu'à 15 km, puis
-  2,30 €/km. Chaque palier ne facture que les kilomètres qui lui reviennent.
-- **Van / XL** (Mercedes Classe V) : 60 €/h, mise à disposition, sans calcul
-  kilométrique, deux heures minimum.
+Dictés par le chauffeur le 25 septembre 2026, dans `src/config/pricing.ts` :
+
+- **Classique citadine** : 15 € jusqu'à 5 km, puis 2 €/km. Catégorie créée
+  sans modèle arrêté — ni marque ni visuel 3D tant que le chauffeur n'a pas
+  choisi le véhicule.
+- **Berline confort** (Toyota Corolla) : 15 € jusqu'à 5 km, puis 2,30 €/km.
+- **Voiture touring** : ⚠️ toujours sur l'ancienne grille (15 € jusqu'à 5 km,
+  2 €/km jusqu'à 15 km, puis 2,30 €/km). À trancher avec le chauffeur.
+- **Van / XL** (Mercedes Classe V) : 60 €/h, deux heures minimum, 25 km
+  compris ; au-delà, 2,50 €/km s'ajoutent au prix horaire.
 - Majoration ×1,25 la nuit (22 h – 6 h) et le week-end, toutes catégories.
-- Grille du touring volontairement dupliquée dans une variable distincte, pour
-  la différencier plus tard sans toucher au code.
 
 ## Routes
 

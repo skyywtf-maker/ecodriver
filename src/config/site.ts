@@ -77,8 +77,8 @@ export const SITE = {
 
   /** Section véhicules de l'accueil. Les fiches vivent dans config/pricing.ts. */
   vehicle: {
-    accent: "trois catégories.",
-    intro: "Du trajet quotidien au groupe de huit, avec la même exigence de confort et de ponctualité.",
+    accent: "quatre catégories.",
+    intro: "De la course en ville au groupe de huit, avec la même exigence de confort et de ponctualité.",
     /** Modèle 3D d'illustration de la berline. */
     model3d: "/vehicule/tesla-model-3.glb",
   },

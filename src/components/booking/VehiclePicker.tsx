@@ -27,7 +27,7 @@ export function VehiclePicker({
       <legend className="field-label mb-1.5">Véhicule</legend>
 
       <div
-        className="grid grid-cols-3 gap-2"
+        className="grid grid-cols-2 gap-2 md:grid-cols-4"
         role="radiogroup"
         aria-label="Catégorie de véhicule"
       >

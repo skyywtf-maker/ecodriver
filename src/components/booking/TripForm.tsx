@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { AddressInput } from "@/components/AddressInput";
 import { Counter } from "@/components/Counter";
-import { BOOKING_RULES, DEFAULT_VEHICLE, type VehicleId } from "@/config/pricing";
+import { BOOKING_RULES, DEFAULT_VEHICLE, EXTRAS, type VehicleId } from "@/config/pricing";
 import { VehiclePicker } from "./VehiclePicker";
 import { euros } from "@/lib/pricing";
 import { loadDraft, saveDraft, type DraftPoint, type TripDraft } from "@/lib/draft";
@@ -37,6 +37,7 @@ export function TripForm({ onQuote, onContinue, collapsed = false, peek = false,
   const [passengers, setPassengers] = useState(1);
   const [luggage, setLuggage] = useState(0);
   const [vehicle, setVehicle] = useState<VehicleId>(DEFAULT_VEHICLE);
+  const [boosterSeat, setBoosterSeat] = useState(false);
   const [quote, setQuote] = useState<QuoteState>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -58,6 +59,7 @@ export function TripForm({ onQuote, onContinue, collapsed = false, peek = false,
       setPassengers(d.passengers);
       setLuggage(d.luggage);
       if (d.vehicle) setVehicle(d.vehicle);
+      setBoosterSeat(Boolean(d.boosterSeat));
     } else {
       const w = defaultWhen();
       setDate(w.date);
@@ -82,7 +84,7 @@ export function TripForm({ onQuote, onContinue, collapsed = false, peek = false,
         const r = await fetch("/api/quote", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ from: strip(from), to: strip(to), date, time, passengers, luggage, vehicle }),
+          body: JSON.stringify({ from: strip(from), to: strip(to), date, time, passengers, luggage, vehicle, boosterSeat }),
           signal: ctrl.signal,
         });
         const data = await r.json();
@@ -104,14 +106,14 @@ export function TripForm({ onQuote, onContinue, collapsed = false, peek = false,
       ctrl.abort();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [from, to, date, time, vehicle]);
+  }, [from, to, date, time, vehicle, boosterSeat]);
 
   const canContinue = !!(from && to && date && time && quote && !error && !loading);
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!canContinue || !from || !to || !quote) return;
-    const draft: TripDraft = { from: strip(from), to: strip(to), date, time, passengers, luggage, vehicle, quote };
+    const draft: TripDraft = { from: strip(from), to: strip(to), date, time, passengers, luggage, vehicle, boosterSeat, quote };
     saveDraft(draft);
     onContinue(draft);
   }
@@ -173,6 +175,25 @@ export function TripForm({ onQuote, onContinue, collapsed = false, peek = false,
       </div>
 
       {!peek && <VehiclePicker value={vehicle} onChange={setVehicle} />}
+
+      {/* Option enfant : une case, cochée avant le prix, pour qu'il soit ferme
+          dès l'affichage. Le chauffeur la voit sur sa fiche de course. */}
+      {!peek && (
+        <label className="field flex cursor-pointer items-center justify-between gap-3 px-4 py-3">
+          <span className="flex flex-col">
+            <span className="text-[14px] font-semibold">{EXTRAS.boosterSeat.label}</span>
+            <span className="text-[12px] text-label">
+              + {EXTRAS.boosterSeat.price.toLocaleString("fr-FR")} € · installé avant votre arrivée
+            </span>
+          </span>
+          <input
+            type="checkbox"
+            checked={boosterSeat}
+            onChange={(e) => setBoosterSeat(e.target.checked)}
+            className="h-6 w-6 shrink-0 accent-accent"
+          />
+        </label>
+      )}
         </>
       )}
 

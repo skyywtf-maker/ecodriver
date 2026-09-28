@@ -69,7 +69,19 @@ function Checkout({ draft, contact, onBack, amount, onAmountChange }: Props & { 
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        trip: { from: draft.from, to: draft.to, date: draft.date, time: draft.time, passengers: draft.passengers, luggage: draft.luggage },
+        // La catégorie et les options DOIVENT partir avec le trajet : le
+        // serveur recalcule le prix et, sans elles, il facturait la catégorie
+        // par défaut — un van payé au tarif d'une citadine.
+        trip: {
+          from: draft.from,
+          to: draft.to,
+          date: draft.date,
+          time: draft.time,
+          passengers: draft.passengers,
+          luggage: draft.luggage,
+          vehicle: draft.vehicle,
+          boosterSeat: draft.boosterSeat,
+        },
         contact,
         acceptedTerms: true,
       }),

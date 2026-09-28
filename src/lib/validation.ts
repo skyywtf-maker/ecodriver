@@ -15,6 +15,8 @@ export const tripSchema = z.object({
   passengers: z.number().int().min(1).max(BOOKING_RULES.maxPassengers),
   luggage: z.number().int().min(0).max(BOOKING_RULES.maxLuggage),
   vehicle: z.enum(VEHICLE_IDS).optional(),
+  /** Réhausseur enfant, facturé en plus (voir EXTRAS). */
+  boosterSeat: z.boolean().optional(),
 });
 
 export const contactSchema = z.object({

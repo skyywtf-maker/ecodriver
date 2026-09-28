@@ -1,5 +1,8 @@
-import { PRICING, vehicleById, type Vehicle, type VehicleId } from "@/config/pricing";
+import { EXTRAS, PRICING, vehicleById, type Vehicle, type VehicleId } from "@/config/pricing";
 import { parisHourAndWeekday } from "./time";
+
+/** Options cochées par le client, facturées en plus de la course. */
+export type PriceOptions = { boosterSeat?: boolean };
 
 export type PriceBreakdown = {
   vehicleId: VehicleId;
@@ -72,7 +75,8 @@ export function computePrice(
   distanceKm: number,
   pickupAt: Date,
   vehicleIdOrDefault: VehicleId,
-  durationMin = 0
+  durationMin = 0,
+  options: PriceOptions = {}
 ): PriceBreakdown {
   const vehicle = vehicleById(vehicleIdOrDefault);
   if (!vehicle) throw new Error(`Catégorie de véhicule inconnue : ${vehicleIdOrDefault}`);
@@ -101,7 +105,14 @@ export function computePrice(
 
   const subtotal = round(lines.reduce((sum, l) => sum + l.amount, 0));
   const surchargeApplied = isSurchargeTime(pickupAt);
-  const total = round(surchargeApplied ? subtotal * PRICING.surchargeMultiplier : subtotal);
+  const course = round(surchargeApplied ? subtotal * PRICING.surchargeMultiplier : subtotal);
+
+  // Les options s'ajoutent APRÈS la majoration : un réhausseur coûte le même
+  // prix de jour comme de nuit, tant que le chauffeur n'en décide pas autrement.
+  if (options.boosterSeat) {
+    lines.push({ label: EXTRAS.boosterSeat.label, amount: EXTRAS.boosterSeat.price });
+  }
+  const total = round(course + (options.boosterSeat ? EXTRAS.boosterSeat.price : 0));
 
   return {
     vehicleId: vehicle.id,

@@ -28,5 +28,10 @@ export async function buildQuote(trip: TripInput): Promise<QuoteResult> {
     return { ok: false, code: "NO_ROUTE", message: "Itinéraire introuvable entre ces deux adresses." };
   }
   const vehicleId = (trip.vehicle ?? DEFAULT_VEHICLE) as VehicleId;
-  return { ok: true, pickupAt, route, price: computePrice(route.distanceKm, pickupAt, vehicleId, route.durationMin) };
+  return {
+    ok: true,
+    pickupAt,
+    route,
+    price: computePrice(route.distanceKm, pickupAt, vehicleId, route.durationMin, { boosterSeat: trip.boosterSeat }),
+  };
 }

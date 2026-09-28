@@ -138,6 +138,17 @@ export function vehicleById(id: string): Vehicle | undefined {
 
 export const DEFAULT_VEHICLE: VehicleId = "CITADINE";
 
+/**
+ * Options facturées en plus de la course.
+ *
+ * ⚠️ Tarif dicté par le chauffeur (3 €), en attente de deux précisions :
+ * est-ce 3 € par siège ou 3 € par course, et la majoration nuit / week-end
+ * s'y applique-t-elle ? Aujourd'hui : 3 € par course, hors majoration.
+ */
+export const EXTRAS = {
+  boosterSeat: { label: "Réhausseur enfant", price: 3 },
+} as const;
+
 export const PRICING = {
   currency: "eur",
   /** Coefficient appliqué la nuit (22h-6h) et le week-end, toutes catégories. */

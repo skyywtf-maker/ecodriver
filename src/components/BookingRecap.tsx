@@ -8,6 +8,7 @@ export function BookingRecap({ b }: { b: Booking }) {
     ["Date", formatParis(b.pickupAt)],
     ["Distance", `${b.distanceKm.toLocaleString("fr-FR")} km · ${b.durationMin} min`],
     ["Passagers · bagages", `${b.passengers} · ${b.luggage}`],
+    ...(b.boosterSeat ? ([["Réhausseur", "Oui"]] as [string, string][]) : []),
   ];
   return (
     <div className="flex flex-col gap-5">

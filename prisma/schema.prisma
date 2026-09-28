@@ -47,6 +47,8 @@ model Booking {
   note            String?
   passengers      Int
   luggage         Int
+  /** Réhausseur enfant demandé, facturé en supplément. */
+  boosterSeat     Boolean       @default(false)
 
   // Jalons du déroulé, pour le fil chronologique de l'espace chauffeur.
   // Nullable : une étape non atteinte ne doit pas s'inventer une date.

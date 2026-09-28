@@ -44,6 +44,7 @@ export async function POST(req: Request) {
       note: contact.note || null,
       passengers: trip.passengers,
       luggage: trip.luggage,
+      boosterSeat: trip.boosterSeat ?? false,
     },
   });
 

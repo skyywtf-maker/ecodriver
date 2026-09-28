@@ -28,6 +28,7 @@ export default async function CoursePage({ params }: { params: Promise<{ id: str
     ["Téléphone", <a key="t" href={`tel:${b.phone.replace(/\s/g, "")}`} className="underline underline-offset-2">{b.phone}</a>],
     ["Email", b.email],
     ["Passagers · bagages", `${b.passengers} · ${b.luggage}`],
+    ["Réhausseur", b.boosterSeat ? "Oui, à installer" : "Non"],
     ["Note", b.note || "–"],
     ["Montant", `${euros(b.priceCents / 100)}${b.surchargeApplied ? " (majoré)" : ""}${b.minimumApplied ? " (minimum)" : ""}`],
     ["Référence", b.reference],

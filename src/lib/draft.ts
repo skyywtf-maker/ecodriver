@@ -12,6 +12,7 @@ export type TripDraft = {
   time: string;
   passengers: number;
   luggage: number;
+  boosterSeat?: boolean;
   vehicle: VehicleId;
   quote: { distanceKm: number; durationMin: number; price: PriceBreakdown; geometry: [number, number][] };
 };

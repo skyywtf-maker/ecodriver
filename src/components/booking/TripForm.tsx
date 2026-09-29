@@ -109,8 +109,10 @@ export function TripForm({ onQuote, onContinue, collapsed = false, peek = false,
   }, [from, to, date, time, vehicle, boosterSeat, passengers, luggage]);
 
   const chosen = vehicleById(vehicle);
+  // Un bagage par personne : le compris suit le nombre de passagers.
   // `null` : la catégorie n'annonce pas de nombre de bagages (van).
-  const includedBags = chosen ? chosen.luggage : null;
+  const perPassenger = chosen?.luggagePerPassenger ?? null;
+  const includedBags = perPassenger === null ? null : passengers * perPassenger;
   const extraBags = includedBags === null ? 0 : Math.max(0, luggage - includedBags);
 
   const canContinue = !!(from && to && date && time && quote && !error && !loading);
@@ -190,7 +192,9 @@ export function TripForm({ onQuote, onContinue, collapsed = false, peek = false,
 
       {!peek && includedBags !== null && (
         <p className="px-1 text-[12px] text-label">
-          {includedBags} bagage{includedBags > 1 ? "s" : ""} compris. Au-delà, {EXTRAS.extraLuggage.price} € par bagage
+          {perPassenger} bagage par personne
+          {passengers > 1 ? `, soit ${includedBags} compris` : ""}. Au-delà,{" "}
+          {EXTRAS.extraLuggage.price} € par bagage
           {extraBags > 0 ? ` — ${extraBags} en supplément` : ""}.
         </p>
       )}

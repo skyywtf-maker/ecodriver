@@ -73,11 +73,13 @@ export function VehicleShowcase() {
           </div>
 
           {/* Le van n'annonce pas de nombre de bagages : la case disparaît. */}
-          <dl className={`grid gap-2 ${active.luggage === null ? "grid-cols-2" : "grid-cols-3"}`}>
+          <dl className={`grid gap-2 ${active.luggagePerPassenger === null ? "grid-cols-2" : "grid-cols-3"}`}>
             {([
               ["Modèle", active.model],
               ["Passagers", String(active.passengers)],
-              ...(active.luggage === null ? [] : [["Bagages", String(active.luggage)]]),
+              ...(active.luggagePerPassenger === null
+                ? []
+                : [["Bagages", `${active.luggagePerPassenger} par personne`]]),
             ] as [string, string][]).map(([k, val]) => (
               <div key={k} className="flex flex-col gap-0.5 rounded-xl bg-white/[0.06] px-3 py-2.5">
                 <dt className="text-[10px] font-medium uppercase tracking-[0.08em] text-label">{k}</dt>

@@ -46,6 +46,7 @@ export async function buildQuote(trip: TripInput): Promise<QuoteResult> {
     price: computePrice(route.distanceKm, pickupAt, vehicleId, route.durationMin, {
       boosterSeat: trip.boosterSeat,
       luggage: trip.luggage,
+      passengers: trip.passengers,
     }),
   };
 }

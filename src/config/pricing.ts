@@ -34,9 +34,10 @@ export type Vehicle = {
   model: string;
   tagline: string;
   passengers: number;
-  /** Bagages compris dans le prix. `null` : non précisé, et alors aucun
-      supplément bagage n'est facturé (cas du van). */
-  luggage: number | null;
+  /** Bagages compris dans le prix, PAR PASSAGER : le nombre compris suit le
+      nombre de personnes. `null` : non précisé, et alors aucun supplément
+      bagage n'est facturé (cas du van). */
+  luggagePerPassenger: number | null;
   /** Visuel dédié, à déposer dans public/vehicules/. */
   image: string;
   /** Modèle 3D facultatif ; la photo sert de repli. Illustration de la
@@ -59,7 +60,7 @@ export const VEHICLES: Vehicle[] = [
     model: "Kia Niro",
     tagline: "Pour les trajets du quotidien, en ville comme autour.",
     passengers: 3,
-    luggage: 3,
+    luggagePerPassenger: 1,
     image: "/vehicules/citadine.jpg",
     model3d: "/vehicule/kia-niro.glb",
     model3dYaw: 0,
@@ -80,8 +81,8 @@ export const VEHICLES: Vehicle[] = [
     model: "Toyota Corolla",
     tagline: "Pour les trajets du quotidien et les transferts aéroport.",
     passengers: 3,
-    // Un seul bagage compris, à la demande du chauffeur (29 septembre 2026).
-    luggage: 1,
+    // Un bagage par personne, à la demande du chauffeur (29 septembre 2026).
+    luggagePerPassenger: 1,
     image: "/vehicules/berline.jpg",
     model3d: "/vehicule/toyota-corolla-e170.glb",
     model3dYaw: 0,
@@ -103,7 +104,7 @@ export const VEHICLES: Vehicle[] = [
     model: "Berline",
     tagline: "Pour les longues distances et les trajets au long cours.",
     passengers: 4,
-    luggage: 1,
+    luggagePerPassenger: 1,
     image: "/vehicules/touring.jpg",
     model3d: "/vehicule/skoda-octavia-combi.glb",
     model3dYaw: 0,
@@ -127,7 +128,7 @@ export const VEHICLES: Vehicle[] = [
     tagline: "Mise à disposition avec chauffeur, groupes et événements.",
     passengers: 8,
     // Le chauffeur ne veut pas annoncer de nombre de bagages sur le van.
-    luggage: null,
+    luggagePerPassenger: null,
     image: "/vehicules/van.jpg",
     model3d: "/vehicule/mercedes-classe-v.glb",
     model3dYaw: 0,

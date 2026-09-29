@@ -4,8 +4,10 @@ import { parisHourAndWeekday } from "./time";
 /** Ce que le client demande en plus de la course, facturé à prix fixe. */
 export type PriceOptions = {
   boosterSeat?: boolean;
-  /** Nombre total de bagages ; ceux au-delà de la catégorie sont facturés. */
+  /** Nombre total de bagages ; ceux au-delà du compris sont facturés. */
   luggage?: number;
+  /** Nombre de passagers : le compris est d'un bagage par personne. */
+  passengers?: number;
 };
 
 export type PriceBreakdown = {
@@ -115,8 +117,11 @@ export function computePrice(
   // prix fixe, de jour comme de nuit (message du 29 septembre 2026).
   let extras = 0;
 
-  // Catégorie sans nombre de bagages annoncé : rien n'est facturé en plus.
-  const extraBags = vehicle.luggage === null ? 0 : Math.max(0, (options.luggage ?? 0) - vehicle.luggage);
+  // Un bagage par personne est compris. Catégorie sans nombre annoncé
+  // (le van) : rien n'est facturé en plus.
+  const perPassenger = vehicle.luggagePerPassenger;
+  const includedBags = perPassenger === null ? null : Math.max(1, options.passengers ?? 1) * perPassenger;
+  const extraBags = includedBags === null ? 0 : Math.max(0, (options.luggage ?? 0) - includedBags);
   if (extraBags > 0) {
     const amount = extraBags * EXTRAS.extraLuggage.price;
     const bagage = extraBags > 1 ? "bagages supplémentaires" : "bagage supplémentaire";

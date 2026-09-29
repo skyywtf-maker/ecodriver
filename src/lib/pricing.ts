@@ -115,7 +115,8 @@ export function computePrice(
   // prix fixe, de jour comme de nuit (message du 29 septembre 2026).
   let extras = 0;
 
-  const extraBags = Math.max(0, (options.luggage ?? 0) - vehicle.luggage);
+  // Catégorie sans nombre de bagages annoncé : rien n'est facturé en plus.
+  const extraBags = vehicle.luggage === null ? 0 : Math.max(0, (options.luggage ?? 0) - vehicle.luggage);
   if (extraBags > 0) {
     const amount = extraBags * EXTRAS.extraLuggage.price;
     const bagage = extraBags > 1 ? "bagages supplémentaires" : "bagage supplémentaire";

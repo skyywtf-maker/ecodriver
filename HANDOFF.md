@@ -74,11 +74,13 @@ Confort, Van.
 - **Citadine** (Kia Niro) : 15 € jusqu'à 5 km, puis 2 €/km.
   3 passagers, 3 bagages compris.
 - **Berline** (Toyota Corolla) : 15 € jusqu'à 5 km, puis 2,30 €/km.
-  3 passagers, 4 bagages compris.
-- **Confort** (ex « Voiture touring ») : ⚠️ grille jamais validée, encore
-  l'ancienne à trois paliers. À faire confirmer.
+  3 passagers, **1 bagage compris**.
+- **Confort** : gamme distincte de la berline, modèle non annoncé.
+  1 bagage compris. ⚠️ grille jamais validée, encore l'ancienne à trois
+  paliers, et capacité de 4 passagers à faire confirmer.
 - **Van** (Mercedes Classe V) : 60 € l'heure, **une heure minimum**,
   25 km compris ; au-delà, 2,50 €/km, la durée facturée restant d'une heure.
+  Aucun nombre de bagages annoncé (`luggage: null`) : pas de supplément bagage.
 - Majoration ×1,25 la nuit (22 h – 6 h) et le week-end, sur la course.
 - **Suppléments à prix fixe, hors majoration** (`EXTRAS`) : réhausseur ou
   siège enfant 3 €, bagage au-delà de ceux compris 5 € pièce.

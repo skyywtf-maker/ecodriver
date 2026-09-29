@@ -34,7 +34,9 @@ export type Vehicle = {
   model: string;
   tagline: string;
   passengers: number;
-  luggage: number;
+  /** Bagages compris dans le prix. `null` : non précisé, et alors aucun
+      supplément bagage n'est facturé (cas du van). */
+  luggage: number | null;
   /** Visuel dédié, à déposer dans public/vehicules/. */
   image: string;
   /** Modèle 3D facultatif ; la photo sert de repli. Illustration de la
@@ -78,7 +80,8 @@ export const VEHICLES: Vehicle[] = [
     model: "Toyota Corolla",
     tagline: "Pour les trajets du quotidien et les transferts aéroport.",
     passengers: 3,
-    luggage: 4,
+    // Un seul bagage compris, à la demande du chauffeur (29 septembre 2026).
+    luggage: 1,
     image: "/vehicules/berline.jpg",
     model3d: "/vehicule/toyota-corolla-e170.glb",
     model3dYaw: 0,
@@ -96,10 +99,11 @@ export const VEHICLES: Vehicle[] = [
   {
     id: "TOURING",
     name: "Confort",
-    model: "Toyota Corolla Touring",
-    tagline: "Pour les bagages volumineux et les longues distances.",
+    // Gamme distincte de la berline ; le modèle exact n'est pas annoncé.
+    model: "Berline",
+    tagline: "Pour les longues distances et les trajets au long cours.",
     passengers: 4,
-    luggage: 5,
+    luggage: 1,
     image: "/vehicules/touring.jpg",
     model3d: "/vehicule/skoda-octavia-combi.glb",
     model3dYaw: 0,
@@ -122,7 +126,8 @@ export const VEHICLES: Vehicle[] = [
     model: "8 places",
     tagline: "Mise à disposition avec chauffeur, groupes et événements.",
     passengers: 8,
-    luggage: 8,
+    // Le chauffeur ne veut pas annoncer de nombre de bagages sur le van.
+    luggage: null,
     image: "/vehicules/van.jpg",
     model3d: "/vehicule/mercedes-classe-v.glb",
     model3dYaw: 0,
@@ -166,7 +171,9 @@ export const BOOKING_RULES = {
   minLeadMinutes: 90,
   /** Plafonds du formulaire : la plus grande capacité parmi les véhicules. */
   maxPassengers: Math.max(...VEHICLES.map((v) => v.passengers)),
-  maxLuggage: Math.max(...VEHICLES.map((v) => v.luggage)),
+  /** Nombre de bagages saisissable au maximum. Ce n'est pas un nombre de
+      bagages compris : chaque catégorie a le sien (`luggage`). */
+  maxLuggage: 8,
   timeZone: "Europe/Paris",
   /**
    * Région de référence, utilisée pour signaler une adresse hors zone

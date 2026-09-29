@@ -55,7 +55,7 @@ export function VehiclePicker({
                 {selected && <CheckIcon />}
               </span>
               <span className="text-[11px] leading-tight text-label">
-                {v.passengers} pers. · {v.luggage} bag.
+                {v.passengers} pers.{v.luggage !== null ? ` · ${v.luggage} bag.` : ""}
               </span>
               <span className={`mt-auto text-[12px] font-semibold ${selected ? "text-accent" : "text-label-strong"}`}>
                 {v.from}

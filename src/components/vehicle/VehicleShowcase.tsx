@@ -72,12 +72,13 @@ export function VehicleShowcase() {
             <p className="text-[14px] leading-relaxed text-label">{active.tagline}</p>
           </div>
 
-          <dl className="grid grid-cols-3 gap-2">
-            {[
+          {/* Le van n'annonce pas de nombre de bagages : la case disparaît. */}
+          <dl className={`grid gap-2 ${active.luggage === null ? "grid-cols-2" : "grid-cols-3"}`}>
+            {([
               ["Modèle", active.model],
               ["Passagers", String(active.passengers)],
-              ["Bagages", String(active.luggage)],
-            ].map(([k, val]) => (
+              ...(active.luggage === null ? [] : [["Bagages", String(active.luggage)]]),
+            ] as [string, string][]).map(([k, val]) => (
               <div key={k} className="flex flex-col gap-0.5 rounded-xl bg-white/[0.06] px-3 py-2.5">
                 <dt className="text-[10px] font-medium uppercase tracking-[0.08em] text-label">{k}</dt>
                 <dd className="text-[13px] font-semibold leading-tight">{val}</dd>

@@ -53,7 +53,7 @@ export type Vehicle = {
 export const VEHICLES: Vehicle[] = [
   {
     id: "CITADINE",
-    name: "Classique citadine",
+    name: "Citadine",
     model: "Kia Niro",
     tagline: "Pour les trajets du quotidien, en ville comme autour.",
     passengers: 3,
@@ -74,7 +74,7 @@ export const VEHICLES: Vehicle[] = [
   },
   {
     id: "BERLINE",
-    name: "Berline confort",
+    name: "Berline",
     model: "Toyota Corolla",
     tagline: "Pour les trajets du quotidien et les transferts aéroport.",
     passengers: 3,
@@ -118,7 +118,7 @@ export const VEHICLES: Vehicle[] = [
   },
   {
     id: "VAN",
-    name: "Van / XL",
+    name: "Van",
     model: "8 places",
     tagline: "Mise à disposition avec chauffeur, groupes et événements.",
     passengers: 8,

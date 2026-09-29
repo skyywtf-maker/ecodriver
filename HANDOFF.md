@@ -67,15 +67,17 @@ Renseigner `MAPBOX_TOKEN` bascule tout le module.
 
 ### Tarifs
 
-Dictés par le chauffeur (25 et 29 septembre 2026), dans `src/config/pricing.ts` :
+Dictés par le chauffeur (25 et 29 septembre 2026), dans `src/config/pricing.ts`.
+Quatre gammes, nommées exactement ainsi par le chauffeur : Citadine, Berline,
+Confort, Van.
 
-- **Classique citadine** (Kia Niro) : 15 € jusqu'à 5 km, puis 2 €/km.
+- **Citadine** (Kia Niro) : 15 € jusqu'à 5 km, puis 2 €/km.
   3 passagers, 3 bagages compris.
-- **Berline confort** (Toyota Corolla) : 15 € jusqu'à 5 km, puis 2,30 €/km.
+- **Berline** (Toyota Corolla) : 15 € jusqu'à 5 km, puis 2,30 €/km.
   3 passagers, 4 bagages compris.
 - **Confort** (ex « Voiture touring ») : ⚠️ grille jamais validée, encore
   l'ancienne à trois paliers. À faire confirmer.
-- **Van / XL** (Mercedes Classe V) : 60 € l'heure, **une heure minimum**,
+- **Van** (Mercedes Classe V) : 60 € l'heure, **une heure minimum**,
   25 km compris ; au-delà, 2,50 €/km, la durée facturée restant d'une heure.
 - Majoration ×1,25 la nuit (22 h – 6 h) et le week-end, sur la course.
 - **Suppléments à prix fixe, hors majoration** (`EXTRAS`) : réhausseur ou

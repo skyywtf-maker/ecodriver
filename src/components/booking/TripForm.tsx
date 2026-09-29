@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { AddressInput } from "@/components/AddressInput";
 import { Counter } from "@/components/Counter";
-import { BOOKING_RULES, DEFAULT_VEHICLE, EXTRAS, type VehicleId } from "@/config/pricing";
+import { BOOKING_RULES, DEFAULT_VEHICLE, EXTRAS, vehicleById, type VehicleId } from "@/config/pricing";
 import { VehiclePicker } from "./VehiclePicker";
 import { euros } from "@/lib/pricing";
 import { loadDraft, saveDraft, type DraftPoint, type TripDraft } from "@/lib/draft";
@@ -106,7 +106,11 @@ export function TripForm({ onQuote, onContinue, collapsed = false, peek = false,
       ctrl.abort();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [from, to, date, time, vehicle, boosterSeat]);
+  }, [from, to, date, time, vehicle, boosterSeat, passengers, luggage]);
+
+  const chosen = vehicleById(vehicle);
+  const includedBags = chosen?.luggage ?? BOOKING_RULES.maxLuggage;
+  const extraBags = Math.max(0, luggage - includedBags);
 
   const canContinue = !!(from && to && date && time && quote && !error && !loading);
 
@@ -170,11 +174,38 @@ export function TripForm({ onQuote, onContinue, collapsed = false, peek = false,
           <span className="field-label">Heure</span>
           <input type="time" required step={300} className="field-input text-[15px]" value={time} onChange={(e) => setTime(e.target.value)} />
         </label>
-        <Counter label="Passagers" unit="passager" value={passengers} min={1} max={BOOKING_RULES.maxPassengers} onChange={setPassengers} />
+        {/* Le maximum suit la catégorie choisie : une citadine ne prend pas
+            huit passagers. Le serveur revérifie la capacité. */}
+        <Counter
+          label="Passagers"
+          unit="passager"
+          value={passengers}
+          min={1}
+          max={chosen?.passengers ?? BOOKING_RULES.maxPassengers}
+          onChange={setPassengers}
+        />
         <Counter label="Bagages" unit="bagage" value={luggage} min={0} max={BOOKING_RULES.maxLuggage} onChange={setLuggage} />
       </div>
 
-      {!peek && <VehiclePicker value={vehicle} onChange={setVehicle} />}
+      {!peek && (
+        <p className="px-1 text-[12px] text-label">
+          {includedBags} bagages compris. Au-delà, {EXTRAS.extraLuggage.price} € par bagage
+          {extraBags > 0 ? ` — ${extraBags} en supplément` : ""}.
+        </p>
+      )}
+
+      {!peek && (
+        <VehiclePicker
+          value={vehicle}
+          onChange={(id) => {
+            setVehicle(id);
+            // Changer de catégorie ne doit pas laisser un nombre de passagers
+            // impossible : on le ramène à la capacité de la nouvelle.
+            const max = vehicleById(id)?.passengers ?? BOOKING_RULES.maxPassengers;
+            setPassengers((n) => Math.min(n, max));
+          }}
+        />
+      )}
 
       {/* Option enfant : une case, cochée avant le prix, pour qu'il soit ferme
           dès l'affichage. Le chauffeur la voit sur sa fiche de course. */}

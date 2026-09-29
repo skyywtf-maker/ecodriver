@@ -1,8 +1,12 @@
 import { EXTRAS, PRICING, vehicleById, type Vehicle, type VehicleId } from "@/config/pricing";
 import { parisHourAndWeekday } from "./time";
 
-/** Options cochées par le client, facturées en plus de la course. */
-export type PriceOptions = { boosterSeat?: boolean };
+/** Ce que le client demande en plus de la course, facturé à prix fixe. */
+export type PriceOptions = {
+  boosterSeat?: boolean;
+  /** Nombre total de bagages ; ceux au-delà de la catégorie sont facturés. */
+  luggage?: number;
+};
 
 export type PriceBreakdown = {
   vehicleId: VehicleId;
@@ -107,12 +111,24 @@ export function computePrice(
   const surchargeApplied = isSurchargeTime(pickupAt);
   const course = round(surchargeApplied ? subtotal * PRICING.surchargeMultiplier : subtotal);
 
-  // Les options s'ajoutent APRÈS la majoration : un réhausseur coûte le même
-  // prix de jour comme de nuit, tant que le chauffeur n'en décide pas autrement.
+  // Les suppléments s'ajoutent APRÈS la majoration : le chauffeur les veut à
+  // prix fixe, de jour comme de nuit (message du 29 septembre 2026).
+  let extras = 0;
+
+  const extraBags = Math.max(0, (options.luggage ?? 0) - vehicle.luggage);
+  if (extraBags > 0) {
+    const amount = extraBags * EXTRAS.extraLuggage.price;
+    const bagage = extraBags > 1 ? "bagages supplémentaires" : "bagage supplémentaire";
+    lines.push({ label: `${extraBags} ${bagage} × ${EXTRAS.extraLuggage.price} €`, amount });
+    extras += amount;
+  }
+
   if (options.boosterSeat) {
     lines.push({ label: EXTRAS.boosterSeat.label, amount: EXTRAS.boosterSeat.price });
+    extras += EXTRAS.boosterSeat.price;
   }
-  const total = round(course + (options.boosterSeat ? EXTRAS.boosterSeat.price : 0));
+
+  const total = round(course + extras);
 
   return {
     vehicleId: vehicle.id,

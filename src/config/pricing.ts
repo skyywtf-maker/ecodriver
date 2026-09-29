@@ -56,7 +56,7 @@ export const VEHICLES: Vehicle[] = [
     name: "Classique citadine",
     model: "Kia Niro",
     tagline: "Pour les trajets du quotidien, en ville comme autour.",
-    passengers: 4,
+    passengers: 3,
     luggage: 3,
     image: "/vehicules/citadine.jpg",
     model3d: "/vehicule/kia-niro.glb",
@@ -77,8 +77,8 @@ export const VEHICLES: Vehicle[] = [
     name: "Berline confort",
     model: "Toyota Corolla",
     tagline: "Pour les trajets du quotidien et les transferts aéroport.",
-    passengers: 4,
-    luggage: 3,
+    passengers: 3,
+    luggage: 4,
     image: "/vehicules/berline.jpg",
     model3d: "/vehicule/toyota-corolla-e170.glb",
     model3dYaw: 0,
@@ -95,7 +95,7 @@ export const VEHICLES: Vehicle[] = [
   },
   {
     id: "TOURING",
-    name: "Voiture touring",
+    name: "Confort",
     model: "Toyota Corolla Touring",
     tagline: "Pour les bagages volumineux et les longues distances.",
     passengers: 4,
@@ -105,8 +105,8 @@ export const VEHICLES: Vehicle[] = [
     model3dYaw: 0,
     priceHint: "15 € jusqu'à 5 km, puis au kilomètre",
     from: "dès 15 €",
-    // Même grille que la berline pour l'instant, mais dans une variable
-    // distincte : la différencier plus tard ne demandera pas de toucher au code.
+    // ⚠️ Seule grille jamais validée par le chauffeur : c'est l'ancienne, à
+    // trois paliers. À faire confirmer avant d'aller plus loin.
     tariff: {
       mode: "distance",
       tiers: [
@@ -126,9 +126,9 @@ export const VEHICLES: Vehicle[] = [
     image: "/vehicules/van.jpg",
     model3d: "/vehicule/mercedes-classe-v.glb",
     model3dYaw: 0,
-    priceHint: "60 € par heure, 25 km compris, puis 2,50 €/km",
+    priceHint: "60 € l'heure, 25 km compris, puis 2,50 €/km",
     from: "60 € / heure",
-    tariff: { mode: "hourly", perHour: 60, minimumHours: 2, includedKm: 25, perExtraKm: 2.5 },
+    tariff: { mode: "hourly", perHour: 60, minimumHours: 1, includedKm: 25, perExtraKm: 2.5 },
   },
 ];
 
@@ -141,12 +141,16 @@ export const DEFAULT_VEHICLE: VehicleId = "CITADINE";
 /**
  * Options facturées en plus de la course.
  *
- * ⚠️ Tarif dicté par le chauffeur (3 €), en attente de deux précisions :
- * est-ce 3 € par siège ou 3 € par course, et la majoration nuit / week-end
- * s'y applique-t-elle ? Aujourd'hui : 3 € par course, hors majoration.
+ * Tarifs dictés par le chauffeur : prix FIXES, hors majoration nuit et
+ * week-end, et proposés sur toutes les catégories (message du 29 septembre
+ * 2026). Les bagages compris dans le prix sont ceux de chaque catégorie
+ * (`luggage`) ; au-delà, chaque bagage est facturé.
  */
 export const EXTRAS = {
-  boosterSeat: { label: "Réhausseur enfant", price: 3 },
+  /** Siège enfant ou réhausseur. Prix fixe, sur toutes les gammes. */
+  boosterSeat: { label: "Réhausseur ou siège enfant", price: 3 },
+  /** Chaque bagage au-delà de ceux compris dans la catégorie. */
+  extraLuggage: { label: "Bagage supplémentaire", price: 5 },
 } as const;
 
 export const PRICING = {
